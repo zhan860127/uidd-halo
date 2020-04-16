@@ -9,7 +9,7 @@ const tmp = require('tmp');
 const fileUpload = require('express-fileupload');
 
 
-const port = 5999
+const port = 8686
 const ffmpeg = '/home/uidd2020/user/tilde/ffmpeg/build/bin/ffmpeg ';
 
 function processBody(s) {
@@ -44,11 +44,10 @@ function getText(path) {
 
 
 
-app.use(express.static('static'))
+app.use(express.static('html', { extensions: ['html'] }))
+app.use('/static', express.static('static'))
 app.use(fileUpload());
 
-
-app.get('/', (req, res) => res.send('Hello World!'))
 app.post('/speech', (req, res) => {
     try {
         const path = `${tmp.tmpNameSync()}.ogg`;

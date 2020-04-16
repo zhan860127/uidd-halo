@@ -1,0 +1,224 @@
+
+body{
+    margin: 0px;
+    width: 100%;
+    height: 200%;
+  
+    background-image: url("./img/back.png");
+;
+    position: absolute;
+    background-position: left top;
+  background-repeat: no-repeat;
+  background-size: 100% 200%;
+}
+#back{
+    background-image: url("./img/back.png");
+    width: 100%;
+    height: 200%;
+    position: absolute;
+    background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+#ha{ 
+    top:28%;
+    left:50%;
+    max-height: 13%;
+    max-width: 50%;
+    position: absolute;
+    -webkit-transform: translate(-50%, -50%);
+
+}
+#t{ 
+    top:50%;
+    position: absolute;
+    width: 100%;
+    height: 50%;
+
+}
+#i03{
+    position: absolute;
+    top:10%;
+    max-height:40%;
+    max-width: 25%;
+    -webkit-transform: translate(-50%, 0);
+    left:20%;
+    border-style: outset;
+    box-shadow: 10px 10px 5px grey;
+}
+#i02{
+    position: absolute;
+    top:10%;
+    max-width: 25%;
+    max-height:40%;
+    -webkit-transform: translate(-50%, 0);
+    left:50%;
+    border-style: outset;
+    box-shadow: 10px 10px 5px grey;
+}
+#i06{
+    position: absolute;
+    top:10%;
+    max-height:40%;
+    max-width: 25%;
+    -webkit-transform: translate(-50%, 0);
+    left:80%;
+    border-style: outset;
+    box-shadow: 10px 10px 5px grey;
+}
+#i05{
+    position: absolute;
+    top:58%;
+    max-width: 25%;
+    max-height:40%;
+    -webkit-transform: translate(-50%, 0);
+    left:20%;
+    border-style: outset;
+    box-shadow: 10px 10px 5px grey;
+}
+#i04{
+    position: absolute;
+    top:58%;
+    max-height:40%;
+    max-width: 25%;
+    -webkit-transform: translate(-50%, 0);
+    left:50%;
+    border-style: outset;
+    box-shadow: 10px 10px 5px grey;
+}
+#i01{
+    position: absolute;
+    top:58%;
+    max-width: 25%;
+    max-height:40%;
+    left: 80%;
+     -webkit-transform: translate(-50%, 0);
+     border-style: outset;
+     box-shadow: 10px 10px 5px grey;
+}
+#i10{
+    position: absolute;
+    top:10%;
+    max-height:40%;
+    left: 20%; 
+    max-width: 25%;
+    -webkit-transform: translate(-50%, 0);
+    opacity: 0;
+    z-index: 1;
+}
+#i11{
+    position: absolute;
+    top:10%;
+    max-height:40%;
+    max-width: 25%;
+    left: 50%;
+     -webkit-transform: translate(-50%, 0);
+    opacity: 0;
+    z-index: 1;
+}
+#i07{
+    position: absolute;
+    top:10%;
+    max-height:40%;
+    max-width: 25%;
+    left: 80%; 
+    -webkit-transform: translate(-50%, 0);
+    z-index: 1;
+    opacity: 0;
+}
+#i08{
+    position: absolute;
+    top:58%;
+    max-height:40%;
+    max-width: 25%;
+    left: 20%; 
+    -webkit-transform: translate(-50%, 0);
+    z-index: 1;
+    opacity: 0;
+}
+#i09{
+    position: absolute;
+    top:58%;
+    max-height:40%;
+    max-width: 25%;
+    left: 50%; 
+    -webkit-transform: translate(-50%, 0);
+    z-index: 1;
+    opacity: 0;
+}
+#i12{
+    position: absolute;
+    top:58%;
+    max-height:40%;
+    max-width: 25%;
+    left: 80%;
+     -webkit-transform: translate(-50%, 0);
+    z-index: 1;
+    opacity: 0;
+}
+#i13{
+    position: absolute;
+    width:40%;
+    max-height:770px;
+    max-width: 523px;
+    left: 50%; 
+    -webkit-transform: translate(-50%, 0);
+    top:5%;
+    z-index: 2;
+    display: none;
+}
+#i14{
+    position: absolute;
+    width:40%;
+    max-height:770px;
+    max-width: 523px;
+    left: 50%; 
+    -webkit-transform: translate(-50%, 0);
+    top:5%;
+    z-index: 2;
+    display: none;
+}
+#i15{
+    position: absolute;
+    width:40%;
+    max-height:770px;
+    max-width: 523px;
+    left: 50%; 
+    -webkit-transform: translate(-50%, 0);
+    top:5%;
+    z-index: 2;
+    display: none;
+}
+#i16{
+    position: absolute;
+    width:40%;
+    max-height:770px;
+    max-width: 523px;
+    left: 50%; 
+    -webkit-transform: translate(-50%, 0);
+    top:5%;
+    z-index: 2;
+    display: none;
+}
+#i17{
+    position: absolute;
+    width:40%;
+    max-height:770px;
+    max-width: 523px;
+    left: 50%; 
+    -webkit-transform: translate(-50%, 0);
+    top:5%;
+    z-index: 2;
+    display: none;
+}
+#i18{
+    position: absolute;
+    width:40%;
+    max-height:770px;
+    max-width: 523px;
+    left: 50%; 
+    -webkit-transform: translate(-50%, 0);
+    top:5%;
+    z-index: 2;
+    display: none;
+}
