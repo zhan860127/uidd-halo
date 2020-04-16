@@ -1,0 +1,11 @@
+{
+  "name": "halo",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1",
+    "express-fileupload": "^1.1.7-alpha.3",
+    "request": "^2.88.2"
+  }
+}

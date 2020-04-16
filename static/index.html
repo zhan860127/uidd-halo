@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!--
+    Send non-silence fragments of audio to get text from the API
+-->
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+      .bar {
+        background-color: antiquewhite;
+        width: 300px;
+      }
+      .bar-inner {
+        background-color: aqua;
+        height: 30px;
+        width: 200px;
+      }
+      audio {
+        display: block;
+      }
+    </style>
+</head>
+<body>
+    <div class="bar">
+      <div class="bar-inner"></div>
+    </div>
+    <div id="clips">
+
+    </div>
+    <button id="rec">Record</button>
+    
+    <script
+    src="https://code.jquery.com/jquery-3.4.1.min.js"
+    integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+    crossorigin="anonymous"></script>
+    <script>
+      const button = document.getElementById('rec');
+      let stopped = false;
+
+      const silence_ms = 250
+      const non_silence_ms = 300
+      const frame_ms = 100
+      const silence_frame = silence_ms / frame_ms;
+      const non_silence_frame = non_silence_ms / frame_ms;
+
+      const thresh_db = -16;
+
+      var isSilence = true;
+      var unsureFrame = 0;
+      
+      function setVolBar(val) {
+        $('.bar-inner').css('width', `${100-val/-32*100}%`)
+      }
+    
+      const handleSuccess = function(stream) {
+        const options = {};
+        const recordedChunks = [];
+        const mediaRecorder = new MediaRecorder(stream, options);
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const analyzer = ctx.createAnalyser()
+        const srcNode = ctx.createMediaStreamSource(stream);
+        var firstFrame = undefined;
+        srcNode.connect(analyzer)
+
+        function getVol() {
+          const arr = new Float32Array(analyzer.fftSize);
+          analyzer.getFloatTimeDomainData(arr);
+          const p = arr.map(x => Math.pow(x, 2)).reduce((a, b) => a + b) / arr.length;
+          return Math.log2(p);
+        }
+
+        button.innerText = "Stop"
+        button.onclick = (e) => {
+            button.innerText = "Stopping"
+            //mediaRecorder.stop();
+        }
+
+
+        mediaRecorder.ondataavailable  = function(e) {
+          if (e.data.size > 0 && !stopped) {
+            if (!firstFrame) {
+              firstFrame = e.data;
+              return;
+            }
+            const vol = getVol();
+            requestAnimationFrame(() => setVolBar(vol));
+            if (vol > thresh_db) {
+              recordedChunks.push(e.data);
+              if (isSilence) {
+                unsureFrame += 1;
+                if (unsureFrame >= non_silence_frame) {
+                  isSilence = false;
+                  unsureFrame = 0;
+                  console.log('speaking');
+                }
+              } else {
+                unsureFrame = 0;
+              }
+            } 
+            else {
+              if (!isSilence) {
+                unsureFrame += 1;
+                recordedChunks.push(e.data);
+                if (unsureFrame >= silence_frame) {
+                  isSilence = true;
+                  unsureFrame = 0;
+                  console.log('stopped');
+                  onStoppedSpeaking = () => {
+                    console.log(recordedChunks.length);
+                    recordedChunks.splice(0, 0, firstFrame);
+                    const blob = new Blob(recordedChunks);
+                    const audioURL = window.URL.createObjectURL(blob)
+                    console.log(blob);
+                    const audio = document.createElement('audio');
+                    audio.controls = true;
+                    audio.src = audioURL;
+                    document.getElementById('clips').appendChild(audio);
+
+                    const fd = new FormData();
+                    fd.append('data', blob)
+                    $.ajax({
+                      type: 'POST',
+                      url: '/speech',
+                      data: fd,
+                      processData: false,
+                      contentType: false,
+                    }).then(data => {
+                      if (data.transcript) {
+                        $(audio).after(`<div>${data.transcript}</div>`)
+                      }
+                    });
+                  }
+                  onStoppedSpeaking();
+                }
+              } else {
+                unsureFrame = 0;
+                recordedChunks.length = 0;
+                console.log('cleared');
+              }
+            }
+            
+            //recordedChunks.push(e.data);
+          }
+        };
+    
+        mediaRecorder.onstop = function() {
+            button.innerText = "Record"
+        };
+    
+        mediaRecorder.start(frame_ms);
+      };
+
+      
+      button.onclick = (e) => {  
+        button.disabled = true;
+        button.innerText = "starting..."
+        navigator.mediaDevices.getUserMedia({ audio: true, video: false })
+            .then(handleSuccess);
+      }
+    </script>
+</body>
+</html>
