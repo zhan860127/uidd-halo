@@ -3,14 +3,15 @@
 |Field|Type|Notes
 |-|-|-|
 |id|integer|
-|username|string|
-|password|string
-|name|string|
+|email|string|
+|username|string
+|password|string|
 
 ### child
 |Field|Type|Notes
 |-|-|-|
 |id|integer|
+|name|string
 
 
 ### child
