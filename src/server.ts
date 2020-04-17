@@ -5,14 +5,16 @@ import { exec } from "child_process";
 import * as request from 'request';
 import * as  tmp from 'tmp';
 import * as  passport from 'passport';
+import { Strategy } from 'passport-local';
 import * as  bodyParser from 'body-parser';
+import * as session from 'express-session'
+import * as bcrypt from 'bcrypt';
 
 import * as  fileUpload from 'express-fileupload';
-const urlEncodedParser = bodyParser.urlencoded()
 
 require('reflect-metadata');
 
-import { createConnection } from "typeorm";
+import { createConnection, Db } from "typeorm";
 
 import { Parent } from './models/entity/Parent';
 
@@ -50,6 +52,7 @@ function getText(path) {
 }
 
 
+
 createConnection().then(connection => {
 
 
@@ -57,19 +60,59 @@ createConnection().then(connection => {
     const parentRepo = connection.getRepository(Parent);
 
     app.use(express.static('html', { extensions: ['html'] }))
+    app.use(session({ secret: "not secure! TODO put this in env var" }));
     app.use('/static', express.static('static'))
     app.use(fileUpload());
+    app.use(bodyParser.urlencoded({ extended: false }));
 
-    app.get('/db', async (req, res) => {
-        const parents = await parentRepo.find();
-        res.json(parents);
+
+    app.set('views', './src/views')
+    app.set('view engine', 'pug')
+
+
+    passport.use(new Strategy(async (username, password, cb) => {
+        const user = await parentRepo.findOne({
+            username,
+        })
+        if (!user || !bcrypt.compareSync(password, user.password)) return cb(null, false);
+        cb(null, user);
+    }));
+
+    passport.serializeUser(function (user, cb) {
+        cb(null, (user as Parent).id);
     });
 
-    app.post('/sign_up', urlEncodedParser, async (req, res) => {
+    passport.deserializeUser(async function (id, cb) {
+        const user = await parentRepo.findOne(id);
+        if (!user) return cb('err', false);
+        cb(null, user);
+    });
+
+    app.use(passport.initialize());
+    app.use(passport.session());
+
+
+    app.get('/dashboard', async (req, res) => {
+        if (!req.user) { return res.redirect('/') }
+        res.render('dashboard', { name: (req.user as Parent).username });
+    });
+
+    app.post('/login',
+        passport.authenticate('local', {
+            failureRedirect: '/sign_in',
+            successRedirect: '/dashboard'
+        }));
+
+    app.get('/logout', async (req, res) => {
+        req.logout();
+        res.redirect('/', 302);
+    });
+
+    app.post('/sign_up', async (req, res) => {
         console.log(req.body);
         const parent = new Parent();
         parent.email = req.body.email;
-        parent.password = req.body.password;
+        parent.password = bcrypt.hashSync(req.body.password, 10);
         parent.username = req.body.username;
         await parentRepo.save(parent);
         // TODO: check uniqueness
@@ -81,7 +124,9 @@ createConnection().then(connection => {
             const path = `${tmp.tmpNameSync()}.ogg`;
             const flacPath = `${tmp.tmpNameSync()}.flac`;
             console.log(path, flacPath);
-            fs.writeFileSync(path, req.files.data.data);
+            const data = req?.files?.data;
+            if (!('data' in data)) throw 'No file';
+            fs.writeFileSync(path, data);
             exec(`${ffmpeg} -i ${path} -ar 44100 ${flacPath}`, err => {
                 if (err) throw err;
                 getText(flacPath).then(
