@@ -1,4 +1,5 @@
-const { Entity, PrimaryGeneratedColumn, Column, UpdateDateColumn, CreateDateColumn } = require("typeorm");
+import { Entity, PrimaryGeneratedColumn, Column, UpdateDateColumn, CreateDateColumn, ManyToMany, JoinTable } from "typeorm";
+import { Child } from './Child'
 
 @Entity()
 export class Parent {
@@ -20,4 +21,8 @@ export class Parent {
 
     @UpdateDateColumn()
     updatedAt: Date;
+
+    @ManyToMany(t => Child, child => child.parents)
+    @JoinTable()
+    children: Child[];
 }
