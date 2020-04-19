@@ -8,15 +8,17 @@ import * as  passport from 'passport';
 import { Strategy } from 'passport-local';
 import * as  bodyParser from 'body-parser';
 import * as session from 'express-session'
+import * as cookieSession from 'cookie-session';
 import * as bcrypt from 'bcrypt';
 
 import * as  fileUpload from 'express-fileupload';
 
 require('reflect-metadata');
 
-import { createConnection, Db } from "typeorm";
+import { createConnection, Db, getRepository } from "typeorm";
 
 import { Parent } from './models/entity/Parent';
+import { Child } from './models/entity/Child';
 
 const port = 8686
 const ffmpeg = '/home/uidd2020/user/tilde/ffmpeg/build/bin/ffmpeg ';
@@ -51,7 +53,10 @@ function getText(path) {
     });
 }
 
-
+function ensureLoggedIn(req, res, next) {
+    if (!req.user) res.redirect('/')
+    else next();
+}
 
 createConnection().then(connection => {
 
@@ -60,7 +65,7 @@ createConnection().then(connection => {
     const parentRepo = connection.getRepository(Parent);
 
     app.use(express.static('html', { extensions: ['html'] }))
-    app.use(session({ secret: "not secure! TODO put this in env var" }));
+    app.use(cookieSession({ secret: "not secure! TODO put this in env var" }));
     app.use('/static', express.static('static'))
     app.use(fileUpload());
     app.use(bodyParser.urlencoded({ extended: false }));
@@ -68,6 +73,7 @@ createConnection().then(connection => {
 
     app.set('views', './src/views')
     app.set('view engine', 'pug')
+    app.locals.basedir = './src/views';
 
 
     passport.use(new Strategy(async (username, password, cb) => {
@@ -92,9 +98,35 @@ createConnection().then(connection => {
     app.use(passport.session());
 
 
-    app.get('/dashboard', async (req, res) => {
-        if (!req.user) { return res.redirect('/') }
-        res.render('dashboard', { name: (req.user as Parent).username });
+    app.get('/dashboard',
+        ensureLoggedIn,
+        async (req, res) => {
+            const parent = await connection
+                .getRepository(Parent)
+                .findOne({
+                    where: {
+                        id: (req.user as Parent).id,
+                    },
+                    relations: ['children'],
+                })
+            if (!parent) {
+                return res.sendStatus(500);
+            }
+            res.render('child_select', {
+                name: (req.user as Parent).username,
+                children: parent.children,
+            });
+        });
+
+    app.get('/child/:childId', ensureLoggedIn, async (req, res) => {
+        const child = await connection.getRepository(Child)
+            .createQueryBuilder('child')
+            .innerJoinAndSelect('child.parents', 'parent')
+            .where('parent.id = :parentId', { parentId: (req.user as Parent).id })
+            .andWhere('child.id = :childId', { childId: req.params.childId })
+            .getOne();
+        if (!child) return res.sendStatus(404);
+        res.render('function_select', { child })
     });
 
     app.post('/login',
@@ -118,6 +150,32 @@ createConnection().then(connection => {
         // TODO: check uniqueness
         res.send('success');
     })
+
+    app.post('/add_child',
+        ensureLoggedIn,
+        async (req, res) => {
+            if (!req.body.name) {
+                res.status(400);
+                return res.send('no name sent');
+            }
+            const parent = await connection
+                .getRepository(Parent)
+                .findOne({
+                    where: {
+                        id: (req.user as Parent).id,
+                    },
+                    relations: ['children'],
+                });
+            if (!parent) {
+                return res.sendStatus(500);
+            }
+            const child = new Child();
+            child.name = req.body.name;
+            await connection.manager.save(child);
+            parent.children.push(child);
+            await connection.manager.save(parent);
+            res.redirect(302, '/dashboard');
+        });
 
     app.post('/speech', (req, res) => {
         try {

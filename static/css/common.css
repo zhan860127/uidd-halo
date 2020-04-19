@@ -1,0 +1,57 @@
+.menu-background {
+    position: fixed;
+    z-index: 999;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #00000099;
+    transition: background-color 300ms ease-out;
+}
+
+.menu-inner {
+    position: absolute;
+    left: 100px;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    background-color: #FCF6EF;
+    transform: none;
+    transition: transform 300ms ease-out;    
+}
+
+.menu-background.hidden {
+    user-select: none;
+    pointer-events: none;
+    background-color: transparent;
+    transition: background-color 150ms ease-in;
+}
+
+.menu-background.hidden > .menu-inner {
+    transform: translateX(100%);
+    transition: transform 150ms ease-in;    
+}
+
+.navbar {
+    display: flex;
+    align-items: center;
+    padding-left: 1em;
+    padding-right: 1em;
+    height: 60px;
+    box-shadow: #00000077 2px 2px 3px;
+}
+
+.navbar-logo {
+    display: block;
+    width: 2em;
+}
+
+.flex-spacer {
+    flex: 1 1 0;
+}
+
+.img-cover {
+    object-fit: cover; 
+    width:100%; 
+    height:100%
+}
