@@ -47,12 +47,17 @@ var passport_local_1 = require("passport-local");
 var bodyParser = require("body-parser");
 var cookieSession = require("cookie-session");
 var bcrypt = require("bcrypt");
+var dotenv = require("dotenv");
 var fileUpload = require("express-fileupload");
 require('reflect-metadata');
 var typeorm_1 = require("typeorm");
 var Parent_1 = require("./models/entity/Parent");
 var Child_1 = require("./models/entity/Child");
-var port = 8686;
+dotenv.config();
+var port = process.env.HALO_PORT;
+if (!port) {
+    throw 'Port not set. Please edit the .env file';
+}
 var ffmpeg = '/home/uidd2020/user/tilde/ffmpeg/build/bin/ffmpeg ';
 function processBody(s) {
     console.log(s);
@@ -281,5 +286,5 @@ typeorm_1.createConnection().then(function (connection) {
     https.createServer({
         cert: fs.readFileSync('/etc/letsencrypt/live/luffy.ee.ncku.edu.tw/fullchain.pem'),
         key: fs.readFileSync('/etc/letsencrypt/live/luffy.ee.ncku.edu.tw/privkey.pem')
-    }, app).listen(port, function () { return console.log("Example app listening at https://localhost:" + port); });
+    }, app).listen(port, function () { return console.log("App listening at https://luffy.ee.ncku.edu.tw:" + port); });
 });

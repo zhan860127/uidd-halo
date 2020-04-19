@@ -10,6 +10,7 @@ import * as  bodyParser from 'body-parser';
 import * as session from 'express-session'
 import * as cookieSession from 'cookie-session';
 import * as bcrypt from 'bcrypt';
+import * as dotenv from 'dotenv'
 
 import * as  fileUpload from 'express-fileupload';
 
@@ -20,7 +21,13 @@ import { createConnection, Db, getRepository } from "typeorm";
 import { Parent } from './models/entity/Parent';
 import { Child } from './models/entity/Child';
 
-const port = 8686
+dotenv.config();
+
+const port = process.env.HALO_PORT;
+if (!port) {
+    throw 'Port not set. Please edit the .env file';
+}
+
 const ffmpeg = '/home/uidd2020/user/tilde/ffmpeg/build/bin/ffmpeg ';
 
 function processBody(s) {
@@ -210,7 +217,7 @@ createConnection().then(connection => {
     https.createServer({
         cert: fs.readFileSync('/etc/letsencrypt/live/luffy.ee.ncku.edu.tw/fullchain.pem'),
         key: fs.readFileSync('/etc/letsencrypt/live/luffy.ee.ncku.edu.tw/privkey.pem'),
-    }, app).listen(port, () => console.log(`Example app listening at https://localhost:${port}`))
+    }, app).listen(port, () => console.log(`App listening at https://luffy.ee.ncku.edu.tw:${port}`))
 
 
 })
