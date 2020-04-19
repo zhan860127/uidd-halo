@@ -66,13 +66,10 @@ function ensureLoggedIn(req, res, next) {
 }
 
 createConnection().then(connection => {
-
-
     const app = express()
     const parentRepo = connection.getRepository(Parent);
-
     app.use(express.static('html', { extensions: ['html'] }))
-    app.use(cookieSession({ secret: "not secure! TODO put this in env var" }));
+    app.use(session({ secret: "not secure! TODO put this in env var" }));
     app.use('/static', express.static('static'))
     app.use(fileUpload());
     app.use(bodyParser.urlencoded({ extended: false }));
@@ -97,7 +94,7 @@ createConnection().then(connection => {
 
     passport.deserializeUser(async function (id, cb) {
         const user = await parentRepo.findOne(id);
-        if (!user) return cb('err', false);
+        if (!user) return cb('Session error: please clear you browser cookie', false);
         cb(null, user);
     });
 
