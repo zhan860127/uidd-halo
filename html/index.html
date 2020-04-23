@@ -1,45 +1,120 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="/static/1.css" rel="stylesheet" type="text/css">
-    <link href="/static/1.js" rel="stylesheet" type="text/js">
-    <title>halo</title>
+    <title>Document</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body, html {
+            margin: 0;
+            padding: 0;
+        }
+        .wrapper {
+            max-width: 500px;
+            margin: 0 auto;
+            position: relative;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding-left: 58px;
+            padding-right: 58px;
+        }
+        #top {
+            background: #fcf6ef;
+            flex-grow: 7;
+        }
+        #bottom {
+            background: #fff;
+            flex-grow: 3;
+        }
+        #he {
+            width: 60px;
+        }
+        #w {
+            margin-top: 52px;
+            font-size: 40px;
+            font-family: Seravek;
+            color: #082448;
+        }
+
+        #wc {
+            margin-top: 20px;
+            font-size: 15px;
+            color: #082448;
+            font-family: Helvetica, HelvaticaNeue, Arial, sans-serif;
+        }
+        #top-content {
+            text-align: center;
+        }
+        #root {
+            height: max(100vh, 550px);
+            display: flex;
+            flex-direction: column;
+        }
+        .v-center {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .button {
+            font: normal 20px/25px Seravek;
+            color: #4D6790;
+            background: #fff;
+            width: 113px;
+            text-align: center;
+            border-radius: 1em;
+            padding-top: .3em;
+            padding-bottom: .3em;
+            transition: all 200ms ease;
+            cursor: pointer;
+        }
+        .button + .button {
+            margin-top: 5px;
+        }
+        .button:hover {
+            background: #4D6790;
+            color: #fff;
+        }
+        .no-dec {
+            text-decoration: none;
+        }
+        @font-face {
+            font-family: 'Seravek';
+            src: url('/static/font/Seravek.ttf') format("truetype");
+        }
+        @font-face {
+            font-family: 'HelvaticaNeue';
+            src: url('/static/font/HelveticaNeue Medium.ttf')  format("truetype");
+        }
+    </style>
 </head>
+<body>
+    <div id="root">
+        <div id="top">
+            <div class="wrapper">
+                <div id="top-content">
+                    <img id="he" src="/static/img/2.png">
+                    <div id="w">Welcome</div>
+                    <div id="wc">Parental companionship is the best gift in the child's growth</div>
+                </div>
+            </div>
+        </div>
+        <div id="bottom">
+            <div class="wrapper">
+                <a href="/sign_up" class="no-dec button">
+                    SIGN UP
+                </a>
+                <a href="/sign_in" class="no-dec button">
+                    SIGN IN
+                </a>
+            </div>
 
-
-<html>
-
-<body onresize="re()">
-
-    <div class="top">
-        <img id="he" src="/static/img/2.png">
-        <div id="w">Welcome</div>
-        <div id="wc">Parental companionship is the best gift in the child's growth</div>
-
+        </div>
     </div>
-
-    <div id="su">
-        <img id="su1" src="/static/img/15.png">
-        <a href="sign_up"><img id="su2" src="/static/img/6.png"></a>
-    </div>
-
-    <div id="si">
-        <img id="si1" src="/static/img/11.png">
-        <a href="sign_in"><img id="si2" src="/static/img/7.png"></a>
-    </div>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-
-    <script src="/static/1.js"></script>
-
-
-
-
-
-
 </body>
-
 </html>
