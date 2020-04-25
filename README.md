@@ -39,3 +39,12 @@ HALO_PORT=YOUR_PORT_NUMBER
 ```bash
 $ yarn start
 ```
+
+## Restarting after modifying
+For some reason, `parcel watch`  does not rebuild when css files are edited. \
+You would have to recompile manually:
+```
+yarn clean
+yarn build-parcel
+yarn start
+```

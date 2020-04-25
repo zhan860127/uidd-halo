@@ -69,7 +69,8 @@ createConnection().then(connection => {
     const app = express()
     const parentRepo = connection.getRepository(Parent);
     app.use(express.static('html', { extensions: ['html'] }))
-    app.use(session({ secret: "not secure! TODO put this in env var" }));
+    app.use(express.static('dist', { extensions: ['html'] }))
+    app.use(session({ secret: "not secure! TODO put this in env varrr" }));
     app.use('/static', express.static('static'))
     app.use(fileUpload());
     app.use(bodyParser.urlencoded({ extended: false }));

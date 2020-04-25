@@ -4,13 +4,13 @@
    "synchronize": false,
    "logging": false,
    "entities": [
-      "dist/models/entity/**/*.js"
+      "build/models/entity/**/*.js"
    ],
    "migrations": [
-      "dist/models/migration/**/*.js"
+      "build/models/migration/**/*.js"
    ],
    "subscribers": [
-      "dist/models/subscriber/**/*.js"
+      "build/models/subscriber/**/*.js"
    ],
    "cli": {
       "entitiesDir": "src/models/entity",
