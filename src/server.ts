@@ -205,7 +205,7 @@ createConnection().then(connection => {
             console.log(path, flacPath);
             const data = req?.files?.data;
             if (!('data' in data)) throw 'No file';
-            fs.writeFileSync(path, data);
+            fs.writeFileSync(path, data.data);
             exec(`${ffmpeg} -i ${path} -ar 44100 ${flacPath}`, err => {
                 if (err) throw err;
                 getText(flacPath).then(
