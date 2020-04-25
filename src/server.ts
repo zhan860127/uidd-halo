@@ -146,14 +146,30 @@ createConnection().then(connection => {
     });
 
     app.post('/sign_up', async (req, res) => {
-        console.log(req.body);
         const parent = new Parent();
         parent.email = req.body.email;
         parent.password = bcrypt.hashSync(req.body.password, 10);
         parent.username = req.body.username;
-        await parentRepo.save(parent);
-        // TODO: check uniqueness
-        res.send('success');
+        // TODO: wrap in a transaction
+        if (await connection.getRepository(Parent).createQueryBuilder()
+            .where('email=:email', {email: parent.email})
+            .getCount()) {
+                res.send('Email already registered');
+                return;
+            }
+        if (await connection.getRepository(Parent).createQueryBuilder()
+            .where('username=:username', {username: parent.username})
+            .getCount()) {
+                res.send('Username already registered');
+                return;
+            }        
+        const newParent = await parentRepo.save(parent);
+        req.login(newParent, (err) => {
+            if (err) {
+                return res.sendStatus(500);
+            } 
+            res.redirect('/dashboard');
+        });
     })
 
     app.post('/add_child',
