@@ -48,3 +48,20 @@ yarn clean
 yarn build-parcel
 yarn start
 ```
+
+## Database migration
+若要修改資料庫 schema，需更改 `src/models/entity/` 裡面的定義\
+改完後執行：
+```bash
+$ npx tsc
+$ npx typeorm migration:generate -n 自訂名稱
+$ npx tsc
+$ npx typeorm migration:run
+```
+
+若是由 git pull 發現其他人有更改資料庫定義，則執行：
+```bash
+$ npx tsc
+$ npx typeorm migration:run
+```
+參見：[TypeORM - Migrations](https://typeorm.io/#/migrations)

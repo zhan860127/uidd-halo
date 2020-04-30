@@ -1,5 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, UpdateDateColumn, CreateDateColumn, ManyToMany, JoinTable } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, UpdateDateColumn, CreateDateColumn, ManyToMany, JoinTable, OneToOne, JoinColumn, OneToMany } from "typeorm";
 import { Child } from './Child'
+import { Image } from "./Image";
+import { ParentAudio } from "./ParentAudio";
 
 @Entity()
 export class Parent {
@@ -25,4 +27,11 @@ export class Parent {
     @ManyToMany(t => Child, child => child.parents)
     @JoinTable()
     children: Child[];
+
+    @OneToOne(type => Image)
+    @JoinColumn()
+    image: Image;
+
+    @OneToMany(t => ParentAudio, a => a.parent)
+    audios: ParentAudio[]
 }
