@@ -52,3 +52,17 @@
 * Select child
     * Create URL/QR for child
 * Select mode
+
+## Website structure
+
+|Path|Description
+|-|-|-|
+|/|welcome
+|/login|Log in
+|/signup|Sign up
+|/parent| Main menu for parents.
+|/parent/children| List of children
+|/parent/keywords| Settings for auto response to keywords
+|/parent/logs| View audio logs of the child
+|/parent/call|Realtime voice chat
+|/child|Main page of the child's device. Sends speech fragments to the server. <br> When a parent is in `parent/call`, sends audio stream instead.
