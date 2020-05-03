@@ -72,6 +72,7 @@ createConnection().then(connection => {
     app.use(express.static('html', { extensions: ['html'] }))
     app.use(express.static('dist', { extensions: ['html'] }))
     app.use(session({ secret: "not secure! TODO put this in env varrr" }));
+    app.use(express.static('static/favicon'));
     app.use('/static', express.static('static'))
     app.use(fileUpload());
     app.use(bodyParser.urlencoded({ extended: false }));
