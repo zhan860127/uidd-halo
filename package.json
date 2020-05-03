@@ -13,7 +13,8 @@
     "build-ts": "tsc",
     "build": "concurrently npm:build-ts npm:build-parcel",
     "clean": "rm -rf ./dist",
-    "watch": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node,Parcel\" npm:watch-ts npm:watch-node npm:watch-parcel"
+    "watch": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node,Parcel\" npm:watch-ts npm:watch-node npm:watch-parcel",
+    "lint": "eslint --ext .ts --fix src/"
   },
   "dependencies": {
     "@types/bcrypt": "^3.0.0",
@@ -43,7 +44,17 @@
   },
   "devDependencies": {
     "@types/express-session": "^1.17.0",
+    "@typescript-eslint/eslint-plugin": "^2.30.0",
+    "@typescript-eslint/parser": "^2.30.0",
     "cssnano": "^4.1.10",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.1.0",
+    "eslint-config-airbnb-typescript": "^7.2.1",
+    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react": "^7.19.0",
+    "eslint-plugin-react-hooks": "^2.5.0",
+    "eslint-plugin-vue": "^6.2.2",
     "typescript": "^3.8.3"
   }
 }

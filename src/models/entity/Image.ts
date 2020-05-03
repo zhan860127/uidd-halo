@@ -1,17 +1,18 @@
-import { Entity, PrimaryGeneratedColumn, Column, UpdateDateColumn, CreateDateColumn } from "typeorm";
+import {
+  Entity, PrimaryGeneratedColumn, Column, UpdateDateColumn, CreateDateColumn,
+} from 'typeorm';
 
 @Entity()
 export class Image {
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @PrimaryGeneratedColumn()
-    id: number;
+  @CreateDateColumn()
+  createdAt: Date;
 
-    @CreateDateColumn()
-    createdAt: Date;
+  @UpdateDateColumn()
+  updatedAt: Date;
 
-    @UpdateDateColumn()
-    updatedAt: Date;
-
-    @Column()
-    path: string;    
+  @Column()
+  path: string;
 }
