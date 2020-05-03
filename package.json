@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "start": "node -r source-map-support/register build/server.js",
-    "watch-node": "nodemon --watch build/server.js build/server.js",
+    "watch-node": "nodemon -r source-map-support/register --watch build/server.js build/server.js",
     "watch-ts": "tsc -w",
     "watch-server": "concurrently -k npm:watch-node npm:watch-ts",
     "watch-parcel": "parcel watch ./src/entries/*",

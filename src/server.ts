@@ -20,6 +20,7 @@ import { createConnection, Db, getRepository } from "typeorm";
 
 import { Parent } from './models/entity/Parent';
 import { Child } from './models/entity/Child';
+import * as Login from './Login';
 const parentRouter = require('./controllers/parent');
 
 dotenv.config();
@@ -30,6 +31,11 @@ if (!port) {
 }
 
 const ffmpeg = '/home/uidd2020/user/tilde/ffmpeg/build/bin/ffmpeg ';
+
+const LOGIN = {
+    PARENT_LOCAL: 'parent_local',
+    CHILD_LOCAL: 'child_local',
+};
 
 function processBody(s) {
     console.log(s);
@@ -61,9 +67,9 @@ function getText(path) {
     });
 }
 
-function ensureLoggedIn(req, res, next) {
-    if (!req.user) res.redirect('/')
-    else next();
+function ensureParentLoggedIn(req, res, next) {
+    if (!Login.parentLoggedIn(req)) return res.redirect('/')
+    next();
 }
 
 createConnection().then(connection => {
@@ -83,37 +89,31 @@ createConnection().then(connection => {
     app.locals.basedir = './src/views';
 
 
-    passport.use(new Strategy(async (username, password, cb) => {
+    passport.use(LOGIN.PARENT_LOCAL, new Strategy(async (username, password, cb) => {
         const user = await parentRepo.findOne({
             username,
         })
         if (!user || !bcrypt.compareSync(password, user.password)) return cb(null, false);
-        cb(null, user);
+        cb(null, user.id);
     }));
-
-    passport.serializeUser(function (user, cb) {
-        cb(null, (user as Parent).id);
-    });
-
-    passport.deserializeUser(async function (id, cb) {
-        const user = await parentRepo.findOne(id);
-        if (!user) return cb('Session error: please clear you browser cookie', false);
-        cb(null, user);
-    });
 
     app.use(passport.initialize());
     app.use(passport.session());
 
-    app.use('/parent', ensureLoggedIn, parentRouter(connection));
+    app.use('/parent', ensureParentLoggedIn, parentRouter(connection));
 
-    app.post('/login',
-        passport.authenticate('local', {
-            failureRedirect: '/sign_in',
-            successRedirect: '/parent/children'
-        }));
+    app.post('/login', (req, res, next) => {
+        passport.authenticate(LOGIN.PARENT_LOCAL, (err, user) => {
+            if (err) return next(err);
+            if (!user) return res.redirect('sign_in');
+            
+            Login.logInParent(req, user);
+            res.redirect('/parent/children');
+        })(req, res, next);
+    });
 
     app.get('/logout', async (req, res) => {
-        req.logout();
+        Login.logOutParent(req);
         res.redirect('/', 302);
     });
 
@@ -143,32 +143,6 @@ createConnection().then(connection => {
             res.redirect('/dashboard');
         });
     })
-
-    app.post('/add_child',
-        ensureLoggedIn,
-        async (req, res) => {
-            if (!req.body.name) {
-                res.status(400);
-                return res.send('no name sent');
-            }
-            const parent = await connection
-                .getRepository(Parent)
-                .findOne({
-                    where: {
-                        id: (req.user as Parent).id,
-                    },
-                    relations: ['children'],
-                });
-            if (!parent) {
-                return res.sendStatus(500);
-            }
-            const child = new Child();
-            child.name = req.body.name;
-            await connection.manager.save(child);
-            parent.children.push(child);
-            await connection.manager.save(parent);
-            res.redirect(302, '/dashboard');
-        });
 
     app.post('/speech', (req, res) => {
         try {
