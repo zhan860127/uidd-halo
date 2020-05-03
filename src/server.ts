@@ -20,6 +20,7 @@ import { createConnection, Db, getRepository } from "typeorm";
 
 import { Parent } from './models/entity/Parent';
 import { Child } from './models/entity/Child';
+const parentRouter = require('./controllers/parent');
 
 dotenv.config();
 
@@ -102,42 +103,12 @@ createConnection().then(connection => {
     app.use(passport.initialize());
     app.use(passport.session());
 
-
-    app.get('/dashboard',
-        ensureLoggedIn,
-        async (req, res) => {
-            const parent = await connection
-                .getRepository(Parent)
-                .findOne({
-                    where: {
-                        id: (req.user as Parent).id,
-                    },
-                    relations: ['children'],
-                })
-            if (!parent) {
-                return res.sendStatus(500);
-            }
-            res.render('child_select', {
-                name: (req.user as Parent).username,
-                children: parent.children,
-            });
-        });
-
-    app.get('/child/:childId', ensureLoggedIn, async (req, res) => {
-        const child = await connection.getRepository(Child)
-            .createQueryBuilder('child')
-            .innerJoinAndSelect('child.parents', 'parent')
-            .where('parent.id = :parentId', { parentId: (req.user as Parent).id })
-            .andWhere('child.id = :childId', { childId: req.params.childId })
-            .getOne();
-        if (!child) return res.sendStatus(404);
-        res.render('function_select', { child })
-    });
+    app.use('/parent', ensureLoggedIn, parentRouter(connection));
 
     app.post('/login',
         passport.authenticate('local', {
             failureRedirect: '/sign_in',
-            successRedirect: '/dashboard'
+            successRedirect: '/parent/children'
         }));
 
     app.get('/logout', async (req, res) => {

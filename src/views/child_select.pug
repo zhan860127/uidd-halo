@@ -9,7 +9,7 @@ block content
     .row      
       each child in children
         .col-12.col-md-6.my-1
-          a.text-decoration-none.text-dark.card(href=`/child/${child.id}`)
+          a.text-decoration-none.text-dark.card(href=`/parent?c=${child.id}`)
             .row.no-gutters
               .col-4
                 img.img-cover(src='/static/img/2.png' alt='placeholder')
@@ -21,7 +21,7 @@ block content
 
     #childModal.modal.fade(tabindex='-1' role='dialog')
       .modal-dialog(role='document')
-        form.modal-content(action='/add_child' method='post')
+        form.modal-content(action='/parent/add_child' method='post')
           .modal-header
             h5.modal-title Add child
             button.close(type='button' data-dismiss='modal' aria-label='Close')
