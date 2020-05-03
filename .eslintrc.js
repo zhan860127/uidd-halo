@@ -19,9 +19,11 @@ module.exports = {
     },
     "plugins": [
         "vue",
-        "@typescript-eslint"
+        "@typescript-eslint",
+        "plugin:prettier/recommended",
     ],
     "rules": {
+      "prettier/prettier": "error",
       "no-continue": 0,
       "consistent-return": 0,
       "no-unused-vars": 1,
