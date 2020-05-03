@@ -13,13 +13,17 @@ import * as dotenv from 'dotenv';
 
 import * as fileUpload from 'express-fileupload';
 
-import { createConnection } from 'typeorm';
+import {
+  createConnection, getConnection, getRepository, getManager,
+} from 'typeorm';
 
 import { Parent } from './models/entity/Parent';
 import * as Login from './Login';
+import { Child } from './models/entity/Child';
+import { newChildToken } from './misc';
+import parentRouter from './controllers/parent';
 
 require('reflect-metadata');
-const parentRouter = require('./controllers/parent');
 
 dotenv.config();
 
@@ -172,9 +176,38 @@ createConnection().then((connection) => {
     }
   });
 
+  app.get('/child/enter/:token', async (req, res) => {
+    const { token } = req.params;
+    if (!token) return res.sendStatus(404);
+    const child = await connection.getRepository(Child)
+      .findOne({ token });
+    if (!child) return res.sendStatus(404);
+    Login.logInChild(req, child.id);
+    res.redirect(302, '/child');
+  });
+
+  app.get('/child', async (req, res) => {
+    const child = await Login.getChild(req, connection);
+    res.send(child ? `you're logged in as Child ${child.id}: ${child.name}` : "you're not logged in");
+  });
+
 
   https.createServer({
     cert: fs.readFileSync('/etc/letsencrypt/live/luffy.ee.ncku.edu.tw/fullchain.pem'),
     key: fs.readFileSync('/etc/letsencrypt/live/luffy.ee.ncku.edu.tw/privkey.pem'),
-  }, app).listen(port, () => console.log(`App listening at https://luffy.ee.ncku.edu.tw:${port}`));
+  }, app).listen(port, async () => {
+    console.log(`App listening at https://luffy.ee.ncku.edu.tw:${port}`);
+    const tokenlessChildren = await getRepository(Child).find({
+      where: [
+        { token: null },
+        { token: '' },
+      ],
+    });
+    tokenlessChildren.forEach(async (child) => {
+      // eslint-disable-next-line no-param-reassign
+      child.token = newChildToken();
+      await getManager().save(child);
+      console.log(`created missing token for child ${child.id}: ${child.token}`);
+    });
+  });
 });

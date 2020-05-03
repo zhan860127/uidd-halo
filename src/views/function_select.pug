@@ -2,3 +2,6 @@ extends templates/generic.pug
 
 block content
     | 🐥 #{child.name} offline
+    br
+    | Connect with 
+    a(href=`/child/enter/${child.token}`) this link

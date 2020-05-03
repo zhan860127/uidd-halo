@@ -3,9 +3,10 @@ import { Connection } from 'typeorm';
 import { Parent } from '../models/entity/Parent';
 import { Child } from '../models/entity/Child';
 import * as Login from '../Login';
+import { newChildToken } from '../misc';
 
 
-module.exports = (connection: Connection) => {
+export default function (connection: Connection) {
   const router = Router();
 
   router.get('/children', async (req, res) => {
@@ -56,12 +57,13 @@ module.exports = (connection: Connection) => {
       }
       const child = new Child();
       child.name = req.body.name;
+      child.token = newChildToken();
       await connection.manager.save(child);
       parent.children.push(child);
       await connection.manager.save(parent);
-      res.redirect(302, '/dashboard');
+      res.redirect(302, '/parent');
     });
 
 
   return router;
-};
+}
