@@ -9,31 +9,31 @@ import { ParentAudio } from './ParentAudio';
 @Entity()
 export class Parent {
   @PrimaryGeneratedColumn()
-  id: number;
+  id?: number;
 
   @Column()
-  email: string;
+  email?: string;
 
   @Column()
-  password: string;
+  password?: string;
 
   @Column()
-  username: number;
+  username?: string;
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt?: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt?: Date;
 
   @ManyToMany((t) => Child, (child) => child.parents)
   @JoinTable()
-  children: Child[];
+  children?: Child[];
 
   @OneToOne((type) => Image)
   @JoinColumn()
-  image: Image;
+  image?: Image;
 
   @OneToMany((t) => ParentAudio, (a) => a.parent)
-  audios: ParentAudio[];
+  audios?: ParentAudio[];
 }
