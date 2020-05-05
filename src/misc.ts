@@ -1,5 +1,14 @@
+export function randomString(alphabet: string, length: number): string {
+  return Array(length)
+    .fill(0)
+    .map(() => alphabet[Math.floor(alphabet.length * Math.random())])
+    .join('');
+}
+
+export function randomFilename() {
+  return `${new Date().toISOString()}-${randomString('1234567890', 6)}`;
+}
+
 export function newChildToken(): string {
-  const n = 16;
-  const alphabet = 'QWERTYUIOPASDFGHJKLZXCVBNM';
-  return Array(n).fill(0).map(() => alphabet[Math.floor(alphabet.length * Math.random())]).join('');
+  return randomString('QWERTYUIOPASDFGHJKLZXCVBNM', 16);
 }

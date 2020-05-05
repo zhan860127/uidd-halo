@@ -8,7 +8,7 @@
     "watch-node": "nodemon -r source-map-support/register --watch build/server.js build/server.js",
     "watch-ts": "tsc -w",
     "watch-server": "concurrently -k npm:watch-node npm:watch-ts",
-    "watch-parcel": "parcel watch ./src/entries/*",
+    "watch-parcel": "parcel watch src/entries/**/*.pug src/entries/**/*.html src/entries/*.pug src/entries/*.html",
     "build-parcel": "parcel build ./src/entries/*",
     "build-ts": "tsc",
     "build": "concurrently npm:build-ts npm:build-parcel",

@@ -10,6 +10,7 @@ import * as bodyParser from 'body-parser';
 import * as session from 'express-session';
 import * as bcrypt from 'bcrypt';
 import * as dotenv from 'dotenv';
+import * as path from 'path';
 
 import * as fileUpload from 'express-fileupload';
 
@@ -20,8 +21,9 @@ import {
 import { Parent } from './models/entity/Parent';
 import * as Login from './Login';
 import { Child } from './models/entity/Child';
-import { newChildToken } from './misc';
+import { newChildToken, randomFilename } from './misc';
 import parentRouter from './controllers/parent';
+import { ChildAudio } from './models/entity/ChildAudio';
 
 require('reflect-metadata');
 
@@ -32,6 +34,7 @@ if (!port) {
   throw new Error('Port not set. Please edit the .env file');
 }
 
+const uploadPath = './uploads';
 const ffmpeg = '/home/uidd2020/user/tilde/ffmpeg/build/bin/ffmpeg ';
 
 const LOGIN = {
@@ -39,7 +42,7 @@ const LOGIN = {
   CHILD_LOCAL: 'child_local',
 };
 
-function processBody(s) {
+function processBody(s): string | null {
   console.log(s);
   // eslint-disable-next-line no-restricted-syntax
   for (const line of s.split('\n')) {
@@ -51,7 +54,7 @@ function processBody(s) {
   return null;
 }
 
-function getText(path) {
+function getText(path): Promise<string | null> {
   return new Promise((resolve, reject) => {
     request({
       url: 'https://www.google.com/speech-api/v2/recognize?output=json&lang=zh-TW&key=AIzaSyBOti4mM-6x9WDnZIjIeyEU21OpBXqWBgw',
@@ -148,27 +151,33 @@ createConnection().then((connection) => {
     });
   });
 
-  app.post('/speech', (req, res) => {
+  app.post('/speech', async (req, res) => {
+    const child = await Login.getChild(req, connection);
+    if (!child) return res.sendStatus(401);
+    fs.mkdirSync(uploadPath, {recursive: true});
     try {
-      const path = `${tmp.tmpNameSync()}.ogg`;
+      const oggFilename = `${randomFilename()}.ogg`;
+      const oggPath =  path.join(uploadPath, oggFilename);
       const flacPath = `${tmp.tmpNameSync()}.flac`;
-      console.log(path, flacPath);
+      console.log(oggPath, flacPath);
       const data = req?.files?.data;
       if (!('data' in data)) throw new Error('No file');
-      fs.writeFileSync(path, data.data);
-      exec(`${ffmpeg} -i ${path} -ar 44100 ${flacPath}`, (err) => {
+      fs.writeFileSync(oggPath, data.data);
+      exec(`${ffmpeg} -i '${oggPath}' -ar 44100 ${flacPath}`, async (err) => {
         if (err) throw err;
-        getText(flacPath).then(
-          (transcript) => {
-            console.log(transcript);
-            res.json({
-              transcript,
-            });
-          },
-        ).finally(() => {
-          fs.unlinkSync(path);
-          fs.unlinkSync(flacPath);
+        const transcript = await getText(flacPath);    
+        console.log(transcript);
+        if (transcript) {
+          const audio = new ChildAudio();
+          audio.transcript = transcript;
+          audio.child = child;
+          audio.path = oggFilename;
+          await getManager().save(audio);
+        }
+        res.json({
+          transcript,
         });
+        fs.unlinkSync(flacPath);
       });
     } catch (e) {
       console.error(e);
@@ -188,7 +197,8 @@ createConnection().then((connection) => {
 
   app.get('/child', async (req, res) => {
     const child = await Login.getChild(req, connection);
-    res.send(child ? `you're logged in as Child ${child.id}: ${child.name}` : "you're not logged in");
+    if (!child) return res.send("you're not logged in")
+    res.sendFile('./dist/child_index.html', {root:'.'});
   });
 
 
