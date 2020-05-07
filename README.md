@@ -1,67 +1,61 @@
-# HALO
+# halo
 
-## Running the app
+> The magic conch shell
 
-### Step 0: Get the code
+## Instructions
+
+### Setup
+``` bash
+yarn
+yarn db migration:run
+```
+
+### Development
 ```bash
-$ git clone https://github.com/guaneec/uidd-halo.git
-$ cd uidd-halo
+yarn dev
 ```
 
-### Step 1: Install dependencies
+⚠ 請在本地開發，因為 luffy 同時監視檔案的數量可能會塞滿而導致出錯
+
+`yarn dev` 會監視檔案的更動，自動刷新瀏覽器 \
+只是如果改的是 server 端相關的檔案，伺服器的 RAM 不知道為什麼會越用越多 \
+所以改 server 相關的檔案 (`server/`) 的時候 可能需要不時手動重啟 `yarn dev` \
+改客戶端頁面 (`pages/`) 就正常
+
+### Production
 ```bash
-$ yarn
-```
-
-### Step 2: Build the code
-```bash
-$ yarn build
-```
-
-### Step 3: Setup database
-```bash
-$ npx typeorm migration:run
-```
-
-### Step 4: Edit config
-Copy the default config file
-```
-$ cp .env.example .env
-```
-Open the copied `.env` file in your editor and change the port number to a free one:
-
-```bash
-# in your editor:
-HALO_PORT=YOUR_PORT_NUMBER
-```
-
-### Step 5: Run the app
-```bash
-$ yarn start
-```
-
-## Restarting after modifying
-For some reason, `parcel watch`  does not rebuild when css files are edited. \
-You would have to recompile manually:
-```
-yarn clean
-yarn build-parcel
+yarn build
 yarn start
 ```
 
-## Database migration
-若要修改資料庫 schema，需更改 `src/models/entity/` 裡面的定義\
-改完後執行：
+### Linting
 ```bash
-$ npx tsc
-$ npx typeorm migration:generate -n 自訂名稱
-$ npx tsc
-$ npx typeorm migration:run
+yarn lint
+```
+在 git commit 之前，務必先 lint 確定沒有格式錯誤，否則 commit 會失敗 \
+如果編輯器用的是 vscode 可以裝可以裝 eslint 套件，這樣存檔的時候會自動整理格式。
+
+## Directory structure
+```
+.
+├── assets            可以 import 的 css, js, ...
+├── components        可在不同頁面重複利用的 vue 物件
+├── layouts
+├── middleware
+├── models            資料庫定義,migration
+├── node_modules
+├── pages             獨立頁面
+├── patches
+├── plugins
+├── server            伺服器端邏輯
+├── static            這會 mount 到網站的 /
+├── store
+└── test
 ```
 
-若是由 git pull 發現其他人有更改資料庫定義，則執行：
-```bash
-$ npx tsc
-$ npx typeorm migration:run
-```
-參見：[TypeORM - Migrations](https://typeorm.io/#/migrations)
+## Frameworks / technologies
+
+* [Nuxt.js](https://nuxtjs.org/)
+* [TypeORM](https://typeorm.io/#/)
+* [Express](https://expressjs.com/)
+* [TypeScript](https://www.typescriptlang.org/)
