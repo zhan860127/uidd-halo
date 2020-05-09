@@ -2,15 +2,39 @@
   <div>
     Child's main page <br />
     Sends audio to server
+    <div>Vol: {{ volume }}</div>
+    <b-button @click="record">Record</b-button>
   </div>
 </template>
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
+import Recorder from '~/assets/ts/Recorder';
 
 @Component({})
 export default class classname extends Vue {
-  recordedChunks = [];
+  recorder = new Recorder();
+  volume = 0;
+  async record() {
+    this.recorder.onSpeechEnd = this.onSpeechEnd;
+    await this.recorder.start();
+    this.showVol();
+  }
+
+  showVol() {
+    this.volume = this.recorder.getVolume();
+    requestAnimationFrame(this.showVol);
+  }
+
+  async onSpeechEnd(blob: Blob) {
+    const fd = new FormData();
+    fd.append('data', blob);
+    fd.append('myfield', 'myval');
+    const { transcript } = await this.$axios.$post('/api/child/speech', fd, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    console.log(transcript || 'none');
+  }
 }
 </script>
 
