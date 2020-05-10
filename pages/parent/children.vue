@@ -26,6 +26,7 @@ import { Vue, Component } from 'vue-property-decorator';
     const children = await $axios.$get('/api/parent/children');
     return { children };
   },
+  layout: 'parent',
 })
 export default class classname extends Vue {}
 </script>

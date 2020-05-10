@@ -4,10 +4,27 @@
     Connect device with
     <a :href="`/api/connect/${child.token}`">this link </a>
 
-    <br />
-    功能主選單
-    <br />
-    <nuxt-link to="/parent/children">back</nuxt-link>
+    <ul>
+      <li>
+        <nuxt-link
+          :to="{ path: '/parent/keywords', query: { c: $route.query.c } }"
+          >關鍵字</nuxt-link
+        >
+      </li>
+      <li>
+        <nuxt-link :to="{ path: '/parent/logs', query: { c: $route.query.c } }"
+          >說過的話</nuxt-link
+        >
+      </li>
+      <li>
+        <nuxt-link :to="{ path: '/parent/call', query: { c: $route.query.c } }"
+          >通話</nuxt-link
+        >
+      </li>
+      <li>
+        <nuxt-link to="/parent/children">Choose Child</nuxt-link>
+      </li>
+    </ul>
   </div>
 </template>
 
@@ -25,6 +42,7 @@ import { Vue, Component } from 'vue-property-decorator';
       error({ statusCode: 401 });
     }
   },
+  layout: 'parent',
 })
 export default class classname extends Vue {}
 </script>
