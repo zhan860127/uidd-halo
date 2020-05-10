@@ -88,10 +88,15 @@ router.post('/speech', upload.single('data'), async (req, res) => {
     await promisify(unlink)(oggPath);
     return;
   }
+
+  // resave as mp3 to fix metadata
+  const mp3Path = path.join(uploadPath!, `${randomFilename()}.mp3`);
+  await promisify(exec)(`${ffmpeg} -i '${oggPath}' '${mp3Path}'`);
+  await promisify(unlink)(oggPath);
   const ca = new ChildAudio();
   ca.transcript = transcript;
   ca.child = child;
-  ca.path = oggFilename;
+  ca.path = mp3Path;
   await getManager().save(ca);
 });
 

@@ -1,6 +1,6 @@
 import { Router, RequestHandler } from 'express';
-import { getConnection, getRepository } from 'typeorm';
-import { Parent, Child } from '../models/entity/entities';
+import { getConnection, getRepository, createQueryBuilder } from 'typeorm';
+import { Parent, Child, ChildAudio } from '../models/entity/entities';
 
 import * as Login from './Login';
 import { newChildToken } from './misc';
@@ -49,6 +49,49 @@ router.get('/child', async (req, res) => {
     name: child.name!,
     token: child.token!,
   });
+});
+
+router.get('/child_audio', async (req, res) => {
+  const fromDate = req.query.from || new Date().toISOString(); // datetime string with timezone
+  const childId = req.query.c;
+  const parentId = await Login.getParentId(req);
+  if (!fromDate || !childId || !parentId) return res.status(401).json();
+  const child = await getRepository(Child)
+    .createQueryBuilder('child')
+    .innerJoinAndSelect('child.parents', 'parent')
+    .where('parent.id = :parentId', { parentId })
+    .andWhere('child.id = :childId', { childId })
+    .getOne();
+  if (!child) return res.sendStatus(404);
+
+  const maxResults = 50;
+  const audios = await createQueryBuilder(ChildAudio)
+    .where('createdAt <= datetime(:fromDate)', {
+      fromDate,
+    })
+    .orderBy('createdAt')
+    .limit(maxResults)
+    .getMany();
+  res.json(
+    audios.map((x) => ({
+      id: x.id,
+      date: x.createdAt,
+      transcript: x.transcript,
+    }))
+  );
+});
+
+router.get('/audiofile/:id', async (req, res) => {
+  const parentId = Login.getParentId(req);
+  const audioId = req.params.id;
+  const audio = await createQueryBuilder(ChildAudio, 'audio')
+    .innerJoin('audio.child', 'child')
+    .innerJoin('child.parents', 'parent')
+    .where('audio.id = :audioId', { audioId })
+    .andWhere('parent.id = :parentId', { parentId })
+    .getOne();
+  if (!audio) return res.sendStatus(404);
+  res.sendFile(audio.path!, { root: '.' });
 });
 
 router.post('/add_child', async (req, res) => {
