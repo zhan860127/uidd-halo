@@ -39,6 +39,7 @@ module.exports = {
     '@nuxt/typescript-build',
     // Doc: https://github.com/nuxt-community/stylelint-module
     '@nuxtjs/stylelint-module',
+    '@nuxtjs/dotenv',
   ],
   /*
    ** Nuxt.js modules
@@ -48,7 +49,6 @@ module.exports = {
     'bootstrap-vue/nuxt',
     '@nuxtjs/pwa',
     // Doc: https://github.com/nuxt-community/dotenv-module
-    '@nuxtjs/dotenv',
     ['@nuxtjs/axios', { browserBaseURL: '/' }],
   ],
 
