@@ -1,8 +1,9 @@
 <template>
   <div>
     Main page of child {{ child.name }} <br />
-    Connect device with
-    <a :href="`/api/connect/${child.token}`">this link </a>
+    <nuxt-link :to="{ path: '/parent/connect', query: { c: $route.query.c } }"
+      >Link child's device</nuxt-link
+    >
 
     <ul>
       <li>
