@@ -1,12 +1,13 @@
 import { promisify } from 'util';
 import { unlink } from 'fs';
-import { Router, RequestHandler, json } from 'express';
+import { Router, RequestHandler, json, Request } from 'express';
 import {
   getConnection,
   getRepository,
   createQueryBuilder,
   getManager,
 } from 'typeorm';
+import QRCode from 'qrcode';
 import { Parent, Child, ChildAudio } from '../models/entity/entities';
 
 import * as Login from './Login';
@@ -19,10 +20,39 @@ const ensureParentLoggedIn: RequestHandler = (req, res, next) => {
   next();
 };
 
+async function getChild(
+  req: Request,
+  childId: number | string
+): Promise<Child | undefined> {
+  const parentId = await Login.getParentId(req);
+  return getRepository(Child)
+    .createQueryBuilder('child')
+    .innerJoinAndSelect('child.parents', 'parent')
+    .where('parent.id = :parentId', { parentId })
+    .andWhere('child.id = :childId', { childId })
+    .getOne();
+}
+
 router.use(ensureParentLoggedIn);
 
 router.get('/all', async (req, res) => {
   res.send((await Login.getParent(req))!.username);
+});
+
+router.get('/connect/:id', async (req, res) => {
+  const childId = req.params.id as string;
+  if (!childId) return res.status(404).json();
+  const child = await getChild(req, childId);
+  if (!child) return res.status(404).json();
+  const url = `${req.protocol}://${req.get(
+    'host'
+  )}/api/connect/${child.token!}`;
+  const qrSVG = await QRCode.toString(url, { type: 'svg' });
+  res.json({
+    token: child.token!,
+    url,
+    qrSVG,
+  });
 });
 
 router.get('/children', async (req, res) => {
@@ -45,12 +75,7 @@ router.get('/child', async (req, res) => {
   if (!(typeof req.query.id === 'string')) return res.sendStatus(400);
   const childId = parseInt(req.query.id);
   if (isNaN(childId)) return res.sendStatus(400);
-  const child = await getRepository(Child)
-    .createQueryBuilder('child')
-    .innerJoinAndSelect('child.parents', 'parent')
-    .where('parent.id = :parentId', { parentId: Login.getParentId(req) })
-    .andWhere('child.id = :childId', { childId })
-    .getOne();
+  const child = await getChild(req, childId);
   if (!child) return res.sendStatus(404);
   res.json({
     name: child.name!,
@@ -93,15 +118,9 @@ router.post('/child_audio/delete/:id', async (req, res) => {
 
 router.get('/child_audio', async (req, res) => {
   const fromDate = req.query.from || new Date().toISOString(); // datetime string with timezone
-  const childId = req.query.c;
-  const parentId = await Login.getParentId(req);
-  if (!fromDate || !childId || !parentId) return res.status(401).json();
-  const child = await getRepository(Child)
-    .createQueryBuilder('child')
-    .innerJoinAndSelect('child.parents', 'parent')
-    .where('parent.id = :parentId', { parentId })
-    .andWhere('child.id = :childId', { childId })
-    .getOne();
+  const childId = req.query.c as string;
+  if (!fromDate || !childId) return res.status(401).json();
+  const child = await getChild(req, childId);
   if (!child) return res.sendStatus(404);
 
   const maxResults = 50;
