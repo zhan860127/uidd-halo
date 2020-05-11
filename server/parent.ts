@@ -1,5 +1,12 @@
-import { Router, RequestHandler } from 'express';
-import { getConnection, getRepository, createQueryBuilder } from 'typeorm';
+import { promisify } from 'util';
+import { unlink } from 'fs';
+import { Router, RequestHandler, json } from 'express';
+import {
+  getConnection,
+  getRepository,
+  createQueryBuilder,
+  getManager,
+} from 'typeorm';
 import { Parent, Child, ChildAudio } from '../models/entity/entities';
 
 import * as Login from './Login';
@@ -49,6 +56,39 @@ router.get('/child', async (req, res) => {
     name: child.name!,
     token: child.token!,
   });
+});
+
+router.post('/child_audio/edit', json(), async (req, res) => {
+  const { id, transcript } = req.body;
+  if (!id || !transcript || typeof transcript !== 'string')
+    return res.status(400).json();
+  const parentId = await Login.getParentId(req);
+  const audio = await createQueryBuilder(ChildAudio, 'audio')
+    .innerJoin('audio.child', 'child')
+    .innerJoin('child.parents', 'parent')
+    .where('parent.id = :parentId', { parentId })
+    .where('audio.id = :id', { id })
+    .getOne();
+  if (!audio) return res.sendStatus(404);
+  audio.transcript = transcript;
+  getManager().save(audio);
+  res.status(200).json({ message: 'success' });
+});
+
+router.post('/child_audio/delete/:id', async (req, res) => {
+  const { id } = req.params;
+  if (!id) return res.status(400).json();
+  const parentId = await Login.getParentId(req);
+  const audio = await createQueryBuilder(ChildAudio, 'audio')
+    .innerJoin('audio.child', 'child')
+    .innerJoin('child.parents', 'parent')
+    .where('parent.id = :parentId', { parentId })
+    .where('audio.id = :id', { id })
+    .getOne();
+  if (!audio) return res.sendStatus(404);
+  await getManager().delete(ChildAudio, audio.id!);
+  await promisify(unlink)(audio.path!);
+  res.status(200).json({ message: 'success' });
 });
 
 router.get('/child_audio', async (req, res) => {

@@ -51,6 +51,11 @@ module.exports = {
     '@nuxtjs/dotenv',
     ['@nuxtjs/axios', { browserBaseURL: '/' }],
   ],
+
+  bootstrapVue: {
+    icons: true, // Install the IconsPlugin (in addition to BootStrapVue plugin
+  },
+
   /*
    ** Build configuration
    */

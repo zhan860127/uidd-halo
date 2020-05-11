@@ -1,19 +1,43 @@
 <template>
   <div class="audiolog">
-    <div
-      class="audio-progress"
-      :style="{ width: duration ? `${(100 * position) / duration}%` : 0 }"
-    ></div>
-    <div class="audio-content">
-      <b-button @click="play">▶</b-button>
-      {{ audio.transcript }}
-      {{ secToMinSec(position) }} / {{ secToMinSec(duration) }}
+    <div class="audiolog-inner position-relative h-100 w-100">
+      <div
+        class="audio-progress"
+        :style="{ width: duration ? `${(100 * position) / duration}%` : 0 }"
+      ></div>
+      <div class="d-flex align-items-center px-1">
+        <div class="d-flex align-items-center px-1">
+          <b-icon-play class="rounded-circle border h3" @click="play" />
+        </div>
+        <div class="flex-grow-1 align-self-center">
+          {{ audio.transcript }}
+          {{ secToMinSec(position) }} / {{ secToMinSec(duration) }}
+        </div>
+        <b-dropdown
+          size="lg"
+          variant="link"
+          toggle-class="text-decoration-none"
+          no-caret
+          right
+        >
+          <template v-slot:button-content>
+            <b-icon-three-dots-vertical style="color: black;" />
+          </template>
+          <b-dropdown-item @click="$emit('edit-audio', audio)"
+            >編輯</b-dropdown-item
+          >
+          <b-dropdown-item @click="$emit('delete-audio', audio)"
+            >刪除</b-dropdown-item
+          >
+        </b-dropdown>
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator';
+import { AudioData } from '../assets/ts/AudioData';
 
 const audioPath = (id: number) => `/api/parent/audiofile/${id}`;
 
@@ -25,13 +49,6 @@ function padZero(val: number, n: number): string {
       .join('') + val
   );
 }
-
-interface AudioData {
-  id: number;
-  transcript: string;
-  date: Date;
-}
-
 @Component
 export default class classname extends Vue {
   @Prop({ default: {} }) readonly audio!: AudioData;
@@ -74,17 +91,10 @@ export default class classname extends Vue {
 <style>
 .audiolog {
   background: azure;
-  padding: 0.3em 0.7em;
-  position: relative;
 }
 
 .audiolog + .audiolog {
   margin-top: 5px;
-}
-
-.audio-content {
-  position: relative;
-  z-index: 1;
 }
 
 .audio-progress {
