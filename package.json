@@ -12,7 +12,7 @@
     "lint": "eslint --ext .js,.vue --ignore-pattern 'static/' --ignore-path .gitignore .",
     "test": "jest",
     "postinstall": "patch-package",
-    "db": "ts-node ./node_modules/.bin/typeorm"
+    "db": "ts-node ./node_modules/typeorm/cli.js"
   },
   "lint-staged": {
     "*.{js,vue}": "yarn lint",
