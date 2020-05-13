@@ -5,9 +5,14 @@
 ## Instructions
 
 ### Setup
+Make sure you have [sqlite](https://www.sqlite.org/index.html) and [ffmpeg](https://www.ffmpeg.org/) installed
+
 ``` bash
 yarn
 yarn db migration:run
+
+cp .env.example .env
+# edit .env file in your editor
 ```
 
 ### Development
@@ -15,7 +20,7 @@ yarn db migration:run
 yarn dev
 ```
 
-⚠ 請在本地開發，因為 luffy 同時監視檔案的數量可能會塞滿而導致出錯
+⚠ 請盡量在本地開發，因為 luffy 同時監視檔案的數量可能會塞滿而導致出錯
 
 `yarn dev` 會監視檔案的更動，自動刷新瀏覽器 \
 只是如果改的是 server 端相關的檔案，伺服器的 RAM 不知道為什麼會越用越多 \
