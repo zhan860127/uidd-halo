@@ -72,7 +72,7 @@ app.get('/child', async (req, res) => {
 app.post('/login', (req, res, next) => {
   passport.authenticate(LOGIN.PARENT_LOCAL, (err, user) => {
     if (err) return next(err);
-    if (!user) return res.redirect('sign_in');
+    if (!user) return res.redirect('/sign_in');
 
     Login.logInParent(req, user);
     res.redirect('/parent/children');
