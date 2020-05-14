@@ -1,6 +1,8 @@
 import process from 'process';
+import fs from 'fs';
 import myapi from './server/api';
 require('reflect-metadata');
+require('dotenv').config();
 
 module.exports = {
   mode: 'universal',
@@ -65,4 +67,12 @@ module.exports = {
      */
   },
   serverMiddleware: [{ path: '/api', handler: myapi }],
+  server: process.env.HTTPS_KEY_PATH
+    ? {
+        https: {
+          cert: fs.readFileSync(process.env.HTTPS_CERT_PATH),
+          key: fs.readFileSync(process.env.HTTPS_KEY_PATH),
+        },
+      }
+    : {},
 };
