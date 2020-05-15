@@ -49,6 +49,9 @@ import { AudioData } from '~/assets/ts/AudioData';
     const audios = await $axios.$get('/api/parent/child_audio', {
       params: { c: query.c },
     });
+    audios.forEach((x: any) => {
+      x.date = new Date(x.date);
+    });
     return { audios };
   },
 })

@@ -7,21 +7,28 @@
       ></div>
       <div class="d-flex align-items-center px-1">
         <div class="d-flex align-items-center px-1">
-          <b-icon-play class="rounded-circle border h3" @click="play" />
+          <b-icon
+            :icon="animating ? 'pause-fill' : 'play-fill'"
+            class="rounded-circle"
+            style="background-color: #4d6790; color: #fde9d2;"
+            @click="play"
+          />
         </div>
         <div class="flex-grow-1 align-self-center">
           {{ audio.transcript }}
           {{ secToMinSec(position) }} / {{ secToMinSec(duration) }}
         </div>
+        <div class="audio-time">{{ time }}</div>
         <b-dropdown
           size="lg"
           variant="link"
           toggle-class="text-decoration-none"
           no-caret
           right
+          class="menu-dropdown"
         >
           <template v-slot:button-content>
-            <b-icon-three-dots-vertical style="color: black;" />
+            <b-icon-three-dots-vertical style="color: #082448;" />
           </template>
           <b-dropdown-item @click="$emit('edit-audio', audio)"
             >編輯</b-dropdown-item
@@ -100,16 +107,29 @@ export default class classname extends Vue {
     const s = secs - m * 60;
     return `${padZero(m, 2)}:${padZero(s, 2)}`;
   }
+
+  get time(): string {
+    return this.audio.date.toUTCString().substr(17, 5);
+  }
 }
 </script>
 
 <style>
+@font-face {
+  font-family: 'HelveticaNeue';
+  src: url('~assets/font/HelveticaNeueRegular.ttf') format('truetype');
+}
+
 .audiolog {
-  background: azure;
+  background-color: #fde9d2;
+  border-radius: 10px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
 }
 
 .audiolog + .audiolog {
-  margin-top: 5px;
+  margin-top: 11px;
 }
 
 .audio-progress {
@@ -121,5 +141,14 @@ export default class classname extends Vue {
   background: blue;
   opacity: 0.1;
   pointer-events: none;
+}
+
+.audio-time {
+  font: 9px/11px HelveticaNeue;
+  color: #082448;
+}
+
+.menu-dropdown > button {
+  padding: 0;
 }
 </style>
