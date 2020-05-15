@@ -1,12 +1,8 @@
 <template>
   <div class="audiolog">
     <div class="audiolog-inner position-relative h-100 w-100">
-      <div
-        class="audio-progress"
-        :style="{ width: duration ? `${(100 * position) / duration}%` : 0 }"
-      ></div>
       <div class="d-flex align-items-center px-1">
-        <div class="d-flex align-items-center px-1">
+        <div class="d-flex align-items-center px-2">
           <b-icon
             :icon="animating ? 'pause-fill' : 'play-fill'"
             class="rounded-circle"
@@ -14,11 +10,22 @@
             @click="play"
           />
         </div>
-        <div class="flex-grow-1 align-self-center">
-          {{ audio.transcript }}
-          {{ secToMinSec(position) }} / {{ secToMinSec(duration) }}
+        <div class="flex-grow-1 align-self-center mx-2">
+          <transition name="fade" mode="out-in">
+            <div v-if="idle" key="idle" class="d-flex">
+              <div class="flex-grow-1 align-self-center mx-2"></div>
+              <div class="audio-time">{{ time }}</div>
+            </div>
+            <div v-else key="playing" class="d-flex">
+              <div class="progress-text">
+                {{ secToMinSec(position) }} / {{ secToMinSec(duration) }}
+              </div>
+              <div class="flex-grow-1 align-self-center ml-2">
+                <Slider :max="duration ? duration : 1" :position="position" />
+              </div>
+            </div>
+          </transition>
         </div>
-        <div class="audio-time">{{ time }}</div>
         <b-dropdown
           size="lg"
           variant="link"
@@ -45,6 +52,7 @@
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator';
 import { AudioData } from '../assets/ts/AudioData';
+import Slider from '~/components/Slider.vue';
 
 const audioPath = (id: number) => `/api/parent/audiofile/${id}`;
 
@@ -57,13 +65,14 @@ function padZero(val: number, n: number): string {
   );
 }
 
-@Component
+@Component({ components: { Slider } })
 export default class classname extends Vue {
   @Prop({ default: {} }) readonly audio!: AudioData;
 
   clip: HTMLAudioElement | null = null;
   duration: number | null = null;
   position: number = 0;
+  idle: boolean = true;
   animating: boolean = false;
 
   play() {
@@ -76,6 +85,7 @@ export default class classname extends Vue {
       this.clip.onended = () => {
         this.clip!.currentTime = 0;
         this.position = 0;
+        this.idle = true;
       };
     }
     if (!(this.clip.paused || this.clip.ended)) {
@@ -83,12 +93,12 @@ export default class classname extends Vue {
       return;
     }
     this.clip.play();
+    this.idle = false;
     this.updateProgress();
   }
 
   updateProgress() {
     const cb = () => {
-      console.log('cb');
       if (this.clip) this.position = this.clip.currentTime;
       if (!this.clip || this.clip.paused || this.clip.ended) {
         this.animating = false;
@@ -132,23 +142,21 @@ export default class classname extends Vue {
   margin-top: 11px;
 }
 
-.audio-progress {
-  height: 100%;
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  background: blue;
-  opacity: 0.1;
-  pointer-events: none;
-}
-
-.audio-time {
+.audio-time,
+.progress-text {
   font: 9px/11px HelveticaNeue;
   color: #082448;
 }
 
 .menu-dropdown > button {
   padding: 0;
+}
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.1s ease;
+}
+
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
 }
 </style>
