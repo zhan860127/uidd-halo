@@ -16,8 +16,12 @@ export default function () {
     // overwrite nuxt.server.listen()
     this.nuxt.server.listen = () =>
       new Promise((resolve) => {
+        console.log(
+          `Listening on http${config.server.https ? 's' : ''}://${
+            process.env.NUXT_HOST
+          }:${process.env.NUXT_PORT}`
+        );
         server.listen(process.env.NUXT_PORT, process.env.NUXT_HOST, resolve);
-        return 123;
       });
     // close this server on 'close' event
     this.nuxt.hook('close', () => new Promise(server.close));

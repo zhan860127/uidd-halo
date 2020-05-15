@@ -54,7 +54,6 @@ export default {
     ['@nuxtjs/axios', { browserBaseURL: '/' }],
 
     '~/modules/io',
-    // './modules/socket-io',
   ],
 
   bootstrapVue: {
