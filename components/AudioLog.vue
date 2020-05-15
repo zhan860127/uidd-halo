@@ -49,6 +49,7 @@ function padZero(val: number, n: number): string {
       .join('') + val
   );
 }
+
 @Component
 export default class classname extends Vue {
   @Prop({ default: {} }) readonly audio!: AudioData;
@@ -56,26 +57,40 @@ export default class classname extends Vue {
   clip: HTMLAudioElement | null = null;
   duration: number | null = null;
   position: number = 0;
+  animating: boolean = false;
 
   play() {
-    const path = audioPath(this.audio.id);
-    const audio = new Audio(path);
-    this.clip = audio;
-    audio.ondurationchange = () => {
-      this.duration = audio.duration;
-    };
-    audio.play();
+    if (!this.clip) {
+      const path = audioPath(this.audio.id);
+      this.clip = new Audio(path);
+      this.clip.ondurationchange = () => {
+        this.duration = this.clip!.duration;
+      };
+      this.clip.onended = () => {
+        this.clip!.currentTime = 0;
+        this.position = 0;
+      };
+    }
+    if (!(this.clip.paused || this.clip.ended)) {
+      this.clip.pause();
+      return;
+    }
+    this.clip.play();
     this.updateProgress();
   }
 
   updateProgress() {
     const cb = () => {
+      console.log('cb');
       if (this.clip) this.position = this.clip.currentTime;
-      if (!this.clip || this.clip.ended) {
+      if (!this.clip || this.clip.paused || this.clip.ended) {
+        this.animating = false;
         return;
       }
       requestAnimationFrame(cb);
     };
+    if (this.animating) return;
+    this.animating = true;
     requestAnimationFrame(cb);
   }
 
@@ -105,5 +120,6 @@ export default class classname extends Vue {
   bottom: 0;
   background: blue;
   opacity: 0.1;
+  pointer-events: none;
 }
 </style>
