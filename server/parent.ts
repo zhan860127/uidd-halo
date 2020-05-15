@@ -125,16 +125,16 @@ router.get('/child_audio', async (req, res) => {
 
   const maxResults = 50;
   const audios = await createQueryBuilder(ChildAudio)
-    .where('createdAt <= datetime(:fromDate)', {
+    .where('recordedAt <= datetime(:fromDate)', {
       fromDate,
     })
-    .orderBy('createdAt')
+    .orderBy('recordedAt')
     .limit(maxResults)
     .getMany();
   res.json(
     audios.map((x) => ({
       id: x.id,
-      date: x.createdAt,
+      date: x.recordedAt,
       transcript: x.transcript,
     }))
   );
