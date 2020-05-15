@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>WebRTC Offer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://webrtc.github.io/adapter/adapter-latest.js" type="application/javascript"></script>
+
+    <script src="/socket.io/socket.io.js" type="application/javascript"></script>
+    <style>*
+        {box-sizing:border-box}
+        body,html{margin:0;padding:0}.wrapper{max-width:500px;margin:0 auto;position:relative;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding-left:58px;padding-right:58px}
+        #top{background:#fcf6ef;flex-grow:7}
+        #bottom{background:#FCF6EF;flex-grow:3}
+        #he{width:178px;
+            height:178px;
+            border-radius:50%;
+            background:#FABF4D;
+
+            }
+
+            #he2{
+                text-align:center;
+                width:79px;
+            height:351px;
+            margin:0px auto;
+            border: 3px solid #FABF4D;
+
+           z-index: -1;
+            border-radius: 42px;
+
+            background:#FCF6EF  ;
+
+            }
+
+        .layer2{
+            height: 100vh;
+            width: 100vh;
+         min-height: 450px;
+        display: flex;
+        flex-direction: column;
+            position:absolute;
+            box-sizing: border-box;
+            align-self: center;
+          opacity: 0;
+          background-color: black;
+            z-index:1000;
+        }
+        #top-content{text-align:center;  z-index: 0;}
+        #root{height:100vh;min-height:450px;display:flex;flex-direction:column}
+        .v-center{position:absolute;top:50%;transform:translateY(-50%)}
+        .button{font:normal 20px/25px Seravek;color:#4d6790;background:#FCF6EF;width:113px;text-align:center;transition:all .2s ease;cursor:pointer}.button+.button{margin-top:5px}.button:hover{color:#FCF6EF}.no-dec{text-decoration:none}
+        @font-face{font-family:Seravek;src:url(/Seravek.c3b75cea.ttf) format("truetype")}@font-face{font-family:HelveticaNeue;src:url(/HelveticaNeueRegular.f1b1e89d.ttf) format("truetype")}</style>
+
+</head>
+
+
+
+<body>
+    <!--<div class="layer2">
+
+        <div id="top"></div>
+        <button id="hangout"> <img class="no-dec button" src="1.jpg"></button>
+
+
+    </div>-->
+    <div id="root"> <div id="top"> <div class="wrapper"> <div id="top-content">
+        <button id="call" style="background-color:transparent;border:none">
+            <div style="display:flex"id="he">
+                <div  id="he2">
+
+                </div></div> </button>
+    </div> </div> </div> <div id="bottom">
+  <div class="wrapper">
+   </a> </div> </div> </div>
+
+  <audio id="selfView"></audio>
+
+  <audio id="remoteView"autoplay loop ></audio>
+ <button id="hangout">hangout</button>
+
+  <script type="application/javascript">
+    var socket = io.connect('/');
+    var configuration = {
+        iceServers: [
+            {urls: "stun:23.21.150.121"},
+            {urls: "stun:stun.l.google.com:19302"},
+            {urls: "turn:numb.viagenie.ca", credential: "turnserver", username: "zhan860127@gmail.com"}
+        ]
+    };
+    var pc;
+
+    // run start(true) to initiate a call
+    function start(isCaller) {
+        pc = new RTCPeerConnection(configuration);
+
+        // send any ice candidates to the other peer
+        pc.onicecandidate = function (evt) {
+            socket.emit('candidate', {"candidate": evt.candidate});
+        };
+
+        // once remote stream arrives, show it in the remote video element
+        pc.ontrack = function (evt) {
+            console.log("add remote stream");
+            console.log(evt);
+
+          remoteView.srcObject = evt.streams[0];
+        };
+
+        if(navigator.getUserMedia) {
+            // get the local stream, show it in the local video element and send it
+           navigator.mediaDevices.getUserMedia({"audio":true }).then((stream) => {
+                        console.log("start streaming");
+                        console.log(stream);
+  					selfView.srcObject =stream;
+                pc.addStream(stream);
+
+                        if (isCaller)
+                            pc.createOffer().then((desc)=>gotDescription(desc));
+                        else
+                            pc.createAnswer().then((desc)=> gotDescription(desc));
+
+                        function gotDescription(desc) {
+                            pc.setLocalDescription(desc);
+                            socket.emit('sdp', {"sdp": desc});
+                        }
+                    }
+            );
+        } else {
+            alert('Your browser does not support getUserMedia API');
+        }
+      remoteView.play();
+    }
+
+    call.addEventListener('click', ()=> {
+        console.log('webrtc start');
+        start(true);
+    });
+
+hangout.addEventListener('click',()=>{
+
+  remoteView.pause();
+  pc.close();
+    pc=null;
+  start(false);
+});
+
+    socket.on('msg', function (data) {
+        console.log(data);
+        if (!pc)
+            start(false);
+
+        if (data.sdp)
+            pc.setRemoteDescription(new RTCSessionDescription(data.sdp));
+        else if (data.candidate)
+            pc.addIceCandidate(new RTCIceCandidate(data.candidate));
+    });
+
+</script>
+</body>
+</html>
+

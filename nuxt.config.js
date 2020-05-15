@@ -4,7 +4,7 @@ import myapi from './server/api';
 require('reflect-metadata');
 require('dotenv').config();
 
-module.exports = {
+export default {
   mode: 'universal',
   /*
    ** Headers of the page
@@ -52,6 +52,9 @@ module.exports = {
     '@nuxtjs/pwa',
     // Doc: https://github.com/nuxt-community/dotenv-module
     ['@nuxtjs/axios', { browserBaseURL: '/' }],
+
+    '~/modules/io',
+    // './modules/socket-io',
   ],
 
   bootstrapVue: {
