@@ -70,6 +70,9 @@ export class ChildAudio {
   updatedAt?: Date;
 
   @Column()
+  recordedAt?: Date;
+
+  @Column()
   transcript?: string;
 
   @Column()

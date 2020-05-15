@@ -65,6 +65,7 @@ router.get('/me', async (req, res) => {
 });
 
 router.post('/speech', upload.single('data'), async (req, res) => {
+  const date = new Date();
   const child = await getChild(req);
   if (!child) return res.sendStatus(404);
 
@@ -97,6 +98,7 @@ router.post('/speech', upload.single('data'), async (req, res) => {
   ca.transcript = transcript;
   ca.child = child;
   ca.path = mp3Path;
+  ca.recordedAt = date;
   await getManager().save(ca);
 });
 
