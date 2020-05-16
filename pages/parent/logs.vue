@@ -1,36 +1,46 @@
 <template>
-  <div>
-    <div>歷史紀錄</div>
-    <div>
-      <AudioLog
-        v-for="audio in audios"
-        :key="audio.id"
-        :audio="audio"
-        @edit-audio="onAudioEdit"
-        @delete-audio="onAudioDelete"
-      />
+  <div class="position-relative">
+    <div class="buttons">
+      <div class="half-pill">
+        <b-icon-calendar style="width: 14px; height: auto;" />
+      </div>
+      <div class="half-pill">
+        <b-icon-heart-fill style="width: 14px; height: auto;" />
+      </div>
     </div>
-    <b-modal ref="editModal" title="編輯" @ok="onEditOk">
-      <b-form>
-        <b-form-group label="內容" label-for="transcript-input">
-          <b-form-input
-            id="transcript-input"
-            v-model="transcript"
-            required
-          ></b-form-input>
-        </b-form-group>
-      </b-form>
-    </b-modal>
-    <b-modal
-      ref="deleteModal"
-      title="刪除"
-      ok-variant="danger"
-      ok-title="刪除"
-      @ok="onDeleteOk"
-    >
-      <h4 class="my-4">確認刪除錄音？</h4>
-      <p v-if="audio">{{ audio.transcript }}</p>
-    </b-modal>
+    <b-container>
+      <div>歷史紀錄</div>
+      <div>
+        <AudioLog
+          v-for="audio in audios"
+          :key="audio.id"
+          :audio="audio"
+          @edit-audio="onAudioEdit"
+          @delete-audio="onAudioDelete"
+        />
+      </div>
+      <b-modal ref="editModal" title="編輯" @ok="onEditOk">
+        <b-form>
+          <b-form-group label="內容" label-for="transcript-input">
+            <b-form-input
+              id="transcript-input"
+              v-model="transcript"
+              required
+            ></b-form-input>
+          </b-form-group>
+        </b-form>
+      </b-modal>
+      <b-modal
+        ref="deleteModal"
+        title="刪除"
+        ok-variant="danger"
+        ok-title="刪除"
+        @ok="onDeleteOk"
+      >
+        <h4 class="my-4">確認刪除錄音？</h4>
+        <p v-if="audio">{{ audio.transcript }}</p>
+      </b-modal>
+    </b-container>
   </div>
 </template>
 
@@ -92,4 +102,29 @@ export default class classname extends Vue {
 }
 </script>
 
-<style></style>
+<style lang="scss" scoped>
+.buttons {
+  position: sticky;
+  top: 0px;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-end;
+  height: 81px;
+}
+.half-pill {
+  background-color: #4d6790;
+  width: 38px;
+  height: 31px;
+  border-radius: 50% 0 0 50%;
+  color: #fcf6ef;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  & + & {
+    margin-top: 7px;
+  }
+}
+</style>
