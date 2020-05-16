@@ -10,9 +10,10 @@
     </div>
     <b-container>
       <div>歷史紀錄</div>
-      <div>
+      <div v-for="group in sortedAudios" :key="+group[0]" class="logs-group">
+        <div class="logs-header">{{ group[0] }}</div>
         <AudioLog
-          v-for="audio in audios"
+          v-for="audio in group[1]"
           :key="audio.id"
           :audio="audio"
           @edit-audio="onAudioEdit"
@@ -47,6 +48,7 @@
 <script lang="ts">
 import { Vue, Component, Ref } from 'vue-property-decorator';
 import { BModal } from 'bootstrap-vue';
+import dayjs from 'dayjs';
 import AudioLog from '~/components/AudioLog.vue';
 import { AudioData } from '~/assets/ts/AudioData';
 
@@ -82,6 +84,34 @@ export default class classname extends Vue {
     this.transcript = e.transcript;
     this.audio = e;
     this.deleteModal.show();
+  }
+
+  get sortedAudios(): [Date, AudioData[]][] {
+    // audios grouped by date, newest first
+
+    const dict = new Map<string, AudioData[]>();
+
+    // group it
+    this.audios.forEach((x) => {
+      const k = dayjs(x.date).format('YYYY-MM-DD');
+      if (!dict.has(k)) dict.set(k, []);
+      dict.get(k)!.push(x);
+    });
+
+    // sort each day
+    dict.forEach((v) => {
+      v.sort((a, b) => +b.date - +a.date);
+    });
+
+    // sort dates
+    const out: [Date, AudioData[]][] = [];
+    [...dict.keys()]
+      .sort()
+      .reverse()
+      .forEach((k) => {
+        out.push([new Date(k), dict.get(k)!]);
+      });
+    return out;
   }
 
   async onEditOk() {
@@ -125,6 +155,11 @@ export default class classname extends Vue {
 
   & + & {
     margin-top: 7px;
+  }
+}
+
+.logs-group {
+  .logs-header {
   }
 }
 </style>

@@ -52,6 +52,7 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator';
+import dayjs from 'dayjs';
 import { AudioData } from '../assets/ts/AudioData';
 import Slider from '~/components/Slider.vue';
 
@@ -120,7 +121,7 @@ export default class classname extends Vue {
   }
 
   get time(): string {
-    return this.audio.date.toUTCString().substr(17, 5);
+    return dayjs(this.audio.date).format('HH:mm');
   }
 }
 </script>
