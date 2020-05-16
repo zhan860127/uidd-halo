@@ -103,10 +103,10 @@ export default class classname extends Vue {
   }
 
   get daysOfMonth() {
-    const d = new Date(this.date);
-    d.setMonth(d.getMonth() + 1);
-    d.setDate(0);
-    return d.getDate();
+    const m = this.date.getMonth() + 1;
+    const y = this.date.getFullYear();
+    if (m === 2) return !(y % 4 || (!(y % 100) && y % 400)) ? 29 : 28;
+    return [1, 3, 5, 7, 8, 10, 12].some((x) => m === x) ? 31 : 30;
   }
 
   shouldHighlight(day: number): boolean {
