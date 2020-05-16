@@ -151,6 +151,12 @@ export default class classname extends Vue {
 .menu-dropdown > button {
   padding: 0;
 }
+
+/* make the play icon look more centered */
+.bi-play-fill.rounded-circle > g {
+  transform: translateX(0.045em);
+}
+
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.1s ease;
