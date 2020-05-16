@@ -5,18 +5,17 @@
     <title>WebRTC Offer</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://webrtc.github.io/adapter/adapter-latest.js" type="application/javascript"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 
     <script src="/socket.io/socket.io.js" type="application/javascript"></script>
     <style>*
         {box-sizing:border-box}
-        body,html{margin:0;padding:0}.wrapper{max-width:500px;margin:0 auto;position:relative;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding-left:58px;padding-right:58px}
+        body,html{margin:0;padding:0}.wrapper{max-width:500px;margin:0 auto;position:relative;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-left:58px;padding-right:58px}
         #top{background:#fcf6ef;flex-grow:7}
         #bottom{background:#FCF6EF;flex-grow:3}
-        #he{width:178px;
-            height:178px;
-            border-radius:50%;
-            background:#FABF4D;
-
+        #he{
+                height: 412px;
+               
             }
 
             #he2{
@@ -25,7 +24,7 @@
             height:351px;
             margin:0px auto;
             border: 3px solid #FABF4D;
-
+        
            z-index: -1;
             border-radius: 42px;
 
@@ -35,51 +34,81 @@
 
         .layer2{
             height: 100vh;
-            width: 100vh;
+            width: 100vw;
          min-height: 450px;
-        display: flex;
-        flex-direction: column;
+        display: none;
             position:absolute;
             box-sizing: border-box;
-            align-self: center;
-          opacity: 0;
-          background-color: black;
-            z-index:1000;
+        flex-direction: column;
+          background-color: #FCF6EF;
+            z-index:5;
+        }
+        #text1{
+            height:94px;
+            width: 314px;
+            font-size: 20px;
+            font:normal 20px/25px Microsoft JhengHei;
+        }
+        #left-photo{
+            height: 270px;
+            align-self: flex-start;
+            margin-top: 150px;  
         }
         #top-content{text-align:center;  z-index: 0;}
         #root{height:100vh;min-height:450px;display:flex;flex-direction:column}
         .v-center{position:absolute;top:50%;transform:translateY(-50%)}
         .button{font:normal 20px/25px Seravek;color:#4d6790;background:#FCF6EF;width:113px;text-align:center;transition:all .2s ease;cursor:pointer}.button+.button{margin-top:5px}.button:hover{color:#FCF6EF}.no-dec{text-decoration:none}
+        @font-face{font-family:AvenirBook;src:url(Avenir.ttf)format("truetype")}
         @font-face{font-family:Seravek;src:url(/Seravek.c3b75cea.ttf) format("truetype")}@font-face{font-family:HelveticaNeue;src:url(/HelveticaNeueRegular.f1b1e89d.ttf) format("truetype")}</style>
-
+        
 </head>
 
 
 
 <body>
-    <!--<div class="layer2">
+    <div class="QR"></div>
+    <div class="oncall">
+        
+    </div>
 
-        <div id="top"></div>
-        <button id="hangout"> <img class="no-dec button" src="1.jpg"></button>
+    <div class="layer2">
+        
+        <img id="left-photo"src="1-03 -2.png">
+        <div style="align-self:center;height: 100vh;display:flex;">
+        <img src="1-03 -1.png" style="width:270px;align-self:flex-end;">
+    </div>
+        <button style="visibility: hidden;" id="hangout"> <img class="no-dec button" src="1.jpg"></button>
 
 
-    </div>-->
+    </div>
     <div id="root"> <div id="top"> <div class="wrapper"> <div id="top-content">
+        <div id="text1">
+
+            點選電話</br> 現在就與小寶貝通話吧！
+        </div>
+        
+        
         <button id="call" style="background-color:transparent;border:none">
-            <div style="display:flex"id="he">
-                <div  id="he2">
-
-                </div></div> </button>
-    </div> </div> </div> <div id="bottom">
-  <div class="wrapper">
-   </a> </div> </div> </div>
-
+        
+        <img id ="he"src=1-03.png>
+        
+        
+        
+        
+        </button>
+        
   <audio id="selfView"></audio>
 
   <audio id="remoteView"autoplay loop ></audio>
- <button id="hangout">hangout</button>
+ <button style="visibility: hidden;" id="hangout">hangout</button>
+    </div> </div> </div> 
+ </div>
+
 
   <script type="application/javascript">
+   $("#call").click(function() {
+    $(".layer2").css('display','flex');
+});
     var socket = io.connect('/');
     var configuration = {
         iceServers: [
