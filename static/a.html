@@ -30,7 +30,6 @@
     // run start(true) to initiate a call
     function start(isCaller) {
         pc = new RTCPeerConnection(configuration);
-
         // send any ice candidates to the other peer
         pc.onicecandidate = function (evt) {
             socket.emit('candidate', {"candidate": evt.candidate});
@@ -84,6 +83,12 @@ remoteView.pause();
     pc=null;
     iscaller=false;
 
+    });
+    socket.on('parents',function(data){
+if(data='alex')
+{
+    socket.emit('child','alex');
+}
     });
 
     socket.on('msg', function (data) {
