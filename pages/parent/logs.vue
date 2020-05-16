@@ -9,9 +9,8 @@
       </div>
     </div>
     <b-container>
-      <div>歷史紀錄</div>
       <div v-for="group in sortedAudios" :key="+group[0]" class="logs-group">
-        <div class="logs-header">{{ group[0] }}</div>
+        <div class="logs-header">{{ formattedDate(group[0]) }}</div>
         <AudioLog
           v-for="audio in group[1]"
           :key="audio.id"
@@ -84,6 +83,10 @@ export default class classname extends Vue {
     this.transcript = e.transcript;
     this.audio = e;
     this.deleteModal.show();
+  }
+
+  formattedDate(date: Date) {
+    return dayjs(date).format('YYYY/MM/DD');
   }
 
   get sortedAudios(): [Date, AudioData[]][] {
@@ -159,7 +162,12 @@ export default class classname extends Vue {
 }
 
 .logs-group {
+  padding-bottom: 50px;
+
   .logs-header {
+    text-align: right;
+    font: 20px/27px 'Avenir Book';
+    margin-bottom: 20px;
   }
 }
 </style>
