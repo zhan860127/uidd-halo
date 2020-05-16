@@ -20,6 +20,11 @@
 </template>
 
 <style>
+html,
+body {
+  scroll-behavior: smooth;
+}
+
 #parent-root {
   background-color: #fcf6ef;
   min-height: 100vh;

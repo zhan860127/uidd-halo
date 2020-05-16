@@ -181,6 +181,7 @@ export default class classname extends Vue {
   padding-left: 20px;
   padding-right: 20px;
   color: #082448;
+  height: 180px;
 }
 
 .dows {

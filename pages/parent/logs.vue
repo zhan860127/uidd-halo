@@ -14,6 +14,7 @@
         <AudioLog
           v-for="audio in group[1]"
           :key="audio.id"
+          :data-audio-id="audio.id"
           :audio="audio"
           @edit-audio="onAudioEdit"
           @delete-audio="onAudioDelete"
@@ -49,20 +50,35 @@
         class="d-flex justify-content-center"
         style="background-color: #fcf6ef;"
       >
-        <DatePicker v-model="date" style="width: 100%; max-width: 500px;" />
+        <div style="width: 100%; max-width: 500px;">
+          <DatePicker v-model="date" :highlighted="highlights" />
+          <div class="times">
+            <div
+              v-for="x in audiosThisDay"
+              :key="x.id"
+              class="time"
+              :class="{ selected: audio && audio.id === x.id }"
+              @click="onAudioSelected(x)"
+            >
+              {{ audioTime(x) }}
+            </div>
+          </div>
+          <button @click="onAudioSelectCommit">OK</button>
+        </div>
       </div>
     </Drawer>
   </div>
 </template>
 
 <script lang="ts">
-import { Vue, Component, Ref } from 'vue-property-decorator';
+import { Vue, Component, Ref, Watch } from 'vue-property-decorator';
 import { BModal } from 'bootstrap-vue';
 import dayjs from 'dayjs';
 import AudioLog from '~/components/AudioLog.vue';
 import { AudioData } from '~/assets/ts/AudioData';
 import DatePicker from '~/components/DatePicker.vue';
 import Drawer from '~/components/Drawer.vue';
+import '~/assets/scss/_fonts.scss';
 
 @Component({
   components: {
@@ -90,6 +106,11 @@ export default class classname extends Vue {
   @Ref() readonly editModal!: BModal;
   @Ref() readonly deleteModal!: BModal;
 
+  @Watch('date')
+  onDateChanged() {
+    this.audio = null;
+  }
+
   onAudioEdit(e: AudioData) {
     this.transcript = e.transcript;
     this.audio = e;
@@ -102,8 +123,39 @@ export default class classname extends Vue {
     this.deleteModal.show();
   }
 
+  get audiosThisDay(): AudioData[] {
+    for (const pair of this.sortedAudios) {
+      if (dayjs(pair[0]).isSame(dayjs(this.date), 'day')) {
+        return pair[1].reverse();
+      }
+    }
+    return [];
+  }
+
+  audioTime(data: AudioData): string {
+    return dayjs(data.date).format('H:mm');
+  }
+
   formattedDate(date: Date) {
     return dayjs(date).format('YYYY/MM/DD');
+  }
+
+  onAudioSelected(data: AudioData) {
+    this.audio = data;
+  }
+
+  onAudioSelectCommit() {
+    this.dateDrawerOpen = false;
+    if (!this.audio) return;
+    const el = this.$el.querySelector(`[data-audio-id="${this.audio.id}"]`);
+    this.audio = null;
+    if (el) {
+      el.scrollIntoView();
+    }
+  }
+
+  get highlights(): Date[] {
+    return this.sortedAudios.map((x) => new Date(x[0]));
   }
 
   get sortedAudios(): [Date, AudioData[]][] {
@@ -185,6 +237,27 @@ export default class classname extends Vue {
     text-align: right;
     font: 20px/27px 'Avenir Book';
     margin-bottom: 20px;
+  }
+}
+
+.times {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  justify-items: center;
+  row-gap: 0.4em;
+
+  & > .time {
+    width: 37px;
+    border: 1px solid #082448;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font: 10px/14px 'Avenir Book';
+    &.selected {
+      color: #fcf6ef;
+      background-color: #082448;
+    }
   }
 }
 </style>
