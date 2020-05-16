@@ -48,7 +48,7 @@
     <Drawer v-model="dateDrawerOpen" side="bottom">
       <div
         class="d-flex justify-content-center"
-        style="background-color: #fcf6ef;"
+        style="background-color: #fcf6ef; padding-bottom: 20px;"
       >
         <div style="width: 100%; max-width: 500px;">
           <DatePicker v-model="date" :highlighted="highlights" />
@@ -63,7 +63,7 @@
               {{ audioTime(x) }}
             </div>
           </div>
-          <button @click="onAudioSelectCommit">OK</button>
+          <div class="halo-button" @click="onAudioSelectCommit">OK</div>
         </div>
       </div>
     </Drawer>
@@ -245,6 +245,8 @@ export default class classname extends Vue {
   grid-template-columns: repeat(6, 1fr);
   justify-items: center;
   row-gap: 0.4em;
+  padding: 25px 30px;
+  position: relative;
 
   & > .time {
     width: 37px;
@@ -259,5 +261,27 @@ export default class classname extends Vue {
       background-color: #082448;
     }
   }
+
+  &::before {
+    content: '';
+    height: 1px;
+    background-color: #082448;
+    position: absolute;
+    left: 25px;
+    right: 25px;
+  }
+}
+
+.halo-button {
+  background-color: #082448;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fcf6ef;
+  font: 17px/23px 'Avenir Book';
+  padding: 5px 20px;
+  border-radius: 14px;
+  float: right;
+  margin-right: 25px;
 }
 </style>
