@@ -56,6 +56,8 @@ import dayjs from 'dayjs';
 import { AudioData } from '../assets/ts/AudioData';
 import Slider from '~/components/Slider.vue';
 
+import '~/assets/scss/_fonts.scss';
+
 const audioPath = (id: number) => `/api/parent/audiofile/${id}`;
 
 function padZero(val: number, n: number): string {
@@ -126,17 +128,7 @@ export default class classname extends Vue {
 }
 </script>
 
-<style>
-@font-face {
-  font-family: 'HelveticaNeue';
-  src: url('~assets/font/HelveticaNeueRegular.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Avenir Book';
-  src: url('~assets/font/AvenirLTStd-Book.otf');
-}
-
+<style lang="scss">
 .audiolog {
   background-color: #fde9d2;
   border-radius: 10px;
