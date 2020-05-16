@@ -62,7 +62,7 @@ import { Vue, Component, Model, Prop } from 'vue-property-decorator';
 @Component({})
 export default class classname extends Vue {
   @Model('input') date!: Date;
-  @Prop({ default: [] }) readonly highlighted!: Date[];
+  @Prop({ default: () => [] }) readonly highlighted!: Date[];
 
   monthNames = [
     'Jan',
@@ -153,7 +153,7 @@ export default class classname extends Vue {
   padding-left: 26px;
   padding-right: 26px;
   background-color: #fcf6ef;
-  width: 500px;
+  min-width: 300px;
   user-select: none;
 }
 .month-bar {

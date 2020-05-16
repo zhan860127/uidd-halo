@@ -1,7 +1,7 @@
 <template>
   <div class="position-relative">
     <div class="buttons">
-      <div class="half-pill">
+      <div class="half-pill" @click="dateDrawerOpen = !dateDrawerOpen">
         <b-icon-calendar style="width: 14px; height: auto;" />
       </div>
       <div class="half-pill">
@@ -41,6 +41,17 @@
         <p v-if="audio">{{ audio.transcript }}</p>
       </b-modal>
     </b-container>
+    <b-sidebar id="date-drawer" bottom>
+      hello
+    </b-sidebar>
+    <Drawer v-model="dateDrawerOpen" side="bottom">
+      <div
+        class="d-flex justify-content-center"
+        style="background-color: #fcf6ef;"
+      >
+        <DatePicker v-model="date" style="width: 100%; max-width: 500px;" />
+      </div>
+    </Drawer>
   </div>
 </template>
 
@@ -50,10 +61,14 @@ import { BModal } from 'bootstrap-vue';
 import dayjs from 'dayjs';
 import AudioLog from '~/components/AudioLog.vue';
 import { AudioData } from '~/assets/ts/AudioData';
+import DatePicker from '~/components/DatePicker.vue';
+import Drawer from '~/components/Drawer.vue';
 
 @Component({
   components: {
     AudioLog,
+    DatePicker,
+    Drawer,
   },
   layout: 'parent',
   async asyncData({ $axios, query }) {
@@ -70,6 +85,8 @@ export default class classname extends Vue {
   transcript: string = '';
   audio: AudioData | null = null;
   audios: AudioData[] = [];
+  dateDrawerOpen: boolean = false;
+  date: Date = new Date();
   @Ref() readonly editModal!: BModal;
   @Ref() readonly deleteModal!: BModal;
 
