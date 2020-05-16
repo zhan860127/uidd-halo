@@ -15,9 +15,7 @@
       </b-navbar-nav>
     </b-navbar>
     <b-sidebar id="side-menu" backdrop right>Menu stuff</b-sidebar>
-    <b-container>
-      <nuxt />
-    </b-container>
+    <nuxt />
   </div>
 </template>
 
