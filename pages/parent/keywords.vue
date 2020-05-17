@@ -14,7 +14,7 @@
 
 <script>
 /* import func from '../../vue-temp/vue-editor-bridge'; */
-import $ from 'jQuery';
+import $ from 'jquery';
 export default {
   data() {
     return {
