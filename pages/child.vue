@@ -26,14 +26,17 @@ export default class classname extends Vue {
     requestAnimationFrame(this.showVol);
   }
 
-  async onSpeechEnd(blob: Blob) {
+  onSpeechEnd(blob: Blob) {
     const fd = new FormData();
     fd.append('data', blob);
-    fd.append('myfield', 'myval');
-    const { transcript } = await this.$axios.$post('/api/child/speech', fd, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
-    console.log(transcript || 'none');
+    this.$axios
+      .$post('/api/child/speech', fd, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      })
+      .then((d) => {
+        console.log(d?.transcript || 'none');
+      })
+      .catch();
   }
 }
 </script>

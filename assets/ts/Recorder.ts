@@ -29,7 +29,8 @@ export default class SpeechRecorder {
     const arr = new Float32Array(this.#analyzer!.fftSize);
     this.#analyzer!.getFloatTimeDomainData(arr);
     const p = arr.map((x) => x ** 2).reduce((a, b) => a + b) / arr.length;
-    return (32 + Math.log2(p)) / 32;
+    const vol = (32 + Math.log2(p)) / 32;
+    return Number.isNaN(vol) ? 0 : Math.max(0, vol);
   }
 
   private onGotStream(stream: MediaStream) {
@@ -41,17 +42,15 @@ export default class SpeechRecorder {
     srcNode.connect(analyzer);
     this.#analyzer = analyzer;
 
-    let firstFrame: Blob | undefined;
-    let isSilence = false;
+    let clearRequested = false;
+    let isSilence = true;
     let unsureFrame = 0;
 
     mediaRecorder.ondataavailable = (e) => {
-      if (!firstFrame) {
-        firstFrame = e.data;
-      }
+      recordedChunks.push(e.data);
+      if (mediaRecorder.state === 'inactive') return;
       const vol = this.getVolume();
       if (vol > thresholdVolume) {
-        recordedChunks.push(e.data);
         if (isSilence) {
           unsureFrame += 1;
 
@@ -65,23 +64,32 @@ export default class SpeechRecorder {
         }
       } else if (!isSilence) {
         unsureFrame += 1;
-        recordedChunks.push(e.data);
 
         // falling edge
         if (unsureFrame >= silenceFrame) {
           isSilence = true;
           unsureFrame = 0;
-
-          // emit the recorded speech
-          recordedChunks.splice(0, 0, firstFrame);
-          const blob = new Blob(recordedChunks);
-          this.onSpeechEnd(blob);
+          mediaRecorder.stop();
         }
       } else {
         // currently in silence mode
         unsureFrame = 0;
-        recordedChunks.length = 0;
+        clearRequested = true;
+        mediaRecorder.stop();
       }
+    };
+
+    mediaRecorder.onstop = () => {
+      if (clearRequested) {
+        clearRequested = false;
+        recordedChunks.length = 0;
+        mediaRecorder.start(msInFrame);
+        return;
+      }
+      const blob = new Blob(recordedChunks, { type: 'audio/ogg; codecs=opus' });
+      recordedChunks.length = 0;
+      this.onSpeechEnd(blob);
+      mediaRecorder.start(msInFrame);
     };
 
     mediaRecorder.start(msInFrame);
