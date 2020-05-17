@@ -18,10 +18,10 @@
     "baseUrl": ".",
     "paths": {
       "~/*": [
-        "*"
+        "./*"
       ],
       "@/*": [
-        "*"
+        "./*"
       ]
     },
     "types": [
@@ -34,8 +34,6 @@
   "exclude": [
     "node_modules",
     ".nuxt",
-    "dist",
-    "build",
-    "src"
+    "dist"
   ]
 }

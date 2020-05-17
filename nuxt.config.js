@@ -1,6 +1,5 @@
 import process from 'process';
 import fs from 'fs';
-import myapi from './server/api';
 require('reflect-metadata');
 require('dotenv').config();
 
@@ -41,7 +40,6 @@ export default {
     '@nuxt/typescript-build',
     // Doc: https://github.com/nuxt-community/stylelint-module
     '@nuxtjs/stylelint-module',
-    '@nuxtjs/dotenv',
   ],
   /*
    ** Nuxt.js modules
@@ -52,8 +50,6 @@ export default {
     '@nuxtjs/pwa',
     // Doc: https://github.com/nuxt-community/dotenv-module
     ['@nuxtjs/axios', { browserBaseURL: '/' }],
-
-    '~/modules/io',
   ],
 
   bootstrapVue: {
@@ -68,7 +64,6 @@ export default {
      ** You can extend webpack config here
      */
   },
-  serverMiddleware: [{ path: '/api', handler: myapi }],
   server: process.env.HTTPS_KEY_PATH
     ? {
         https: {
