@@ -95,6 +95,7 @@ export default {
       });
     },
   },
+  layout: 'parent',
 };
 </script>
 
