@@ -8,10 +8,14 @@
           @click="addMonth(-1)"
         />
       </div>
-      <div class="months">
-        <div class="month">{{ monthNames[(date.getMonth() + 11) % 12] }}</div>
+      <div v-if="date" class="months">
+        <div class="month">
+          {{ monthNames[(date.getMonth() + 11) % 12] }}
+        </div>
         <div class="month active">{{ monthNames[date.getMonth()] }}</div>
-        <div class="month">{{ monthNames[(date.getMonth() + 1) % 12] }}</div>
+        <div class="month">
+          {{ monthNames[(date.getMonth() + 1) % 12] }}
+        </div>
       </div>
       <div>
         <b-icon-chevron-right
@@ -35,25 +39,31 @@
         <div
           v-for="d in daysOfMonth"
           :key="d"
-          class="day clickable"
+          class="day"
           :style="{
             'grid-column-start': d == 1 ? dayOfFirstDayOfMonth + 1 : undefined,
           }"
-          @click="onDayClicked(d)"
         >
-          {{ d }}
+          <div
+            class="day-before"
+            :class="{ highlight: shouldHighlight(d), active: isActive(d) }"
+            @click="onDayClicked(d)"
+          ></div>
+          <div class="day-content">{{ d }}</div>
         </div>
       </div>
     </div>
-    <div>{{ date }}</div>
   </div>
 </template>
 
 <script lang="ts">
-import { Vue, Component } from 'vue-property-decorator';
+import { Vue, Component, Model, Prop } from 'vue-property-decorator';
 
 @Component({})
 export default class classname extends Vue {
+  @Model('input') date!: Date;
+  @Prop({ default: () => [] }) readonly highlighted!: Date[];
+
   monthNames = [
     'Jan',
     'Feb',
@@ -69,10 +79,10 @@ export default class classname extends Vue {
     'Dec',
   ];
 
-  date: Date = new Date();
   addMonth(m: number) {
-    this.date.setMonth(this.date.getMonth() + m);
-    this.date = new Date(this.date);
+    const d = new Date(this.date);
+    d.setMonth(d.getMonth() + m);
+    this.$emit('input', d);
   }
 
   dateOnDay(day: number): Date {
@@ -83,7 +93,6 @@ export default class classname extends Vue {
 
   onDayClicked(day: number) {
     const d = this.dateOnDay(day);
-    this.date = d;
     this.$emit('input', new Date(d));
   }
 
@@ -94,15 +103,37 @@ export default class classname extends Vue {
   }
 
   get daysOfMonth() {
+    const m = this.date.getMonth() + 1;
+    const y = this.date.getFullYear();
+    if (m === 2) return !(y % 4 || (!(y % 100) && y % 400)) ? 29 : 28;
+    return [1, 3, 5, 7, 8, 10, 12].some((x) => m === x) ? 31 : 30;
+  }
+
+  shouldHighlight(day: number): boolean {
     const d = new Date(this.date);
-    d.setMonth(d.getMonth() + 1);
-    d.setDate(0);
-    return d.getDate();
+    d.setDate(day);
+    return this.highlighted.some(
+      (dd) =>
+        d.getDate() === dd.getDate() &&
+        d.getMonth() === dd.getMonth() &&
+        d.getFullYear() === dd.getFullYear()
+    );
+  }
+
+  isActive(day: number): boolean {
+    const d = new Date(this.date);
+    d.setDate(day);
+    const dd = this.date;
+    return (
+      d.getDate() === dd.getDate() &&
+      d.getMonth() === dd.getMonth() &&
+      d.getFullYear() === dd.getFullYear()
+    );
   }
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 @font-face {
   font-family: 'Avenir Book';
   src: url('~assets/font/AvenirLTStd-Book.otf');
@@ -122,7 +153,7 @@ export default class classname extends Vue {
   padding-left: 26px;
   padding-right: 26px;
   background-color: #fcf6ef;
-  width: 500px;
+  min-width: 300px;
   user-select: none;
 }
 .month-bar {
@@ -150,6 +181,7 @@ export default class classname extends Vue {
   padding-left: 20px;
   padding-right: 20px;
   color: #082448;
+  height: 180px;
 }
 
 .dows {
@@ -173,5 +205,33 @@ export default class classname extends Vue {
 .day {
   font: 10px/14px sans-serif;
   opacity: 0.7;
+}
+
+.day {
+  position: relative;
+}
+
+.day-before {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 1.5em;
+  height: 1.5em;
+  border-radius: 50%;
+  z-index: -1;
+
+  &.highlight {
+    border: 1px solid #fabf4d;
+  }
+
+  &.active {
+    background-color: #b51e41;
+    opacity: 0.55;
+  }
+}
+
+.day-content {
+  pointer-events: none;
 }
 </style>

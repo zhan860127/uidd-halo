@@ -15,13 +15,16 @@
       </b-navbar-nav>
     </b-navbar>
     <b-sidebar id="side-menu" backdrop right>Menu stuff</b-sidebar>
-    <b-container>
-      <nuxt />
-    </b-container>
+    <nuxt />
   </div>
 </template>
 
 <style>
+html,
+body {
+  scroll-behavior: smooth;
+}
+
 #parent-root {
   background-color: #fcf6ef;
   min-height: 100vh;

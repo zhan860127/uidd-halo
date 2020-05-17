@@ -16,8 +16,9 @@ config();
 const uploadPath = process.env.UPLOAD_PATH;
 const ffmpeg = process.env.FFMPEG;
 
-if (!uploadPath) throw new Error('Upload path not set');
-if (!ffmpeg) throw new Error('ffmpeg path not set');
+if (!uploadPath)
+  throw new Error('Upload path not set. Please edit the .env file');
+if (!ffmpeg) throw new Error('ffmpeg path not set. Please edit the .env file');
 
 const upload = multer();
 const router = Router();

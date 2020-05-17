@@ -46,13 +46,17 @@
         </b-dropdown>
       </div>
     </div>
+    <div v-if="!idle" class="audio-transcript">{{ audio.transcript }}</div>
   </div>
 </template>
 
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator';
+import dayjs from 'dayjs';
 import { AudioData } from '../assets/ts/AudioData';
 import Slider from '~/components/Slider.vue';
+
+import '~/assets/scss/_fonts.scss';
 
 const audioPath = (id: number) => `/api/parent/audiofile/${id}`;
 
@@ -119,23 +123,19 @@ export default class classname extends Vue {
   }
 
   get time(): string {
-    return this.audio.date.toUTCString().substr(17, 5);
+    return dayjs(this.audio.date).format('HH:mm');
   }
 }
 </script>
 
-<style>
-@font-face {
-  font-family: 'HelveticaNeue';
-  src: url('~assets/font/HelveticaNeueRegular.ttf') format('truetype');
-}
-
+<style lang="scss">
 .audiolog {
   background-color: #fde9d2;
   border-radius: 10px;
   min-height: 44px;
   display: flex;
   align-items: center;
+  position: relative;
 }
 
 .audiolog + .audiolog {
@@ -151,6 +151,25 @@ export default class classname extends Vue {
 .menu-dropdown > button {
   padding: 0;
 }
+
+.audio-transcript {
+  position: absolute;
+  top: 100%;
+  background-color: #fcf6ef;
+  left: 20px;
+  right: 20px;
+  z-index: 1;
+  padding: 11px 33px 23px;
+  font: 10px/14px 'Avenir Book', 'segoe ui', 'microsoft jhenghei',
+    'microsoft mhei', stheititc, sans-serif;
+  border-radius: 0 0 10px 10px;
+}
+
+/* make the play icon look more centered */
+.bi-play-fill.rounded-circle > g {
+  transform: translateX(0.045em);
+}
+
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.1s ease;

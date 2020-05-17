@@ -128,7 +128,7 @@ router.get('/child_audio', async (req, res) => {
     .where('recordedAt <= datetime(:fromDate)', {
       fromDate,
     })
-    .orderBy('recordedAt')
+    .orderBy('recordedAt', 'DESC')
     .limit(maxResults)
     .getMany();
   res.json(
