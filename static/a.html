@@ -77,15 +77,23 @@
       iscaller=true;
     });
 
-    hangout.addEventListener('click',()=>{
-remoteView.pause();
- pc.close();
+    socket.on('disconnetion',()=>{
+    remoteView.pause();
+    pc.close();
     pc=null;
     iscaller=false;
-
     });
+
+    call.addEventListener('click', ()=> {
+        console.log('webrtc start');
+      start(true);
+      iscaller=true;
+    });
+
+
+
     socket.on('parents',function(data){
-if(data='alex')
+if(data==='alex')
 {
     socket.emit('child','alex');
 }
