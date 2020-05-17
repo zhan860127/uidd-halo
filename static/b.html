@@ -15,33 +15,45 @@
         #bottom{background:#FCF6EF;flex-grow:3}
         #he{
                 height: 412px;
-               
-            }
-
-            #he2{
-                text-align:center;
-                width:79px;
-            height:351px;
-            margin:0px auto;
-            border: 3px solid #FABF4D;
-        
-           z-index: -1;
-            border-radius: 42px;
-
-            background:#FCF6EF  ;
 
             }
+
+
 
         .layer2{
-            height: 100vh;
-            width: 100vw;
+            min-height: 450;
+            height: 100%;
+            width: 100%;
          min-height: 450px;
         display: none;
             position:absolute;
             box-sizing: border-box;
         flex-direction: column;
           background-color: #FCF6EF;
-            z-index:5;
+        }
+        .oncall{
+            height: 100%;
+            width: 100%;
+         min-height: 450px;
+        display: none;
+            position:absolute;
+            box-sizing: border-box;
+          background-color: #FCF6EF;
+            flex-direction: column ;
+
+        }
+        .alarm{
+            position: absolute;
+display: none;
+width: 349px;
+height: 171px;
+background: #FDE9D2;
+box-shadow: 0px 3px 6px #00000029;
+border-radius: 34px;
+opacity: 1;
+flex-direction: column;
+align-items:center;
+z-index: 5;
         }
         #text1{
             height:94px;
@@ -52,27 +64,55 @@
         #left-photo{
             height: 270px;
             align-self: flex-start;
-            margin-top: 150px;  
+            margin-top: 100px;
         }
-        #top-content{text-align:center;  z-index: 0;}
+        #top-content{text-align:center;}
         #root{height:100vh;min-height:450px;display:flex;flex-direction:column}
         .v-center{position:absolute;top:50%;transform:translateY(-50%)}
         .button{font:normal 20px/25px Seravek;color:#4d6790;background:#FCF6EF;width:113px;text-align:center;transition:all .2s ease;cursor:pointer}.button+.button{margin-top:5px}.button:hover{color:#FCF6EF}.no-dec{text-decoration:none}
-        @font-face{font-family:AvenirBook;src:url(Avenir.ttf)format("truetype")}
+        @font-face{font-family:Avenir-Book;src:url(Avenir.ttf)format("truetype")}
         @font-face{font-family:Seravek;src:url(/Seravek.c3b75cea.ttf) format("truetype")}@font-face{font-family:HelveticaNeue;src:url(/HelveticaNeueRegular.f1b1e89d.ttf) format("truetype")}</style>
-        
+
 </head>
 
 
 
 <body>
-    <div class="QR"></div>
-    <div class="oncall">
-        
-    </div>
 
+    <div class="oncall">
+        <div style="height: 472px; width: 100%;display: flex;">
+            <div style="height: 420px; width: 100%;justify-content:center;display: flex;align-self:flex-end;">
+
+        <img src="copy.png"style="align-self:center;height:100%">
+        </div>
+        </div>
+        <div style="flex-grow:1; width: 100%;justify-content:center;display: flex;">
+           <button id="hangout" style="background-color:transparent;border:none"> <img src="1.png" style="height:120px;width:120px;align-self:center;">
+            </button>
+        </div>
+    </div><div style="height: 100%;
+    width: 100%;
+ min-height: 450px;
+ position:absolute;
+ justify-content: center;
+ align-items: center;
+ display: flex;
+ z-index: -20;">
+    <div class="alarm">
+        <div style="font-family:Avenir-Book;color:#082448;font-size:25px;text-align: center;justify-content:center;margin-top: 19px; width:84px;height:34px;display:flex;align-items: center;">OOPS!!</div>
+        <div  style="font-family:Microsoft JhengHei; color:#082448;font-size:15px;text-align: center;justify-content:center;margin-top: 11px; width:195px;height:21px;display:flex;align-items: center;"><span style="color: #082448;">未連結裝置，要<span style="color: #B51E41;">重新連線<span style="color:#082448; ;">嗎？</div>
+        <div style="width: 113px;height: 25px;margin-top:38px;display:flex;justify-content:space-between;">
+        <div id="yes" style="display:flex;justify-content:center;align-items:center;width:49px;height: 25px;border-radius: 14px;border: 1px solid #082448;background-color: #082448;">
+        <span style="color:#FCF6EF;font-size: 13px;">YES
+        </div>
+
+        <div id="yes" style="display:flex;justify-content:center;align-items:center;width:49px;height: 25px;border-radius: 14px;border: 1px solid #082448;background-color: #082448;">
+            <span style="color:#FCF6EF;font-size: 13px;">NO
+
+        </div>
+    </div></div></div>
     <div class="layer2">
-        
+
         <img id="left-photo"src="1-03 -2.png">
         <div style="align-self:center;height: 100vh;display:flex;">
         <img src="1-03 -1.png" style="width:270px;align-self:flex-end;">
@@ -86,29 +126,48 @@
 
             點選電話</br> 現在就與小寶貝通話吧！
         </div>
-        
-        
+
+
         <button id="call" style="background-color:transparent;border:none">
-        
+
         <img id ="he"src=1-03.png>
-        
-        
-        
-        
+
+
+
+
         </button>
-        
+
   <audio id="selfView"></audio>
 
   <audio id="remoteView"autoplay loop ></audio>
  <button style="visibility: hidden;" id="hangout">hangout</button>
-    </div> </div> </div> 
+    </div> </div> </div>
  </div>
 
 
   <script type="application/javascript">
+var child="false";
+  $("#hangout").click(function(){
+    console.log("bye");
+
+
+  });
    $("#call").click(function() {
     $(".layer2").css('display','flex');
+    $("#root").css('display','none');
+    setTimeout(function(){if(child==="false"){$(".alarm").css('display','flex');}},5000);
+
+
+
+
 });
+
+$(".layer2").click(function() {
+    $(".layer2").css('display','none');
+    $(".oncall").css('display','flex');
+});
+
+
     var socket = io.connect('/');
     var configuration = {
         iceServers: [
@@ -127,6 +186,11 @@
         pc.onicecandidate = function (evt) {
             socket.emit('candidate', {"candidate": evt.candidate});
         };
+
+
+        socket.emit('parents','alex');
+
+
 
         // once remote stream arrives, show it in the remote video element
         pc.ontrack = function (evt) {
@@ -166,15 +230,35 @@
         start(true);
     });
 
-hangout.addEventListener('click',()=>{
+    $("#hangout").click(function() {
+      socket.emit('disconnection',"byebye");
 
+      console.log("bye-bue");
   remoteView.pause();
   pc.close();
     pc=null;
   start(false);
-});
+    });
 
-    socket.on('msg', function (data) {
+
+socket.on('child',function(data){
+        if(data==='alex')
+        {   setTimeout(() => {
+          $(".layer2").css('display','none');
+            $(".oncall").css('display','flex');
+            child="true";
+        }, 1000);
+
+
+        }
+
+
+
+    });
+
+
+
+     socket.on('msg', function (data) {
         console.log(data);
         if (!pc)
             start(false);

@@ -40,6 +40,21 @@ export default function () {
         console.log(data);
         client.broadcast.emit('msg', data);
       });
+
+      client.on('parents', function (data) {
+        'use strict';
+        client.broadcast.emit('parents', data);
+      });
+
+      client.on('child', function (data) {
+        'use strict';
+        client.broadcast.emit('child', data);
+      });
+
+      client.on('disconnetion', function (data) {
+        'use strict';
+        client.broadcast.emit('disconnetion', data);
+      });
     });
   });
 }
