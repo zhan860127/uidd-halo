@@ -47,7 +47,10 @@ router.get('/connect/:id', async (req, res) => {
   const url = `${req.protocol}://${req.get(
     'host'
   )}/api/connect/${child.token!}`;
-  const qrSVG = await QRCode.toString(url, { type: 'svg' });
+  const qrSVG = await QRCode.toString(url, {
+    type: 'svg',
+    color: { light: '#0000' },
+  });
   res.json({
     token: child.token!,
     url,
