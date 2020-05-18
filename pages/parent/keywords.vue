@@ -25,15 +25,17 @@ export default {
     };
   },
   mounted() {
+    console.log('start getKey');
     $.ajax({
       type: 'GET',
-      url: './api/getKey',
+      url: './api/keyword/getKey',
       data: '',
-      success: (keyList) => {
-        keyList.forEach((element) => {
+      success: () => {
+        /*  keyList.forEach((element) => {
           element.seen = false;
         });
-        this.list = keyList;
+        this.list = keyList;  */
+        console.log('connected');
       },
       error() {
         console.log('get keyword list failed');

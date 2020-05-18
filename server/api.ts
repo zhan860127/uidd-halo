@@ -10,6 +10,7 @@ import * as Login from '../server/Login';
 
 import parent from './parent';
 import child from './child';
+import keyword from './keyword';
 
 const app = express.Router();
 
@@ -30,6 +31,7 @@ app.use(async (_req, _res, next) => {
 // subroutes
 app.use('/parent', parent);
 app.use('/child', child);
+app.use('/keyword', keyword);
 
 // passport stuff
 const LOGIN = {
