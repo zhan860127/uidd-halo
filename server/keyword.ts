@@ -12,6 +12,27 @@ router.get('/getKey', async (req, res) => {
   res.send(JSON.stringify(keyList));  
 })
 
+router.get('/changeKey', async (req, res) => {
+  let newKey = req.query.key;
+  const id = req.query.id;
+  const key = await getRepository(ParentAudio)
+  .createQueryBuilder('key')
+  .where('key.keyword = :keyword', { keyword: newKey })
+  .getOne();
+  if (key == undefined) {
+    await getRepository(ParentAudio)
+      .createQueryBuilder()
+      .update()
+      .set({ keyword: (newKey as string)})
+      .where("id = :id", { id: id})
+      .execute();
+    res.send(true);
+  }
+  else {
+    res.send(false);
+  }
+})
+
 router.get('/test', async (req, res) => {
   /*  const parent = await Login.getParent(req);
   const child = await Login.getChild(req);
@@ -29,14 +50,16 @@ router.get('/test', async (req, res) => {
     })
     .execute();   */
 
-  console.log('getKey req received');
-  const keyList = await getRepository(ParentAudio)
-  .createQueryBuilder('keyword')
-  .getMany();
-  console.log(typeof keyList);
-  console.log(keyList);
-  console.log(JSON.stringify(keyList));
-  res.send(JSON.stringify(keyList));
+  console.log('test start');
+  const newKey = 'ass';
+  const result = await getRepository(ParentAudio)
+  .createQueryBuilder('key')
+  .where('key.keyword = :keyword', { keyword: newKey })
+  .getOne();
+  console.log(typeof result);
+  console.log(result);
+  console.log(JSON.stringify(result));
+  res.send(JSON.stringify(result));
 })
 
 export default router;

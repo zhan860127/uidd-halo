@@ -55,8 +55,8 @@ export default {
     },
 
     changeKey(idx) {
-      // TODDO: check new keyword exist
       this.selectItem = idx;
+      const temp = this.list[this.selectItem].keyword;
       const newKey = prompt('Change keyword?', ''); // TODO: edit in recorder
       if (newKey === null || newKey === '') {
         console.log('Invalid input');
@@ -65,15 +65,22 @@ export default {
       }
       $.ajax({
         type: 'GET',
-        url: './api/changeKey',
+        url: '/api/keyword/changeKey',
         data: {
           id: this.list[this.selectItem].id,
           key: newKey,
+        },
+        success: (result) => {
+          if (!result) {
+            this.list[this.selectItem].keyword = temp;
+            console.log('Keyword already exists!');
+          }
         },
       });
     },
 
     deleteItem(idx) {
+      //  TODO
       this.list[this.selectItem] = idx;
       $.ajax({
         type: 'GET',
@@ -85,13 +92,15 @@ export default {
 
       $.ajax({
         type: 'GET',
-        url: './api/getKey',
+        url: '/api/keyword/getKey',
         data: '',
         success: (keyList) => {
+          keyList = JSON.parse(keyList);
           keyList.forEach((element) => {
             element.seen = false;
           });
           this.list = keyList;
+          console.log(keyList);
         },
         error() {
           console.log('get keyword list failed');
