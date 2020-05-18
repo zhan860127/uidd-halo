@@ -21,7 +21,7 @@ export default class classname extends Vue {
   smoothedVol = 0;
   mounted() {
     this.record();
-    io();
+    io('/child');
   }
 
   @Watch('volume')

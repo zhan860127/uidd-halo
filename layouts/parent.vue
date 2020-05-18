@@ -49,6 +49,11 @@
       >
       <div class="sidebar-item">登出</div>
       <div class="sidebar-divider"></div>
+      <div v-for="(child, i) in childStatus" :key="i" class="sidebar-item">
+        <div class="child-dot" :class="{ online: child.online }"></div>
+        <div class="flex-grow-1">{{ child.name }}</div>
+        <div class="child-online">{{ child.online ? '上線中' : '離線中' }}</div>
+      </div>
     </b-sidebar>
     <nuxt />
   </div>
@@ -58,9 +63,19 @@
 import { Vue, Component, Ref, Watch } from 'vue-property-decorator';
 import { BDropdown } from 'bootstrap-vue';
 import '~/assets/scss/_fonts.scss';
+import io from 'socket.io-client';
 
 @Component
 export default class classname extends Vue {
+  mounted() {
+    io.connect('/parent').on('status', (v: any) => {
+      this.$store.commit('parent/setChildStatus', v);
+      // @ts-ignore
+      window.v = v;
+      console.log(v);
+    });
+  }
+
   get title(): string {
     const p = this.$route.path;
     return p.startsWith('/parent/logs')
@@ -70,6 +85,10 @@ export default class classname extends Vue {
       : p.startsWith('/parent/call')
       ? 'Call'
       : '';
+  }
+
+  get childStatus(): any {
+    return this.$store.state.parent.childStatus;
   }
 
   @Ref('dropdown') dropdown!: BDropdown;
@@ -115,6 +134,28 @@ body {
   & .nav-link {
     color: #fcf6ef !important;
   }
+}
+
+.child-dot {
+  width: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  &::before {
+    content: '';
+    background-color: #707070;
+    border-radius: 50%;
+    width: 6px;
+    height: 6px;
+  }
+  &.online::before {
+    background-color: #17c125;
+  }
+}
+
+.child-online {
+  font-size: 10px;
+  margin-right: 7px;
 }
 
 #side-menu {

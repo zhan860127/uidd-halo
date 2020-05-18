@@ -4,7 +4,7 @@ import express from 'express';
 import socketIO from 'socket.io';
 import session from 'cookie-session';
 import { createConnection, getRepository } from 'typeorm';
-import { Parent } from '../models/entity/entities';
+import { Parent, Child } from '../models/entity/entities';
 import api from './api';
 import { getChildId, getParentId } from './Login';
 const consola = require('consola');
@@ -57,27 +57,57 @@ async function start() {
     sessionMiddleware(socket.request, {}, next);
   });
 
-  io.on('connection', (socket) => {
+  const parentSockets: { [id: number]: SocketIO.Socket[] } = {};
+
+  io.of('/child').on('connection', async (socket) => {
     const childId = getChildId(socket.request);
-    if (childId) {
-      console.log(`child ${childId} connected`);
-      onlineChildrenIds.add(childId);
-      socket.on('disconnect', () => {
-        console.log(`child ${childId} disconnected`);
-        onlineChildrenIds.delete(childId);
-      });
+    if (!childId) {
+      socket.disconnect();
       return;
     }
+    const child = await getRepository(Child).findOne(childId, {
+      relations: ['parents'],
+    });
+    if (!child) {
+      socket.disconnect();
+      return;
+    }
+    console.log(`child ${childId} connected`);
+
+    const parentIds = child!.parents!.map((x) => x.id!);
+    function notify() {
+      parentIds.forEach(async (pid) => {
+        const status = await childrenStatus(pid);
+        (parentSockets[pid] || []).forEach((sok) => {
+          sok.emit('status', status);
+        });
+      });
+    }
+    onlineChildrenIds.add(childId);
+    notify();
+    socket.on('disconnect', () => {
+      console.log(`child ${childId} disconnected`);
+      onlineChildrenIds.delete(childId);
+      notify();
+    });
+  });
+
+  io.of('/parent').on('connection', async (socket) => {
     const parentId = getParentId(socket.request);
-    if (parentId) {
-      console.log(`child ${parentId} connected`);
-      socket.on('disconnect', () => {
-        console.log(`parent ${parentId} disconnected`);
-      });
+    if (!parentId) {
+      socket.disconnect();
       return;
     }
-    // not child and not parent
-    socket.disconnect();
+    console.log(`parent ${parentId} connected`);
+    if (!parentSockets[parentId]) parentSockets[parentId] = [];
+    parentSockets[parentId].push(socket);
+    socket.emit('status', await childrenStatus(parentId));
+    socket.on('disconnect', () => {
+      console.log(`parent ${parentId} disconnected`);
+      parentSockets[parentId] = parentSockets[parentId].filter(
+        (x) => x !== socket
+      );
+    });
   });
 
   app.get('/children_status', async (req, res) => {
