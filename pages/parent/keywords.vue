@@ -9,6 +9,7 @@
         <button v-show="item.seen" @click="deleteItem(idx)">Delete</button>
       </li>
     </ol>
+    <button @click="test">TEST</button>
   </div>
 </template>
 
@@ -19,7 +20,7 @@ export default {
   data() {
     return {
       list: [
-        { id: 0, keyword: 'nya', path: './somewhere/nya.ogg', seen: false },
+        //  { id: 0, keyword: 'nya', path: './somewhere/nya.ogg', seen: false },
       ],
       selectItem: 0,
     };
@@ -28,14 +29,15 @@ export default {
     console.log('start getKey');
     $.ajax({
       type: 'GET',
-      url: './api/keyword/getKey',
+      url: '/api/keyword/getKey',
       data: '',
-      success: () => {
-        /*  keyList.forEach((element) => {
+      success: (keyList) => {
+        keyList = JSON.parse(keyList);
+        keyList.forEach((element) => {
           element.seen = false;
         });
-        this.list = keyList;  */
-        console.log('connected');
+        this.list = keyList;
+        console.log(keyList);
       },
       error() {
         console.log('get keyword list failed');
@@ -93,6 +95,23 @@ export default {
         },
         error() {
           console.log('get keyword list failed');
+        },
+      });
+    },
+
+    test() {
+      console.log('Testing');
+      $.ajax({
+        type: 'GET',
+        url: '/api/keyword/test',
+        data: '',
+        success: (result) => {
+          console.log(result);
+          console.log(typeof JSON.parse(result));
+          console.log(JSON.parse(result));
+        },
+        error() {
+          console.log('failed');
         },
       });
     },
