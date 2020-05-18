@@ -8,6 +8,7 @@
 
 <script lang="ts">
 import { Vue, Component, Watch } from 'vue-property-decorator';
+import io from 'socket.io-client';
 import Recorder from '~/assets/ts/Recorder';
 import Pie from '~/components/Pie.vue';
 
@@ -20,6 +21,7 @@ export default class classname extends Vue {
   smoothedVol = 0;
   mounted() {
     this.record();
+    io();
   }
 
   @Watch('volume')

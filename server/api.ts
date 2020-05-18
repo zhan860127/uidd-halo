@@ -3,7 +3,6 @@ import { getConnection, getRepository, createConnection } from 'typeorm';
 import { ConnectionNotFoundError } from 'typeorm/error/ConnectionNotFoundError';
 import bcrypt from 'bcrypt';
 import bodyParser from 'body-parser';
-import session from 'cookie-session';
 import passport from 'passport';
 import { Strategy } from 'passport-local';
 import { Parent, Child } from '../models/entity/entities';
@@ -12,10 +11,9 @@ import * as Login from '../server/Login';
 import parent from './parent';
 import child from './child';
 
-const app = express();
+const app = express.Router();
 
 // middlewares
-app.use(session({ secret: 'wowee' }));
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(async (_req, _res, next) => {
