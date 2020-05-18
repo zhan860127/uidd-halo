@@ -1,5 +1,5 @@
 <template>
-  <div class="child-root">
+  <div class="child-root" @click="toggle">
     <Pie class="pie abs-center" :v="smoothedVol" bg="#CCCCCC" :fg="color" />
     <div class="inner abs-center"></div>
     <div class="photo abs-center" style="--pic: url('/copy.png');"></div>
@@ -59,6 +59,11 @@ export default class classname extends Vue {
         console.log(d?.transcript || 'none');
       })
       .catch();
+  }
+
+  toggle() {
+    console.log('click');
+    this.recorder.toggle();
   }
 }
 </script>

@@ -11,7 +11,7 @@ export default class SpeechRecorder {
   onStarted: () => void = () => {};
   mediaRecorder?: MediaRecorder;
   #analyzer?: AnalyserNode;
-  state = 'idle';
+  state: 'idle' | 'started' = 'idle';
 
   async start() {
     if (this.state === 'started') return;
@@ -20,8 +20,20 @@ export default class SpeechRecorder {
       audio: true,
       video: false,
     });
+    console.log('recorder started');
     this.onStarted();
     this.onGotStream(stream);
+  }
+
+  stop() {
+    console.log('recorder stopped');
+    this.state = 'idle';
+    this.mediaRecorder!.stop();
+  }
+
+  toggle() {
+    if (this.state === 'idle') this.start();
+    else this.stop();
   }
 
   getVolume(): number {
@@ -35,7 +47,7 @@ export default class SpeechRecorder {
 
   private onGotStream(stream: MediaStream) {
     const recordedChunks: Blob[] = [];
-    const mediaRecorder = new MediaRecorder(stream);
+    this.mediaRecorder = new MediaRecorder(stream);
     const ctx = new window.AudioContext();
     const analyzer = ctx.createAnalyser();
     const srcNode = ctx.createMediaStreamSource(stream);
@@ -46,9 +58,10 @@ export default class SpeechRecorder {
     let isSilence = true;
     let unsureFrame = 0;
 
-    mediaRecorder.ondataavailable = (e) => {
+    this.mediaRecorder.ondataavailable = (e) => {
+      if (!this.mediaRecorder || this.state === 'idle') return;
       recordedChunks.push(e.data);
-      if (mediaRecorder.state === 'inactive') return;
+      if (this.mediaRecorder.state === 'inactive') return;
       const vol = this.getVolume();
       if (vol > thresholdVolume) {
         if (isSilence) {
@@ -69,29 +82,30 @@ export default class SpeechRecorder {
         if (unsureFrame >= silenceFrame) {
           isSilence = true;
           unsureFrame = 0;
-          mediaRecorder.stop();
+          this.mediaRecorder.stop();
         }
       } else {
         // currently in silence mode
         unsureFrame = 0;
         clearRequested = true;
-        mediaRecorder.stop();
+        this.mediaRecorder.stop();
       }
     };
 
-    mediaRecorder.onstop = () => {
+    this.mediaRecorder.onstop = () => {
+      if (!this.mediaRecorder || this.state === 'idle') return;
       if (clearRequested) {
         clearRequested = false;
         recordedChunks.length = 0;
-        mediaRecorder.start(msInFrame);
+        this.mediaRecorder.start(msInFrame);
         return;
       }
       const blob = new Blob(recordedChunks, { type: 'audio/ogg; codecs=opus' });
       recordedChunks.length = 0;
       this.onSpeechEnd(blob);
-      mediaRecorder.start(msInFrame);
+      this.mediaRecorder.start(msInFrame);
     };
 
-    mediaRecorder.start(msInFrame);
+    this.mediaRecorder.start(msInFrame);
   }
 }
