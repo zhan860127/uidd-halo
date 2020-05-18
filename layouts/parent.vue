@@ -39,7 +39,17 @@
         <b-icon-list v-b-toggle.side-menu style="height: 27px; width: 27px;" />
       </b-navbar-nav>
     </b-navbar>
-    <b-sidebar id="side-menu" backdrop right>Menu stuff</b-sidebar>
+    <b-sidebar id="side-menu" backdrop right>
+      <div class="sidebar-item">設定基本資料</div>
+      <nuxt-link
+        class="sidebar-item"
+        style="color: inherit;"
+        :to="`/parent/connect?c=${$route.query.c}`"
+        >QR CODE</nuxt-link
+      >
+      <div class="sidebar-item">登出</div>
+      <div class="sidebar-divider"></div>
+    </b-sidebar>
     <nuxt />
   </div>
 </template>
@@ -84,6 +94,7 @@ body {
 .parent-bar {
   background-color: #fabf4d;
   color: #fcf6ef;
+  height: 52px;
 }
 
 .plain,
@@ -103,6 +114,37 @@ body {
   font-weight: bold;
   & .nav-link {
     color: #fcf6ef !important;
+  }
+}
+
+#side-menu {
+  background-color: #fcf6ef !important;
+  & > header {
+    background-color: #4d6790;
+    min-height: 52px;
+  }
+  & .b-sidebar-body {
+    padding: 17px 12px;
+  }
+
+  & .sidebar-item {
+    width: 100%;
+    height: 28px;
+    font: 15px/20px 'Avenir Book';
+    background-color: #fde9d2;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    padding: initial 3px;
+  }
+  & .sidebar-item + .sidebar-item {
+    margin-top: 7px;
+  }
+  .sidebar-divider {
+    height: 0px;
+    width: 100%;
+    border: 1px solid #082448;
+    margin: 16.5px 0;
   }
 }
 </style>
