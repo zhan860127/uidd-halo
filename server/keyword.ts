@@ -1,8 +1,10 @@
 import { Router } from 'express';
-import { getRepository } from 'typeorm';
+import { getRepository, createQueryBuilder } from 'typeorm';
 import { Parent, Child, ParentAudio } from '../models/entity/entities';
+import { randomFilename } from './misc';
 import * as Login from './Login';
 
+const uploadPath = process.env.UPLOAD_PATH;
 const router = Router();
 
 router.get('/getKey', async (req, res) => {
@@ -33,6 +35,42 @@ router.get('/changeKey', async (req, res) => {
   }
 })
 
+router.get('/addKey', async (req, res) => {
+  //  for TESTING only, rewrite later
+  //  check duplicate
+  const keyword = req.query.key as string;
+  const duplicate = await getRepository(ParentAudio)
+    .createQueryBuilder('key')
+    .where('key.keyword = :keyword', { keyword })
+    .getOne();
+  if (duplicate == undefined) {
+    //  computate id
+    let id = await getRepository(ParentAudio)
+      .createQueryBuilder('keyword')
+      .select('MAX(keyword.id)', 'max')
+      .getRawOne();
+    id = id.max + 1;
+    // no real ogg is created instead as just testing
+    const path = `${uploadPath}${randomFilename()}.ogg`; 
+    const parent = await Login.getParent(req);
+    const child = await Login.getChild(req);
+    //  add to database
+    await getRepository(ParentAudio)
+    .createQueryBuilder()
+    .insert()
+    .values({
+      id: id, 
+      createdAt: Date.now(),
+      keyword: keyword,
+      path: path,
+      parent: parent,
+      child: child
+    })
+    .execute();
+    res.send(true);
+  } else res.send(false);
+})
+
 router.get('/test', async (req, res) => {
   /*  const parent = await Login.getParent(req);
   const child = await Login.getChild(req);
@@ -51,15 +89,16 @@ router.get('/test', async (req, res) => {
     .execute();   */
 
   console.log('test start');
-  const newKey = 'ass';
-  const result = await getRepository(ParentAudio)
-  .createQueryBuilder('key')
-  .where('key.keyword = :keyword', { keyword: newKey })
-  .getOne();
-  console.log(typeof result);
-  console.log(result);
-  console.log(JSON.stringify(result));
-  res.send(JSON.stringify(result));
+
+  const max = await getRepository(ParentAudio)
+  .createQueryBuilder('keyword')
+  .select('MAX(keyword.id)', 'max')
+  .getRawOne();
+
+  console.log(typeof max);
+  console.log(max);
+  console.log(JSON.stringify(max));
+  res.send(JSON.stringify(max));
 })
 
 export default router;

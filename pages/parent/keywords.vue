@@ -26,7 +26,6 @@ export default {
     };
   },
   mounted() {
-    console.log('start getKey');
     $.ajax({
       type: 'GET',
       url: '/api/keyword/getKey',
@@ -46,7 +45,44 @@ export default {
   },
   methods: {
     addKey() {
-      // open the recorder
+      const keyword = prompt(
+        'キイワードは何ですか？',
+        'ここでタイプしましょう。'
+      );
+      if (keyword === null || keyword === '') alert('冇野啊');
+      else {
+        console.log(`Start addKey, key: ${keyword}`);
+        $.ajax({
+          type: 'GET',
+          url: '/api/keyword/addKey',
+          data: {
+            key: keyword,
+          },
+          success: (result) => {
+            if (!result) alert('Duplicate exists!');
+            else {
+              $.ajax({
+                type: 'GET',
+                url: '/api/keyword/getKey',
+                data: '',
+                success: (keyList) => {
+                  keyList = JSON.parse(keyList);
+                  keyList.forEach((element) => {
+                    element.seen = false;
+                  });
+                  this.list = keyList;
+                },
+                error() {
+                  console.log('get keyword list failed');
+                },
+              });
+            }
+          },
+          error() {
+            console.log('addKey failed');
+          },
+        });
+      }
     },
 
     show(idx) {
@@ -118,6 +154,8 @@ export default {
           console.log(result);
           console.log(typeof JSON.parse(result));
           console.log(JSON.parse(result));
+
+          console.log(JSON.parse(result).max);
         },
         error() {
           console.log('failed');
