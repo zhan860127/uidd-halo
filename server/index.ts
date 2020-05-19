@@ -58,6 +58,9 @@ async function start() {
   });
 
   const parentSockets: { [id: number]: SocketIO.Socket[] } = {};
+  const childPeerIds: {
+    [id: number]: string;
+  } = {};
 
   io.of('/child').on('connection', async (socket) => {
     const childId = getChildId(socket.request);
@@ -85,11 +88,17 @@ async function start() {
     }
     onlineChildrenIds.add(childId);
     notify();
-    socket.on('disconnect', () => {
-      console.log(`child ${childId} disconnected`);
-      onlineChildrenIds.delete(childId);
-      notify();
-    });
+    socket
+      .on('disconnect', () => {
+        console.log(`child ${childId} disconnected`);
+        delete childPeerIds[childId];
+        onlineChildrenIds.delete(childId);
+        notify();
+      })
+      .on('peer_id', (peerId) => {
+        childPeerIds[childId] = peerId;
+        console.log(`child ${childId} has peer id: ${peerId}`);
+      });
   });
 
   io.of('/parent').on('connection', async (socket) => {
@@ -114,6 +123,15 @@ async function start() {
     const parentId = getParentId(req);
     if (!parentId) return res.status(401).json();
     res.json(await childrenStatus(parentId));
+  });
+
+  app.post('/call/:childId', async (req, res) => {
+    const parentId = getParentId(req);
+    if (!parentId) return res.status(403).json();
+    const childId = Number.parseInt(req.params.childId);
+    const peerId = childPeerIds[childId];
+    if (!peerId) return res.status(404).json();
+    res.json({ peerId });
   });
 
   // Init Nuxt.js
