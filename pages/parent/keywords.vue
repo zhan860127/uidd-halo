@@ -16,6 +16,7 @@
 <script>
 /* import func from '../../vue-temp/vue-editor-bridge'; */
 import $ from 'jquery';
+//  import { response } from 'express';
 export default {
   data() {
     return {
@@ -36,7 +37,6 @@ export default {
           element.seen = false;
         });
         this.list = keyList;
-        console.log(keyList);
       },
       error() {
         console.log('get keyword list failed');
@@ -49,7 +49,7 @@ export default {
         'キイワードは何ですか？',
         'ここでタイプしましょう。'
       );
-      if (keyword === null || keyword === '') alert('冇野啊');
+      if (keyword === null || keyword === '') alert('冇野喎');
       else {
         console.log(`Start addKey, key: ${keyword}`);
         $.ajax({
@@ -116,16 +116,18 @@ export default {
     },
 
     deleteItem(idx) {
-      //  TODO
-      this.list[this.selectItem] = idx;
+      this.selectItem = idx;
       $.ajax({
         type: 'GET',
-        url: './api/deleteKey',
+        url: '/api/keyword/deleteKey',
         data: {
           id: this.list[this.selectItem].id,
         },
+        success: (result) => {
+          if (!result) console.log('delete failed');
+        },
       });
-
+      //  update the list
       $.ajax({
         type: 'GET',
         url: '/api/keyword/getKey',
@@ -136,7 +138,6 @@ export default {
             element.seen = false;
           });
           this.list = keyList;
-          console.log(keyList);
         },
         error() {
           console.log('get keyword list failed');

@@ -71,6 +71,17 @@ router.get('/addKey', async (req, res) => {
   } else res.send(false);
 })
 
+router.get('/deleteKey', async (req, res) => {
+  const id = req.query.id;
+  //  TODO: read the path and delete the file
+  await getRepository(ParentAudio)
+    .createQueryBuilder()
+    .delete()
+    .where('id = :id', { id })
+    .execute();
+  res.send(true);
+})
+
 router.get('/test', async (req, res) => {
   /*  const parent = await Login.getParent(req);
   const child = await Login.getChild(req);
