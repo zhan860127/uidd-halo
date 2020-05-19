@@ -9,21 +9,26 @@
         <button v-show="item.seen" @click="deleteItem(idx)">Delete</button>
       </li>
     </ol>
-    <button @click="test">TEST</button>
+    <button @click="test">TEST-adding fake data</button>
+    <Drawer v-model="recorderDrawerOpen" side="top">
+      <KeyAudioForm></KeyAudioForm>
+    </Drawer>
   </div>
 </template>
 
 <script>
-/* import func from '../../vue-temp/vue-editor-bridge'; */
 import $ from 'jquery';
-//  import { response } from 'express';
+import Drawer from '~/components/Drawer.vue';
+import KeyAudioForm from '~/components/KeyAudioForm.vue';
 export default {
+  components: { Drawer, KeyAudioForm },
   data() {
     return {
       list: [
         //  { id: 0, keyword: 'nya', path: './somewhere/nya.ogg', seen: false },
       ],
       selectItem: 0,
+      recorderDrawerOpen: false,
     };
   },
   mounted() {
@@ -45,44 +50,7 @@ export default {
   },
   methods: {
     addKey() {
-      const keyword = prompt(
-        'キイワードは何ですか？',
-        'ここでタイプしましょう。'
-      );
-      if (keyword === null || keyword === '') alert('冇野喎');
-      else {
-        console.log(`Start addKey, key: ${keyword}`);
-        $.ajax({
-          type: 'GET',
-          url: '/api/keyword/addKey',
-          data: {
-            key: keyword,
-          },
-          success: (result) => {
-            if (!result) alert('Duplicate exists!');
-            else {
-              $.ajax({
-                type: 'GET',
-                url: '/api/keyword/getKey',
-                data: '',
-                success: (keyList) => {
-                  keyList = JSON.parse(keyList);
-                  keyList.forEach((element) => {
-                    element.seen = false;
-                  });
-                  this.list = keyList;
-                },
-                error() {
-                  console.log('get keyword list failed');
-                },
-              });
-            }
-          },
-          error() {
-            console.log('addKey failed');
-          },
-        });
-      }
+      this.recorderDrawerOpen = true;
     },
 
     show(idx) {
@@ -146,22 +114,44 @@ export default {
     },
 
     test() {
-      console.log('Testing');
-      $.ajax({
-        type: 'GET',
-        url: '/api/keyword/test',
-        data: '',
-        success: (result) => {
-          console.log(result);
-          console.log(typeof JSON.parse(result));
-          console.log(JSON.parse(result));
-
-          console.log(JSON.parse(result).max);
-        },
-        error() {
-          console.log('failed');
-        },
-      });
+      const keyword = prompt(
+        'キイワードは何ですか？',
+        'ここでタイプしましょう。'
+      );
+      if (keyword === null || keyword === '') alert('冇野喎');
+      else {
+        console.log(`Start addKey, key: ${keyword}`);
+        $.ajax({
+          type: 'GET',
+          url: '/api/keyword/addKey',
+          data: {
+            key: keyword,
+          },
+          success: (result) => {
+            if (!result) alert('Duplicate exists!');
+            else {
+              $.ajax({
+                type: 'GET',
+                url: '/api/keyword/getKey',
+                data: '',
+                success: (keyList) => {
+                  keyList = JSON.parse(keyList);
+                  keyList.forEach((element) => {
+                    element.seen = false;
+                  });
+                  this.list = keyList;
+                },
+                error() {
+                  console.log('get keyword list failed');
+                },
+              });
+            }
+          },
+          error() {
+            console.log('addKey failed');
+          },
+        });
+      }
     },
   },
   layout: 'parent',
