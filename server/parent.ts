@@ -127,8 +127,9 @@ router.get('/child_audio', async (req, res) => {
   if (!child) return res.sendStatus(404);
 
   const maxResults = 50;
-  const audios = await createQueryBuilder(ChildAudio)
-    .where('recordedAt <= datetime(:fromDate)', {
+  const audios = await createQueryBuilder(ChildAudio, 'audio')
+    .where('childId = :childId', { childId })
+    .andWhere('recordedAt <= datetime(:fromDate)', {
       fromDate,
     })
     .orderBy('recordedAt', 'DESC')
