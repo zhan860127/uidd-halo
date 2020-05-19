@@ -3,7 +3,7 @@
     <b-button v-if="state === 'READY'" @click="call">
       Call
     </b-button>
-    <b-button v-if="state === 'IN_CALL'" @click="hang"></b-button>
+    <b-button v-if="state === 'IN_CALL'" @click="hang">HANG UP</b-button>
     <div>{{ state }}</div>
   </div>
 </template>
