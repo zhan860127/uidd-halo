@@ -1,21 +1,33 @@
 <template>
   <div>
-    <b-button @click="call">
+    <b-button v-if="state === 'READY'" @click="call">
       Call
     </b-button>
-    <audio controls :src-object.prop.camel="remoteStream"></audio>
+    <b-button v-if="state === 'IN_CALL'" @click="hang"></b-button>
+    <div>{{ state }}</div>
   </div>
 </template>
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
 
+type State =
+  | 'INIT'
+  | 'READY'
+  | 'CALL_REQUESTED'
+  | 'IN_CALL'
+  | 'HANGING'
+  | 'CALL_FAILED'
+  | 'CALL_INTERRUPTED';
+
 @Component({
   layout: 'parent',
 })
 export default class classname extends Vue {
-  remoteStream: MediaStream | null = null;
+  audio: HTMLAudioElement | null = null;
+  state: State = 'INIT';
   peer: any; // should be Peer
+  peerCall: any; // should be Peer.MediaConnection
 
   async mounted() {
     const Peer = (await import('peerjs')).default;
@@ -25,6 +37,7 @@ export default class classname extends Vue {
     this.peer = peer;
     peer.on('open', (id) => {
       console.log('myid: ', id);
+      this.state = 'READY';
     });
     peer.on('connection', function (c) {
       // Disallow incoming connections
@@ -38,6 +51,8 @@ export default class classname extends Vue {
   }
 
   async call() {
+    if (this.state !== 'READY') return;
+    this.state = 'CALL_REQUESTED';
     let peerId: string;
     try {
       const { peerId: p } = await this.$axios.$post(
@@ -46,37 +61,52 @@ export default class classname extends Vue {
       peerId = p;
       console.log(`got peer id: ${peerId}`);
     } catch (_e) {
-      throw new Error('cannot get peer id');
+      this.state = 'CALL_FAILED';
+      return;
     }
     const localStream = await navigator.mediaDevices.getUserMedia({
       audio: true,
     });
     if (!localStream) {
-      throw new Error('cannot get local audio stream');
+      alert('Cannot get audio');
+      this.state = 'READY';
+      return;
     }
     console.log(`calling ${peerId}`);
     const call = this.peer.call(peerId, localStream);
+    this.peerCall = call;
     call.on('stream', (remoteStream: MediaStream) => {
       console.log('got remote stream');
-      this.remoteStream = remoteStream;
+      const audio = new Audio();
+      this.audio = audio;
+      audio.srcObject = remoteStream;
+      audio.play();
+      this.state = 'IN_CALL';
     });
     call.on('close', () => {
+      if (this.audio) this.audio.pause();
+      if (this.state !== 'HANGING') {
+        console.log('stream closed by remote');
+        this.state = 'CALL_INTERRUPTED';
+        return;
+      } else {
+        console.log('hanged up');
+        this.state = 'READY';
+      }
       console.log('stream closed');
-      this.remoteStream = null;
     });
     call.on('error', (err: any) => {
+      if (this.audio) this.audio.pause();
       console.error(err);
-      this.remoteStream = null;
+      this.state = 'CALL_INTERRUPTED';
     });
   }
+
+  hang() {
+    this.state = 'HANGING';
+    this.peerCall.close();
+  }
 }
-/*
-.on('call_ok', peerId => {
-        console.log(`child ready to connect with peer id ${peerId}`);
-      }).on('call_fail', () => {
-        console.log('')
-      });
-*/
 </script>
 
 <style></style>

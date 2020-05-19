@@ -1,9 +1,8 @@
 <template>
-  <div class="child-root" @click="toggle">
+  <div class="child-root">
     <Pie class="pie abs-center" :v="smoothedVol" bg="#CCCCCC" :fg="color" />
     <div class="inner abs-center"></div>
     <div class="photo abs-center" style="--pic: url('/copy.png');"></div>
-    <audio :src-object.prop.camel="remoteStream"></audio>
   </div>
 </template>
 
@@ -20,7 +19,7 @@ export default class classname extends Vue {
   recorder = new Recorder();
   volume = 0;
   smoothedVol = 0;
-  remoteStream: MediaStream | null = null;
+  audio: HTMLAudioElement | null = null;
 
   async mounted() {
     const Peer = (await import('peerjs')).default;
@@ -39,15 +38,21 @@ export default class classname extends Vue {
       call.answer(stream);
       call.on('stream', (stream) => {
         console.log('got remote stream');
-        this.remoteStream = stream;
+        this.recorder.stop();
+        if (this.audio) this.audio.pause();
+        this.audio = new Audio();
+        this.audio.srcObject = stream;
+        this.audio.play();
       });
       call.on('close', () => {
         console.log('remote stream closed');
-        this.remoteStream = null;
+        if (this.audio) this.audio.pause();
+        this.recorder.start();
       });
       call.on('error', (err) => {
         console.error('call error', err);
-        this.remoteStream = null;
+        if (this.audio) this.audio.pause();
+        this.recorder.start();
       });
     });
     this.record();
@@ -88,11 +93,6 @@ export default class classname extends Vue {
         console.log(d?.transcript || 'none');
       })
       .catch();
-  }
-
-  toggle() {
-    console.log('click');
-    this.recorder.toggle();
   }
 }
 </script>
