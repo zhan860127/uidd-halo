@@ -54,6 +54,8 @@
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
     "patch-package": "^6.2.2",
+    "peer": "^0.5.3",
+    "peerjs": "^1.2.0",
     "postinstall-postinstall": "^2.1.0",
     "qrcode": "^1.4.4",
     "reflect-metadata": "^0.1.13",

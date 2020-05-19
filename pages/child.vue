@@ -3,6 +3,7 @@
     <Pie class="pie abs-center" :v="smoothedVol" bg="#CCCCCC" :fg="color" />
     <div class="inner abs-center"></div>
     <div class="photo abs-center" style="--pic: url('/copy.png');"></div>
+    <audio :src-object.prop.camel="remoteStream"></audio>
   </div>
 </template>
 
@@ -19,9 +20,37 @@ export default class classname extends Vue {
   recorder = new Recorder();
   volume = 0;
   smoothedVol = 0;
-  mounted() {
+  remoteStream: MediaStream | null = null;
+
+  async mounted() {
+    const Peer = (await import('peerjs')).default;
+    const peer = new Peer({
+      debug: 2,
+    });
+    peer.on('open', function () {
+      const socket = io('/child').on('connect', () => {
+        console.log(`peer_id: ${peer.id}`);
+        socket.emit('peer_id', peer.id);
+      });
+    });
+    peer.on('call', async (call) => {
+      console.log('received call');
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      call.answer(stream);
+      call.on('stream', (stream) => {
+        console.log('got remote stream');
+        this.remoteStream = stream;
+      });
+      call.on('close', () => {
+        console.log('remote stream closed');
+        this.remoteStream = null;
+      });
+      call.on('error', (err) => {
+        console.error('call error', err);
+        this.remoteStream = null;
+      });
+    });
     this.record();
-    io('/child');
   }
 
   @Watch('volume')
