@@ -49,11 +49,16 @@
       >
       <div class="sidebar-item">登出</div>
       <div class="sidebar-divider"></div>
-      <div v-for="(child, i) in childStatus" :key="i" class="sidebar-item">
+      <nuxt-link
+        v-for="child in childStatus"
+        :key="child.id"
+        class="sidebar-item plain pointer"
+        :to="`/parent?c=${child.id}`"
+      >
         <div class="child-dot" :class="{ online: child.online }"></div>
         <div class="flex-grow-1">{{ child.name }}</div>
         <div class="child-online">{{ child.online ? '上線中' : '離線中' }}</div>
-      </div>
+      </nuxt-link>
     </b-sidebar>
     <nuxt />
   </div>
@@ -121,6 +126,11 @@ body {
   color: inherit;
   text-decoration: inherit;
   cursor: inherit;
+}
+
+.pointer,
+.pointer:hover {
+  cursor: pointer;
 }
 
 .nav-dropdown .dropdown-menu {

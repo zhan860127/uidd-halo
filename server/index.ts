@@ -14,6 +14,7 @@ const config = require('../nuxt.config.js').default;
 require('dotenv').config();
 
 interface ChildStatus {
+  id: number;
   name: string;
   online: boolean;
 }
@@ -46,6 +47,7 @@ async function start() {
     });
     if (!parent) return null;
     return parent.children!.map((x) => ({
+      id: x.id!,
       name: x.name!,
       online: onlineChildrenIds.has(x.id!),
     }));
@@ -125,7 +127,7 @@ async function start() {
     res.json(await childrenStatus(parentId));
   });
 
-  app.post('/call/:childId', async (req, res) => {
+  app.post('/call/:childId', (req, res) => {
     const parentId = getParentId(req);
     if (!parentId) return res.status(403).json();
     const childId = Number.parseInt(req.params.childId);

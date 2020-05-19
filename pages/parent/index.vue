@@ -43,6 +43,7 @@ import { Vue, Component } from 'vue-property-decorator';
       error({ statusCode: 401 });
     }
   },
+  watchQuery: true,
   layout: 'parent',
 })
 export default class classname extends Vue {}
