@@ -89,7 +89,7 @@ export default class classname extends Vue {
   get title(): string {
     const p = this.$route.path;
     return p.startsWith('/parent/logs')
-      ? 'Recordings'
+      ? 'Record'
       : p.startsWith('/parent/keywords')
       ? 'Response'
       : p.startsWith('/parent/call')
