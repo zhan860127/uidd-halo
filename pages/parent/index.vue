@@ -8,7 +8,7 @@
     <ul>
       <li>
         <nuxt-link
-          :to="{ path: '/parent/keywords', query: { c: $route.query.c } }"
+          :to="{ path: '/parent/keyword', query: { c: $route.query.c } }"
           >關鍵字</nuxt-link
         >
       </li>
