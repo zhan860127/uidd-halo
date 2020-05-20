@@ -7,7 +7,6 @@ import { getRepository, createQueryBuilder } from 'typeorm';
 import { Parent, Child, ParentAudio } from '../models/entity/entities';
 import { getParent } from './Login';
 import { randomName } from './misc';
-import * as Login from './Login';
 
 const uploadPath = process.env.UPLOAD_PATH;
 const upload = multer();
