@@ -29,7 +29,7 @@ export default class SpeechRecorder {
     if (this.state === 'idle') return;
     console.log('recorder stopped');
     this.state = 'idle';
-    this.mediaRecorder!.stop();
+    if (this.mediaRecorder!.state === 'recording') this.mediaRecorder!.stop();
   }
 
   toggle() {

@@ -7,8 +7,9 @@ import multer from 'multer';
 import { config } from 'dotenv';
 import tmp from 'tmp';
 import axios from 'axios';
-import { getManager } from 'typeorm';
-import { ChildAudio } from '../models/entity/entities';
+import { getManager, getRepository } from 'typeorm';
+import datauri from 'datauri';
+import { ChildAudio, ParentAudio } from '../models/entity/entities';
 import { childLoggedIn, getChild } from './Login';
 import { randomFilename } from './misc';
 
@@ -84,11 +85,46 @@ router.post('/speech', upload.single('data'), async (req, res) => {
   const transcript = await getAudioTranscript(flacPath);
 
   await promisify(unlink)(flacPath);
-  res.json({ transcript });
 
   if (!transcript) {
     await promisify(unlink)(oggPath);
     return;
+  }
+
+  console.log({ transcript });
+
+  // lookup if transcript matches response
+  const pas = await getRepository(ParentAudio)
+    .createQueryBuilder('pa')
+    .where('childId = :cid', { cid: child.id! })
+    .getMany();
+
+  let parentAudio: ParentAudio | null = null;
+
+  for (const pa of pas) {
+    if (transcript.includes(pa.keyword!)) {
+      parentAudio = pa;
+    }
+  }
+
+  // send back to client
+  if (parentAudio) {
+    let uri = null;
+    try {
+      uri = await datauri(parentAudio.path!);
+    } catch (e) {
+      console.error(e);
+    }
+    res.json({
+      transcript,
+      keyword: {
+        id: parentAudio.id!,
+        keyword: parentAudio.keyword!,
+        audioData: uri,
+      },
+    });
+  } else {
+    res.json({ transcript });
   }
 
   // resave as mp3 to fix metadata

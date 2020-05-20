@@ -20,6 +20,7 @@ export default class classname extends Vue {
   volume = 0;
   smoothedVol = 0;
   audio: HTMLAudioElement | null = null;
+  responseAudio: HTMLAudioElement | null = null;
 
   async mounted() {
     const Peer = (await import('peerjs')).default;
@@ -90,7 +91,18 @@ export default class classname extends Vue {
         headers: { 'Content-Type': 'multipart/form-data' },
       })
       .then((d) => {
-        console.log(d?.transcript || 'none');
+        console.log(d);
+        if (d.keyword) {
+          this.recorder.stop();
+          if (this.responseAudio) this.responseAudio.pause();
+          this.responseAudio = new Audio();
+          this.responseAudio.onended = () => {
+            this.responseAudio = null;
+            this.recorder.start();
+          };
+          this.responseAudio.src = d.keyword.audioData;
+          this.responseAudio.play();
+        }
       })
       .catch();
   }
