@@ -7,7 +7,14 @@
           現在就與小寶貝通話吧！
         </div>
         <div
-          v-if="state === 'READY' || state === 'CALL_REQUESTED'"
+          v-if="
+            [
+              'READY',
+              'CALL_REQUESTED',
+              'CALL_FAILED',
+              'CALL_INTERRUPTED',
+            ].includes(state)
+          "
           class="flex-grow-1 d-flex flex-column align-items-center"
         >
           <div class="flex-grow-1"></div>
@@ -15,7 +22,7 @@
             src="/1-03 -2.png"
             alt="handset"
             class="handset"
-            :class="{ picked: state === 'CALL_REQUESTED' }"
+            :class="{ picked: state !== 'READY' }"
             @click="onHandsetClick"
           />
           <img src="/1-03 -1.png" alt="base" class="base" />
