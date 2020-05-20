@@ -9,10 +9,11 @@
 <script lang="ts">
 import { Vue, Component, Watch } from 'vue-property-decorator';
 import io from 'socket.io-client';
+import { MovingAverageFilter } from '../assets/ts/MovingAverageFilter';
 import Recorder from '~/assets/ts/Recorder';
 import Pie from '~/components/Pie.vue';
 
-const alpha = 0.5;
+const filter = new MovingAverageFilter(10);
 
 @Component({ components: { Pie } })
 export default class classname extends Vue {
@@ -61,7 +62,7 @@ export default class classname extends Vue {
 
   @Watch('volume')
   onVolChange(vol: number) {
-    this.smoothedVol = alpha * vol + (1 - alpha) * this.smoothedVol;
+    this.smoothedVol = filter.input(vol);
   }
 
   get color(): string {
