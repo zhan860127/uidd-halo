@@ -62,7 +62,7 @@ export default class classname extends Vue {
 }
 </script>
 
-<style>
+<style scoped>
 .wrapper {
   display: flex;
   flex-direction: column;

@@ -101,7 +101,7 @@ export default class menu extends Vue {
 }
 </script>
 
-<style>
+<style scoped>
 .link {
   transform: translate(-50%, -50%);
   max-height: 300px;

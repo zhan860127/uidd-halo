@@ -55,7 +55,7 @@ import { Vue, Component } from 'vue-property-decorator';
 export default class classname extends Vue {}
 </script>
 
-<style lang="sass">
+<style lang="sass" scoped>
 body
   position: relative
   top: 0px

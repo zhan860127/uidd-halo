@@ -41,7 +41,7 @@ import { Vue, Component } from 'vue-property-decorator';
 export default class classname extends Vue {}
 </script>
 
-<style lang="sass">
+<style lang="sass" scoped>
 @font-face
   font-family: 'Seravek'
   src: url('~assets/font/SeravekBasic.ttf') format("truetype")
