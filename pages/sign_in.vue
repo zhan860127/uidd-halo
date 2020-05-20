@@ -1,36 +1,36 @@
 <template>
-  <div id=root>
-  <div class="wrapper">
-    <div class="con">
-    <p id="t1">SIGN IN</p>
-    <p id="t2">Use your Accout</p>
-    <form id="form" action="/api/login" method="POST">
-      <input
-        id="user"
-        class="input"
-        type="text"
-        name="username"
-        placeholder="Username"
-      />
-      <input
-        id="psd"
-        class="input"
-        type="password"
-        name="password"
-        placeholder="Password"
-      />
-      <input
-        class="output"
-        type="submit"
-        value="DONE"
-        onclick="log(); return false;"
-      />
-    </form>
-    <div id="r"></div>
-    
-    <img id="i01" src="~/assets/img/1.png" onclick="history.back()" />
- </div>
-  </div>
+  <div id="root">
+    <div class="wrapper">
+      <div class="con">
+        <p id="t1">SIGN IN</p>
+        <p id="t2">Use your Accout</p>
+        <form id="form" action="/api/login" method="POST">
+          <input
+            id="user"
+            class="input"
+            type="text"
+            name="username"
+            placeholder="Username"
+          />
+          <input
+            id="psd"
+            class="input"
+            type="password"
+            name="password"
+            placeholder="Password"
+          />
+          <input
+            class="output"
+            type="submit"
+            value="DONE"
+            onclick="log(); return false;"
+          />
+        </form>
+        <div id="r"></div>
+
+        <img id="i01" src="~/assets/img/1.png" onclick="history.back()" />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -60,13 +60,13 @@ body
 
 
 
-#root 
+#root
   height: 100vh
   min-height: 450px
   display: flex
   flex-direction: column
 
-.wrapper 
+.wrapper
   max-width: 414px
   margin: 0 auto
   position: relative

@@ -1,44 +1,51 @@
 <template>
-  <div id=root>
-  <div class="wrapper">
-    <div class="con">
-  <div>
-    <p id="t1">SIGN UP</p>
-    <p id="t2">Creat your Account</p>
+  <div id="root">
+    <div class="wrapper">
+      <div class="con">
+        <div>
+          <p id="t1">SIGN UP</p>
+          <p id="t2">Creat your Account</p>
 
-    <form id="form" method="POST" action="/api/register">
-      <input
-        id="email"
-        class="input"
-        type="text"
-        name="email"
-        placeholder="Email"
-      />
-      <br />
-      <input
-        id="user"
-        class="input"
-        type="text"
-        name="username"
-        placeholder="Username"
-      />
-      <br />
-      <input
-        id="psd"
-        class="input"
-        type="password"
-        name="password"
-        placeholder="Password"
-      />
-      <br />
-      <input id="psd2" class="input" type="password" placeholder="Confirm" />
-      <br />
-      <input class="output" type="submit" value="DONE" />
-    </form>
-    <div id="r"></div>
-    <img id="i01" src="~/assets/img/1.png" onclick="history.back()" />
+          <form id="form" method="POST" action="/api/register">
+            <input
+              id="email"
+              class="input"
+              type="text"
+              name="email"
+              placeholder="Email"
+            />
+            <br />
+            <input
+              id="user"
+              class="input"
+              type="text"
+              name="username"
+              placeholder="Username"
+            />
+            <br />
+            <input
+              id="psd"
+              class="input"
+              type="password"
+              name="password"
+              placeholder="Password"
+            />
+            <br />
+            <input
+              id="psd2"
+              class="input"
+              type="password"
+              placeholder="Confirm"
+            />
+            <br />
+            <input class="output" type="submit" value="DONE" />
+          </form>
+          <div id="r"></div>
+          <img id="i01" src="~/assets/img/1.png" onclick="history.back()" />
+        </div>
+      </div>
+    </div>
   </div>
-    </div></div></div>
 </template>
 
 <script lang="ts">
@@ -60,13 +67,13 @@ body
   margin: 0px
   opacity: 1
 
-#root 
+#root
   height: 100vh
   min-height: 450px
   display: flex
   flex-direction: column
 
-.wrapper 
+.wrapper
   max-width: 414px
   margin: 0 auto
   position: relative
