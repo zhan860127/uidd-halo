@@ -42,6 +42,7 @@
     <b-sidebar id="side-menu" backdrop right>
       <div class="sidebar-item">設定基本資料</div>
       <nuxt-link
+        v-if="$route.query.c"
         class="sidebar-item"
         style="color: inherit;"
         :to="`/parent/connect?c=${$route.query.c}`"
