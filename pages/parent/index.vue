@@ -1,8 +1,5 @@
 <template>
   <div>
-    <nuxt-link :to="{ path: '/parent/connect', query: { c: $route.query.c } }"
-      >Link child's device</nuxt-link
-    >
     <div class="wrapper">
       <div
         v-touch:swipe.left="left"
@@ -204,7 +201,6 @@ body {
 }
 .con {
   min-width: 300px;
-  width: 414px;
   height: 100%;
 }
 .menu {
@@ -213,10 +209,8 @@ body {
   margin: 0px;
 
   height: 90vh;
-  width: 500px;
 }
 .wrapper {
-  max-width: 414px;
   margin: 0 auto;
   position: relative;
   height: 100%;
