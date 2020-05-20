@@ -10,7 +10,7 @@
         class="menu con"
       >
         <nuxt-link
-          :to="{ path: '/parent/keywords', query: { c: $route.query.c } }"
+          :to="{ path: '/parent/keyword', query: { c: $route.query.c } }"
           ><img id="1" class="link p3" src="~/assets/img/m/1-11.png"
         /></nuxt-link>
 
