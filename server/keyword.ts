@@ -12,7 +12,6 @@ router.get('/getKey', async (req, res) => {
   .createQueryBuilder('keyword')
   .select(['keyword.id', 'keyword.keyword'])
   .getMany();
-  console.log(keyList);
   res.send(JSON.stringify(keyList));  
 })
 
@@ -22,7 +21,7 @@ router.get('/changeKey', async (req, res) => {
   const key = await getRepository(ParentAudio)
   .createQueryBuilder('key')
   .where('key.keyword = :keyword', { keyword: newKey })
-  .getOne();
+  .getOne(); 
   if (key == undefined) {
     await getRepository(ParentAudio)
       .createQueryBuilder()

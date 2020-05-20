@@ -75,8 +75,6 @@ export default class classname extends Vue {
       method: 'get',
       url: '/api/keyword/getKey',
     }).then((res) => {
-      // let keyList = res.data;
-      console.log(res.data);
       this.responses = res.data;
     });
   }
@@ -100,6 +98,7 @@ export default class classname extends Vue {
 
   editKey(id: number) {
     // load data into inputs
+    const temp = this.responses[id].keyword;
     const newKey = prompt('Change Keyword?', '');
     if (newKey === null || newKey === '') {
       console.log('Invalid Input');
@@ -111,14 +110,15 @@ export default class classname extends Vue {
 
     axios({
       method: 'get',
-      url: '/api/keyword/test',
-      data: {
+      url: '/api/keyword/changeKey',
+      params: {
         id,
         key: newKey,
       },
     })
       .then((result) => {
-        if (!result) {
+        if (!result.data) {
+          this.responses[id].keyword = temp;
           console.log('ChangeKey failed');
         }
       })
