@@ -64,6 +64,8 @@ async function start() {
     [id: number]: string;
   } = {};
 
+  app.locals.parentSockets = parentSockets;
+
   io.of('/child').on('connection', async (socket) => {
     const childId = getChildId(socket.request);
     if (!childId) {

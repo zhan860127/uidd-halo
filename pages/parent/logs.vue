@@ -80,6 +80,16 @@ import DatePicker from '~/components/DatePicker.vue';
 import Drawer from '~/components/Drawer.vue';
 import '~/assets/scss/_fonts.scss';
 
+async function childAudios($axios: any, query: any): Promise<AudioData[]> {
+  const audios = await $axios.$get('/api/parent/child_audio', {
+    params: { c: query.c },
+  });
+  audios.forEach((x: any) => {
+    x.date = new Date(x.date);
+  });
+  return audios;
+}
+
 @Component({
   components: {
     AudioLog,
@@ -88,13 +98,7 @@ import '~/assets/scss/_fonts.scss';
   },
   layout: 'parent',
   async asyncData({ $axios, query }) {
-    const audios = await $axios.$get('/api/parent/child_audio', {
-      params: { c: query.c },
-    });
-    audios.forEach((x: any) => {
-      x.date = new Date(x.date);
-    });
-    return { audios };
+    return { audios: await childAudios($axios, query) };
   },
 })
 export default class classname extends Vue {
@@ -130,6 +134,16 @@ export default class classname extends Vue {
       }
     }
     return [];
+  }
+
+  get logsVer(): number {
+    return this.$store.state.parent.logsVer;
+  }
+
+  @Watch('logsVer')
+  async onLogsChange() {
+    console.log('logs changed');
+    this.audios = await childAudios(this.$axios, this.$route.query);
   }
 
   audioTime(data: AudioData): string {

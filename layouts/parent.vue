@@ -74,12 +74,16 @@ import io from 'socket.io-client';
 @Component
 export default class classname extends Vue {
   mounted() {
-    io.connect('/parent').on('status', (v: any) => {
-      this.$store.commit('parent/setChildStatus', v);
-      // @ts-ignore
-      window.v = v;
-      console.log(v);
-    });
+    io.connect('/parent')
+      .on('status', (v: any) => {
+        this.$store.commit('parent/setChildStatus', v);
+        // @ts-ignore
+        window.v = v;
+        console.log(v);
+      })
+      .on('/logs', () => {
+        this.$store.commit('parent/incLogsVer');
+      });
   }
 
   get title(): string {

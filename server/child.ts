@@ -9,6 +9,8 @@ import tmp from 'tmp';
 import axios from 'axios';
 import { getManager, getRepository } from 'typeorm';
 import datauri from 'datauri';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import socketIO from 'socket.io';
 import { ChildAudio, ParentAudio } from '../models/entity/entities';
 import { childLoggedIn, getChild } from './Login';
 import { randomFilename } from './misc';
@@ -137,6 +139,16 @@ router.post('/speech', upload.single('data'), async (req, res) => {
   ca.path = mp3Path;
   ca.recordedAt = date;
   await getManager().save(ca);
+
+  const ps = req.app.locals.parentSockets as {
+    [id: number]: SocketIO.Socket[];
+  };
+  child.parents!.forEach((p) => {
+    console.log(`informing parent ${p.id} logs change of child ${child.id}`);
+    ps[p.id!].forEach((socket) => {
+      socket.emit('/logs');
+    });
+  });
 });
 
 export default router;

@@ -51,5 +51,6 @@ export async function getChild(req: Request): Promise<Child | undefined> {
     where: {
       id: getChildId(req),
     },
+    relations: ['parents'],
   });
 }
