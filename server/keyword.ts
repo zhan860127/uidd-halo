@@ -10,6 +10,7 @@ const router = Router();
 router.get('/getKey', async (req, res) => {
   const keyList = await getRepository(ParentAudio)
   .createQueryBuilder('keyword')
+  .select(['keyword.id', 'keyword.keyword'])
   .getMany();
   res.send(JSON.stringify(keyList));  
 })
@@ -20,7 +21,7 @@ router.get('/changeKey', async (req, res) => {
   const key = await getRepository(ParentAudio)
   .createQueryBuilder('key')
   .where('key.keyword = :keyword', { keyword: newKey })
-  .getOne();
+  .getOne(); 
   if (key == undefined) {
     await getRepository(ParentAudio)
       .createQueryBuilder()
@@ -101,15 +102,12 @@ router.get('/test', async (req, res) => {
 
   console.log('test start');
 
-  const max = await getRepository(ParentAudio)
-  .createQueryBuilder('keyword')
-  .select('MAX(keyword.id)', 'max')
-  .getRawOne();
+  
 
-  console.log(typeof max);
+  /*  console.log(typeof max);
   console.log(max);
   console.log(JSON.stringify(max));
-  res.send(JSON.stringify(max));
+  res.send(JSON.stringify(max));  */
 })
 
 export default router;
