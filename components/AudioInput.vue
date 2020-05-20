@@ -14,23 +14,34 @@ import { Vue, Component } from 'vue-property-decorator';
 
 @Component
 export default class classname extends Vue {
+  temp: boolean = false;
   recording: boolean = false;
+  mediaRecorder: MediaRecorder | null = null;
   blob: Blob | null = null;
 
-  async mounted() {}
-
-  async record() {
+  async mounted() {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    const mediaRecorder = new MediaRecorder(stream as MediaStream);
+    this.mediaRecorder = new MediaRecorder(stream);
+  }
+
+  record() {
+    let chunks: Blob[] = [];
     if (!this.recording) {
-      mediaRecorder.start();
+      this.mediaRecorder!.start();
       this.recording = true;
     } else {
-      mediaRecorder.stop();
+      this.mediaRecorder!.stop();
       this.recording = false;
     }
 
-    mediaRecorder.onstop = function () {};
+    this.mediaRecorder!.ondataavailable = (audio) => {
+      chunks.push(audio.data);
+    };
+
+    this.mediaRecorder!.onstop = () => {
+      this.blob = new Blob(chunks, { type: 'audio/ogg; codecs=opus' });
+      chunks = [];
+    };
   }
 }
 </script>
