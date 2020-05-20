@@ -11,22 +11,39 @@
       >
         <nuxt-link
           :to="{ path: '/parent/keywords', query: { c: $route.query.c } }"
-          ><img ref="1" class="link p1" src="~/assets/img/m/1-11.png"
+          ><img id="1" class="link p3" src="~/assets/img/m/1-11.png"
         /></nuxt-link>
 
         <nuxt-link :to="{ path: '/parent/logs', query: { c: $route.query.c } }"
-          ><img ref="2" class="link p2" src="~/assets/img/m/1-02.png"
+          ><img id="2" class="link p1" src="~/assets/img/m/1-02.png"
         /></nuxt-link>
 
         <nuxt-link :to="{ path: '/parent/call', query: { c: $route.query.c } }"
-          ><img ref="3" class="link p3" src="~/assets/img/m/1-10.png"
+          ><img id="3" class="link p2" src="~/assets/img/m/1-10.png"
         /></nuxt-link>
-
-        <div id="contain" ref="4" class="link p4">
+        <div id="contain" class="link p4">
           <div id="name">{{ child.name }}</div>
           <nuxt-link :to="{ path: '/parent/children' }"
             ><img id="pic" src="~/assets/img/m/1-12.png"
           /></nuxt-link>
+        </div>
+      </div>
+
+      <div class="slidecontainer">
+        <input
+          id="myRange"
+          type="range"
+          min="0"
+          max="3"
+          value="0"
+          class="slider"
+          @input="change"
+        />
+        <div>
+          <span id="d1" class="dot"></span>
+          <span id="d2" class="dot"></span>
+          <span id="d3" class="dot"></span>
+          <span id="d4" class="dot"></span>
         </div>
       </div>
     </div>
@@ -78,10 +95,30 @@ export default class menu extends Vue {
       p3.classList.add('p1');
       p4.classList.add('p3');
     }, 100);
+
+    const bar = (document.getElementById('myRange') as HTMLInputElement).value;
+
+    if (bar === '3') {
+      (document.getElementById('myRange') as HTMLInputElement).value = '0';
+      (document.getElementById(
+        'myRange'
+      ) as HTMLInputElement).defaultValue = (document.getElementById(
+        'myRange'
+      ) as HTMLInputElement).value;
+    } else {
+      const x = parseInt(bar) + 1;
+      (document.getElementById(
+        'myRange'
+      ) as HTMLInputElement).value = x.toString();
+      (document.getElementById(
+        'myRange'
+      ) as HTMLInputElement).defaultValue = (document.getElementById(
+        'myRange'
+      ) as HTMLInputElement).value;
+    }
   }
 
   right() {
-    console.log('left');
     const p1 = document.getElementsByClassName('p1')[0];
     const p2 = document.getElementsByClassName('p2')[0];
     const p3 = document.getElementsByClassName('p3')[0];
@@ -97,6 +134,60 @@ export default class menu extends Vue {
       p3.classList.add('p4');
       p4.classList.add('p2');
     }, 100);
+    const bar = (document.getElementById('myRange') as HTMLInputElement).value;
+    if (bar === '0') {
+      (document.getElementById('myRange') as HTMLInputElement).value = '3';
+      (document.getElementById(
+        'myRange'
+      ) as HTMLInputElement).defaultValue = (document.getElementById(
+        'myRange'
+      ) as HTMLInputElement).value;
+    } else {
+      const x = parseInt(bar) - 1;
+      (document.getElementById(
+        'myRange'
+      ) as HTMLInputElement).value = x.toString();
+      (document.getElementById(
+        'myRange'
+      ) as HTMLInputElement).defaultValue = (document.getElementById(
+        'myRange'
+      ) as HTMLInputElement).value;
+    }
+  }
+
+  change() {
+    const bar = (document.getElementById('myRange') as HTMLInputElement).value;
+    const bar2 = (document.getElementById('myRange') as HTMLInputElement)
+      .defaultValue;
+    (document.getElementById('myRange') as HTMLInputElement).defaultValue = bar;
+    const p1 = document.getElementsByClassName('p1')[0];
+    const p2 = document.getElementsByClassName('p2')[0];
+    const p3 = document.getElementsByClassName('p3')[0];
+    const p4 = document.getElementsByClassName('p4')[0];
+    if (bar > bar2) {
+      setTimeout(function () {
+        p1.classList.remove('p1');
+        p2.classList.remove('p2');
+        p3.classList.remove('p3');
+        p4.classList.remove('p4');
+        p1.classList.add('p2');
+        p2.classList.add('p4');
+        p3.classList.add('p1');
+        p4.classList.add('p3');
+      }, 100);
+    }
+    if (bar < bar2) {
+      setTimeout(function () {
+        p1.classList.remove('p1');
+        p2.classList.remove('p2');
+        p3.classList.remove('p3');
+        p4.classList.remove('p4');
+        p1.classList.add('p3');
+        p2.classList.add('p1');
+        p3.classList.add('p4');
+        p4.classList.add('p2');
+      }, 100);
+    }
   }
 }
 </script>
@@ -179,5 +270,65 @@ body {
   top: 28%;
   left: 40%;
   transition-duration: 1s;
+}
+.slidecontainer {
+  position: absolute;
+  width: 18%;
+  height: 10px;
+  bottom: 8%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 3px;
+  border: 0px solid #707070;
+  opacity: 0.7;
+  background: #707070;
+}
+.slider:hover {
+  opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: #707070;
+  cursor: pointer;
+}
+.dot {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
+}
+#d1 {
+  background: #b51e41 0% 0% no-repeat padding-box;
+  opacity: 1;
+  left: 0px;
+  bottom: 6%;
+}
+#d2 {
+  background: #fabf4d 0% 0% no-repeat padding-box;
+  opacity: 1;
+  left: 9.5px;
+  bottom: 6%;
+}
+#d3 {
+  background: #fde9d2 0% 0% no-repeat padding-box;
+  opacity: 1;
+  left: 19px;
+  bottom: 6%;
+}
+#d4 {
+  background: #082448 0% 0% no-repeat padding-box;
+  opacity: 1;
+  left: 28.5px;
+  bottom: 6%;
 }
 </style>
