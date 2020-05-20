@@ -12,3 +12,7 @@ export function randomFilename() {
 export function newChildToken(): string {
   return randomString('QWERTYUIOPASDFGHJKLZXCVBNM', 16);
 }
+
+export function randomName() {
+  return `${new Date().getTime()}_${randomString('1234567890', 6)}`;
+}

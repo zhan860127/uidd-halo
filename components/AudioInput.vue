@@ -9,7 +9,7 @@
 import { Vue, Component } from 'vue-property-decorator';
 // on record complete, $emit('input', audioBlob);
 
-// play audio with Audio()   (HTMLAudioElement)
+// TODO: play audio with Audio()   (HTMLAudioElement)
 
 @Component
 export default class classname extends Vue {

@@ -28,14 +28,12 @@
         </b-dropdown>
       </div>
     </div>
-    <button @click="addTestKey">AddKey-for testing</button>
   </div>
 </template>
 
 <script lang="ts">
 import axios from 'axios';
 import { Vue, Component } from 'vue-property-decorator';
-// import { Vue, Component, Prop } from 'vue-property-decorator';
 import Drawer from '~/components/Drawer.vue';
 import AudioInput from '~/components/AudioInput.vue';
 
@@ -85,18 +83,28 @@ export default class classname extends Vue {
       if (this.searchKey(this.keyword)) alert('Duplicate already exists!');
       else if (this.keyword === null || this.keyword === '')
         alert('Keyword cannot be blank!');
+      else if (this.blob === null) alert('Audio is not recorded yet!');
       else {
-        //  TODO: send the blob also
+        const childId = this.$route.query.c;
         console.log(`Start addKey, key: ${this.keyword}`);
+        console.log(`childId: ${childId}`);
+        console.log(this.blob);
+        const fd = new FormData();
+        fd.append('keyword', this.keyword);
+        fd.append('audio', this.blob!);
+        fd.append('childId', childId as string);
         axios({
-          method: 'get',
-          url: '/api/keyword/addKey',
-          params: {
-            key: this.keyword,
-          },
+          method: 'post',
+          url: '/api/keyword/addKeyAudio',
+          data: fd,
+          headers: { 'Content-Type': 'multipart/form-data' },
         }).then((result) => {
-          if (!result.data) alert('Duplicate exists!');
-          else this.updateList();
+          if (!result.data) alert('Duplicate exists');
+          else {
+            this.keyword = '';
+            this.blob = null;
+            this.updateList();
+          }
         });
         this.drawerOpen = false;
       }
@@ -148,24 +156,6 @@ export default class classname extends Vue {
           console.error(err);
         });
       this.updateList();
-    }
-  }
-
-  addTestKey() {
-    const keyword = prompt('Key?', '');
-    if (keyword === null || keyword === '') alert('Invalid input');
-    else {
-      console.log(`Start addKey, key: ${keyword}`);
-      axios({
-        method: 'get',
-        url: '/api/keyword/addKey',
-        params: {
-          key: keyword,
-        },
-      }).then((result) => {
-        if (!result.data) alert('Duplicate exists!');
-        else this.updateList();
-      });
     }
   }
 
