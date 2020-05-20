@@ -4,7 +4,7 @@
       <div>
         <input v-model="keyword" type="text" />
       </div>
-      <AudioInput @input="on" />
+      <AudioInput @input="gotBlob" />
       <div class="plus-wrapper">
         <b-button class="plus-button" @click="onPlusClick">+</b-button>
       </div>
@@ -51,13 +51,6 @@ const testData: ResponseData[] = [
   { id: 4, keyword: 'egg' },
 ];
 
-function searchKey(key: string, array: Array<ResponseData>): boolean {
-  array.forEach((element) => {
-    if (element.keyword === key) return true;
-  });
-  return false;
-}
-
 @Component({
   components: { Drawer, AudioInput },
   layout: 'parent',
@@ -80,9 +73,33 @@ export default class classname extends Vue {
     });
   }
 
+  searchKey(key: string): boolean {
+    for (let i = 0; i < this.responses.length; i++) {
+      if (this.responses[i].keyword === key) return true;
+    }
+    return false;
+  }
+
   onPlusClick() {
     if (this.drawerOpen) {
-      // add keyword?
+      if (this.searchKey(this.keyword)) alert('Duplicate already exists!');
+      else if (this.keyword === null || this.keyword === '')
+        alert('Keyword cannot be blank!');
+      else {
+        //  TODO: send the blob also
+        console.log(`Start addKey, key: ${this.keyword}`);
+        axios({
+          method: 'get',
+          url: '/api/keyword/addKey',
+          params: {
+            key: this.keyword,
+          },
+        }).then((result) => {
+          if (!result.data) alert('Duplicate exists!');
+          else this.updateList();
+        });
+        this.drawerOpen = false;
+      }
     } else {
       this.drawerOpen = true;
     }
@@ -107,33 +124,31 @@ export default class classname extends Vue {
 
   editKey(id: number) {
     // load data into inputs
-    const temp = this.responses[id].keyword;
     // TODO: change keyword in other page
     const newKey = prompt('Change Keyword?', '');
     if (newKey === null || newKey === '') {
       console.log('Invalid Input');
-    } else if (searchKey(newKey, this.responses)) {
+    } else if (this.searchKey(newKey)) {
       console.log('Duplicate exists!');
     } else {
-      this.responses[id].keyword = newKey;
-    }
-    axios({
-      method: 'get',
-      url: '/api/keyword/changeKey',
-      params: {
-        id,
-        key: newKey,
-      },
-    })
-      .then((result) => {
-        if (!result.data) {
-          this.responses[id].keyword = temp;
-          console.log('ChangeKey failed');
-        }
+      axios({
+        method: 'get',
+        url: '/api/keyword/changeKey',
+        params: {
+          id,
+          key: newKey,
+        },
       })
-      .catch((err) => {
-        console.error(err);
-      });
+        .then((result) => {
+          if (!result.data) {
+            console.log('ChangeKey failed');
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+      this.updateList();
+    }
   }
 
   addTestKey() {

@@ -7,7 +7,6 @@
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
-// import { Vue, Component, Prop } from 'vue-property-decorator';
 // on record complete, $emit('input', audioBlob);
 
 // play audio with Audio()   (HTMLAudioElement)
@@ -41,6 +40,7 @@ export default class classname extends Vue {
     this.mediaRecorder!.onstop = () => {
       this.blob = new Blob(chunks, { type: 'audio/ogg; codecs=opus' });
       chunks = [];
+      this.$emit('input', this.blob);
     };
   }
 }
