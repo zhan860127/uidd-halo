@@ -216,8 +216,8 @@ export default class classname extends Vue {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  width: 1.5em;
-  height: 1.5em;
+  width: 2em;
+  height: 2em;
   border-radius: 50%;
   z-index: -1;
 
@@ -227,7 +227,7 @@ export default class classname extends Vue {
 
   &.active {
     background-color: #b51e41;
-    opacity: 0.55;
+    opacity: 0.65;
   }
 }
 
