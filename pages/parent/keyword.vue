@@ -28,6 +28,7 @@
         </b-dropdown>
       </div>
     </div>
+    <button @click="addTestKey">AddKey-for testing</button>
   </div>
 </template>
 
@@ -92,13 +93,22 @@ export default class classname extends Vue {
   }
 
   deleteKey(id: number) {
-    // TODO: del key
-    console.log(id); // prevent error from lint
+    axios({
+      method: 'get',
+      url: '/api/keyword/deleteKey',
+      params: {
+        id,
+      },
+    }).then((result) => {
+      if (!result) console.log('delete failed');
+    });
+    this.updateList();
   }
 
   editKey(id: number) {
     // load data into inputs
     const temp = this.responses[id].keyword;
+    // TODO: change keyword in other page
     const newKey = prompt('Change Keyword?', '');
     if (newKey === null || newKey === '') {
       console.log('Invalid Input');
@@ -107,7 +117,6 @@ export default class classname extends Vue {
     } else {
       this.responses[id].keyword = newKey;
     }
-
     axios({
       method: 'get',
       url: '/api/keyword/changeKey',
@@ -127,7 +136,24 @@ export default class classname extends Vue {
       });
   }
 
-  // mounted
+  addTestKey() {
+    const keyword = prompt('Key?', '');
+    if (keyword === null || keyword === '') alert('Invalid input');
+    else {
+      console.log(`Start addKey, key: ${keyword}`);
+      axios({
+        method: 'get',
+        url: '/api/keyword/addKey',
+        params: {
+          key: keyword,
+        },
+      }).then((result) => {
+        if (!result.data) alert('Duplicate exists!');
+        else this.updateList();
+      });
+    }
+  }
+
   mounted() {
     this.updateList();
   }
