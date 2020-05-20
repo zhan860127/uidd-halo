@@ -121,7 +121,9 @@ export default class classname extends Vue {
       return;
     }
     const localStream = await navigator.mediaDevices.getUserMedia({
-      audio: true,
+      audio: {
+        echoCancellation: true,
+      },
     });
     if (!localStream) {
       alert('Cannot get audio');

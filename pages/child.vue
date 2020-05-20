@@ -36,7 +36,9 @@ export default class classname extends Vue {
     });
     peer.on('call', async (call) => {
       console.log('received call');
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: { echoCancellation: true },
+      });
       call.answer(stream);
       call.on('stream', (stream) => {
         console.log('got remote stream');
