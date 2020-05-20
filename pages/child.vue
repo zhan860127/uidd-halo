@@ -9,11 +9,14 @@
 <script lang="ts">
 import { Vue, Component, Watch } from 'vue-property-decorator';
 import io from 'socket.io-client';
+import interpolate from 'color-interpolate';
 import { MovingAverageFilter } from '../assets/ts/MovingAverageFilter';
 import Recorder from '~/assets/ts/Recorder';
 import Pie from '~/components/Pie.vue';
 
 const filter = new MovingAverageFilter(10);
+
+const colormap = interpolate(['#FDE9D2', '#FABF4D', '#B51E41']);
 
 @Component({ components: { Pie } })
 export default class classname extends Vue {
@@ -68,10 +71,11 @@ export default class classname extends Vue {
   }
 
   get color(): string {
+    const v = this.smoothedVol;
     return this.smoothedVol < 0.5
-      ? '#FDE9D2'
-      : this.smoothedVol < 0.75
-      ? '#FABF4D'
+      ? colormap(v / 0.5 - 0.5)
+      : this.smoothedVol < 0.9
+      ? colormap(((v - 0.5) / 0.4) ** 3 + 0.5)
       : '#B51E41';
   }
 
