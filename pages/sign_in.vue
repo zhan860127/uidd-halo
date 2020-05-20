@@ -1,5 +1,7 @@
 <template>
-  <div>
+  <div id=root>
+  <div class="wrapper">
+    <div class="con">
     <p id="t1">SIGN IN</p>
     <p id="t2">Use your Accout</p>
     <form id="form" action="/api/login" method="POST">
@@ -25,7 +27,10 @@
       />
     </form>
     <div id="r"></div>
+    
     <img id="i01" src="~/assets/img/1.png" onclick="history.back()" />
+ </div>
+  </div>
   </div>
 </template>
 
@@ -45,21 +50,42 @@ body
   position: relative
   top: 0px
   left: 0
-  width: 100vw
+  width: 100%
   min-width: 100px
-  height: 177vw
+  height: 100%
   background: #FFFFFF 0% 0% no-repeat padding-box
   margin: 0px
   opacity: 1
 
+
+
+
+#root 
+  height: 100vh
+  min-height: 450px
+  display: flex
+  flex-direction: column
+
+.wrapper 
+  max-width: 414px
+  margin: 0 auto
+  position: relative
+  height: 100%
+  display: flex
+  flex-direction: column
+  align-items: center
+  justify-content: center
+  padding-left: 58px
+  padding-right: 58px
+
 #t1
   position: absolute
-  top: 39.86vw
-  left: 33.33vw
-  width: 34.57vw
-  height: 11.59vw
+  top: 165px;
+  left: 138px;
+  width: 146px;
+  height: 48px;
   text-align: left
-  font-size: 9.66vw
+  font-size: 40px
   font-family: Seravek
   letter-spacing: 0px
   color: #4D6790
@@ -68,13 +94,13 @@ body
 
 #t2
   position: absolute
-  top: 51.45vw
-  left: 32.61vw
-  width: 36.02vw
-  height: 7vw
+  top: 213px;
+  left: 135px;
+  width: 157px;
+  height: 29px;
   text-align: left
   font-family: Seravek
-  font-size: 4.83vw
+  font-size: 20px
   letter-spacing: 0px
   color: #4D6790
   opacity: 1
@@ -85,25 +111,25 @@ body
   text-align: center
   color: #4D6790
   font-family: Seravek
-  font-size: 4.83vw
-  top: 120.48vw
+  font-size: 4.83%
+  top: 120.48%
   left: 50%
   -webkit-transform: translate(-50%, -50%)
 
 #i01
   position: absolute
-  top: 168.60vw
-  left: 91.06vw
-  width: 6vw
-  height: 6vw
+  bottom: 41px;
+  left: 377px;
+  width: 23px;
+  height: 23px;
   opacity: 1
 
 .input
   border-radius: 30px
-  width: 76.33vw
-  font-size: 4.83vw
-  height: 10.62vw
-  padding: 4.83vw
+  width: 316px;
+  height: 44px;
+  font-size: 20px
+  padding: 4.83%
   box-sizing: border-box
   font: Seravek
   background: #F5F4F4 0% 0% no-repeat padding-box
@@ -111,11 +137,11 @@ body
 .output
   border-radius: 30px
   position: absolute
-  top: 100.48vw
-  left: 11.83vw
-  width: 76.32vw
-  font-size: 4.83vw
-  height: 10.62vw
+  top: 416px;
+  left: 49px;
+  width: 316px;
+  height: 44px;
+  font-size: 20px
   text-align: middle
   font-family: Seravek
   color: #FFFFFF
@@ -127,11 +153,17 @@ body
 
 #user
   position: absolute
-  top: 65.46vw
-  left: 11.83vw
+  top: 271px;
+  left: 49px;
+
 
 #psd
   position: absolute
-  top: 83.09vw
-  left: 11.83vw
+  top: 344px;
+  left: 49px;
+
+.con
+  min-width: 300px
+  width: 414px;
+  height: 100%
 </style>

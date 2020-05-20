@@ -1,4 +1,7 @@
 <template>
+  <div id=root>
+  <div class="wrapper">
+    <div class="con">
   <div>
     <p id="t1">SIGN UP</p>
     <p id="t2">Creat your Account</p>
@@ -35,6 +38,7 @@
     <div id="r"></div>
     <img id="i01" src="~/assets/img/1.png" onclick="history.back()" />
   </div>
+    </div></div></div>
 </template>
 
 <script lang="ts">
@@ -49,21 +53,39 @@ body
   position: relative
   top: 0px
   left: 0px
-  width: 100vw
+  width: 100%
   min-width: 100px
-  height: 177vw
+  height: 100%
   background: #FFFFFF 0% 0% no-repeat padding-box
   margin: 0px
   opacity: 1
 
+#root 
+  height: 100vh
+  min-height: 450px
+  display: flex
+  flex-direction: column
+
+.wrapper 
+  max-width: 414px
+  margin: 0 auto
+  position: relative
+  height: 100%
+  display: flex
+  flex-direction: column
+  align-items: center
+  justify-content: center
+  padding-left: 58px
+  padding-right: 58px
+
 #t1
   position: absolute
-  top: 35.02vw
-  left: 33.09vw
-  width: 36.23vw
-  height: 11.59vw
+  top: 135px;
+  left: 134px;
+  width: 150px;
+  height: 48px;
   text-align: left
-  font-size: 9.66vw
+  font-size: 40px
   font-family: Seravek
   letter-spacing: 0px
   color: #4D6790
@@ -72,13 +94,13 @@ body
 
 #t2
   position: absolute
-  top: 46.62vw
-  left: 31.16vw
-  width: 42.03vw
-  height: 7vw
+  top: 183px;
+  left: 129px;
+  width: 176px;
+  height: 29px;
   text-align: left
   font-family: Seravek
-  font-size: 4.83vw
+  font-size: 20px
   letter-spacing: 0px
   color: #4D6790
   opacity: 1
@@ -86,29 +108,31 @@ body
 
 #i01
   position: absolute
-  top: 168.60vw
-  left: 91.06vw
-  width: 6vw
-  height: 6vw
+  bottom: 30px;
+  left: 377px;
+  width: 23px;
+  height: 23px;
   opacity: 1
 
 .input
   border-radius: 30px
-  width: 76.33vw
-  font-size: 4.83vw
-  height: 10.62vw
-  padding: 4.83vw
+  font-size: 20px
+  width: 316px;
+  height: 44px;
+  padding: 20px
   font: Seravek
   background: #F5F4F4 0% 0% no-repeat padding-box
   border: 0px
 .output
   border-radius: 30px
   position: absolute
-  top: 130.68vw
-  left: 11.83vw
-  width: 76.32vw
-  font-size: 4.83vw
-  height: 10.62vw
+  top: 531px;
+  left: 49px;
+  width: 316px;
+  height: 44px;
+
+  font-size: 20px
+
   text-align: middle
   font: Seravek
   color: #FFFFFF
@@ -120,23 +144,23 @@ body
 
 #email
   position: absolute
-  top: 60.63vw
-  left: 11.83vw
+  top: 241px;
+  left: 49px;
 
 #user
   position: absolute
-  top: 78.26vw
-  left: 11.83vw
+  top: 314px;
+  left: 49px;
 
 #psd
   position: absolute
-  top: 95.65vw
-  left: 11.83vw
+  top: 386px;
+  left: 49px;
 
 #psd2
   position: absolute
-  top: 113.28vw
-  left: 11.83vw
+  top: 459px;
+  left: 49px;
 
 .mes
   position: absolute
@@ -147,6 +171,11 @@ body
   top: 150.48vw
   left: 50%
   -webkit-transform: translate(-50%, -50%)
+
+.con
+  min-width: 300px
+  width: 414px;
+  height: 100%
 
 @font-face
   font-family: 'Seravek'
