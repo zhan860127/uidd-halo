@@ -1,40 +1,52 @@
 <template>
   <div>
     <div class="wrapper">
-      <div
-        v-touch:swipe.left="left"
-        v-touch:swipe.right="right"
-        class="menu con"
-      >
-        <nuxt-link
-          :to="{ path: '/parent/keyword', query: { c: $route.query.c } }"
-          ><img id="1" class="link p3" src="~/assets/img/m/1-11.png"
-        /></nuxt-link>
+      <client-only>
+        <div
+          v-touch:swipe.left="(offset = (offset + 1) % 4)"
+          v-touch:swipe.right="(offset = (offset + 3) % 4)"
+          class="menu con"
+        >
+          <a :href="`/parent/keyword?c=${$route.query.c}`"
+            ><img
+              id="1"
+              :class="`link p${((2 + (4 - offset + 3)) % 4) + 1}`"
+              src="~/assets/img/m/1-11.png"
+          /></a>
 
-        <nuxt-link :to="{ path: '/parent/logs', query: { c: $route.query.c } }"
-          ><img id="2" class="link p1" src="~/assets/img/m/1-02.png"
-        /></nuxt-link>
+          <a :href="`/parent/logs?c=${$route.query.c}`"
+            ><img
+              id="2"
+              :class="`link p${((1 + (4 - offset + 3)) % 4) + 1}`"
+              src="~/assets/img/m/1-02.png"
+          /></a>
 
-        <nuxt-link :to="{ path: '/parent/call', query: { c: $route.query.c } }"
-          ><img id="3" class="link p2" src="~/assets/img/m/1-10.png"
-        /></nuxt-link>
-        <div id="contain" class="link p4">
-          <div id="name">{{ child.name }}</div>
-          <nuxt-link :to="{ path: '/parent/children' }"
-            ><img id="pic" src="~/assets/img/m/1-12.png"
-          /></nuxt-link>
+          <a :href="`/parent/call?c=${$route.query.c}`"
+            ><img
+              id="3"
+              :class="`link p${((4 - offset + 3) % 4) + 1}`"
+              src="~/assets/img/m/1-10.png"
+          /></a>
+          <div
+            id="contain"
+            :class="`link p${((3 + (4 - offset + 3)) % 4) + 1}`"
+          >
+            <div id="name">{{ child.name }}</div>
+            <a href="/parent/children"
+              ><img id="pic" src="~/assets/img/m/1-12.png"
+            /></a>
+          </div>
         </div>
-      </div>
-
+      </client-only>
       <div class="slidecontainer">
         <input
           id="myRange"
+          v-model.number="offset"
           type="range"
           min="0"
           max="3"
           value="0"
           class="slider"
-          @input="change"
         />
         <div>
           <span id="d1" class="dot"></span>
@@ -48,6 +60,9 @@
 </template>
 
 <script lang="ts">
+// TODO: replace <a> with <nuxt-link>
+// nuxt-link's content doesn't change reactively for some reason
+
 import { Vue, Component } from 'vue-property-decorator';
 import Vue2 from 'vue';
 import Vue2TouchEvents from 'vue2-touch-events';
@@ -75,117 +90,7 @@ Vue2.use(Vue2TouchEvents, {
   layout: 'parent',
 })
 export default class menu extends Vue {
-  left() {
-    console.log('left');
-    const p1 = document.getElementsByClassName('p1')[0];
-    const p2 = document.getElementsByClassName('p2')[0];
-    const p3 = document.getElementsByClassName('p3')[0];
-    const p4 = document.getElementsByClassName('p4')[0];
-
-    setTimeout(function () {
-      p1.classList.remove('p1');
-      p2.classList.remove('p2');
-      p3.classList.remove('p3');
-      p4.classList.remove('p4');
-      p1.classList.add('p2');
-      p2.classList.add('p4');
-      p3.classList.add('p1');
-      p4.classList.add('p3');
-    }, 100);
-
-    const bar = (document.getElementById('myRange') as HTMLInputElement).value;
-
-    if (bar === '3') {
-      (document.getElementById('myRange') as HTMLInputElement).value = '0';
-      (document.getElementById(
-        'myRange'
-      ) as HTMLInputElement).defaultValue = (document.getElementById(
-        'myRange'
-      ) as HTMLInputElement).value;
-    } else {
-      const x = parseInt(bar) + 1;
-      (document.getElementById(
-        'myRange'
-      ) as HTMLInputElement).value = x.toString();
-      (document.getElementById(
-        'myRange'
-      ) as HTMLInputElement).defaultValue = (document.getElementById(
-        'myRange'
-      ) as HTMLInputElement).value;
-    }
-  }
-
-  right() {
-    const p1 = document.getElementsByClassName('p1')[0];
-    const p2 = document.getElementsByClassName('p2')[0];
-    const p3 = document.getElementsByClassName('p3')[0];
-    const p4 = document.getElementsByClassName('p4')[0];
-
-    setTimeout(function () {
-      p1.classList.remove('p1');
-      p2.classList.remove('p2');
-      p3.classList.remove('p3');
-      p4.classList.remove('p4');
-      p1.classList.add('p3');
-      p2.classList.add('p1');
-      p3.classList.add('p4');
-      p4.classList.add('p2');
-    }, 100);
-    const bar = (document.getElementById('myRange') as HTMLInputElement).value;
-    if (bar === '0') {
-      (document.getElementById('myRange') as HTMLInputElement).value = '3';
-      (document.getElementById(
-        'myRange'
-      ) as HTMLInputElement).defaultValue = (document.getElementById(
-        'myRange'
-      ) as HTMLInputElement).value;
-    } else {
-      const x = parseInt(bar) - 1;
-      (document.getElementById(
-        'myRange'
-      ) as HTMLInputElement).value = x.toString();
-      (document.getElementById(
-        'myRange'
-      ) as HTMLInputElement).defaultValue = (document.getElementById(
-        'myRange'
-      ) as HTMLInputElement).value;
-    }
-  }
-
-  change() {
-    const bar = (document.getElementById('myRange') as HTMLInputElement).value;
-    const bar2 = (document.getElementById('myRange') as HTMLInputElement)
-      .defaultValue;
-    (document.getElementById('myRange') as HTMLInputElement).defaultValue = bar;
-    const p1 = document.getElementsByClassName('p1')[0];
-    const p2 = document.getElementsByClassName('p2')[0];
-    const p3 = document.getElementsByClassName('p3')[0];
-    const p4 = document.getElementsByClassName('p4')[0];
-    if (bar > bar2) {
-      setTimeout(function () {
-        p1.classList.remove('p1');
-        p2.classList.remove('p2');
-        p3.classList.remove('p3');
-        p4.classList.remove('p4');
-        p1.classList.add('p2');
-        p2.classList.add('p4');
-        p3.classList.add('p1');
-        p4.classList.add('p3');
-      }, 100);
-    }
-    if (bar < bar2) {
-      setTimeout(function () {
-        p1.classList.remove('p1');
-        p2.classList.remove('p2');
-        p3.classList.remove('p3');
-        p4.classList.remove('p4');
-        p1.classList.add('p3');
-        p2.classList.add('p1');
-        p3.classList.add('p4');
-        p4.classList.add('p2');
-      }, 100);
-    }
-  }
+  offset: number = 0;
 }
 </script>
 
@@ -244,21 +149,21 @@ body {
   left: 55%;
   transition-duration: 1s;
 }
-.p2 {
+.p4 {
   z-index: 1;
   position: absolute;
   top: 48%;
   left: 25%;
   transition-duration: 1s;
 }
-.p3 {
+.p2 {
   z-index: 1;
   position: absolute;
   top: 38%;
   left: 75%;
   transition-duration: 1s;
 }
-.p4 {
+.p3 {
   z-index: 0;
   position: absolute;
   top: 28%;
