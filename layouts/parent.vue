@@ -25,7 +25,7 @@
           >
           <nuxt-link
             class="dropdown-item"
-            :to="`/parent/keywords?c=${$route.query.c}`"
+            :to="`/parent/keyword?c=${$route.query.c}`"
             >Response</nuxt-link
           >
           <nuxt-link
@@ -90,7 +90,7 @@ export default class classname extends Vue {
     const p = this.$route.path;
     return p.startsWith('/parent/logs')
       ? 'Record'
-      : p.startsWith('/parent/keywords')
+      : p.startsWith('/parent/keyword')
       ? 'Response'
       : p.startsWith('/parent/call')
       ? 'Call'
