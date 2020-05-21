@@ -21,7 +21,7 @@
             class="dropdown-item"
             :to="`/parent/logs?c=${$route.query.c}`"
             @click="closeDropdown"
-            >Recordings</nuxt-link
+            >Record</nuxt-link
           >
           <nuxt-link
             class="dropdown-item"
