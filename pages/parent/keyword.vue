@@ -10,7 +10,12 @@
       </div>
       <AudioInput :clear="clear" @input="gotBlob" />
       <div class="plus-wrapper">
-        <b-button class="plus-button" @click="onPlusClick">+</b-button>
+        <b-button
+          class="plus-button"
+          style="transform: translateX(50%);"
+          @click="onPlusClick"
+          >+</b-button
+        >
       </div>
     </Drawer>
     <div>

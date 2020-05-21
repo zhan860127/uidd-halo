@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-button v-if="blob">Play/Pause</b-button>
+    <b-button v-if="blob" @click="play">Play/Pause</b-button>
     <b-button @click="record">Record</b-button>
   </div>
 </template>
@@ -19,8 +19,10 @@ export default class classname extends Vue {
     this.blob = null;
   }
 
+  playing: boolean = false;
   recording: boolean = false;
   mediaRecorder: MediaRecorder | null = null;
+  audio: HTMLAudioElement | null = null;
   blob: Blob | null = null;
 
   async mounted() {
@@ -28,7 +30,25 @@ export default class classname extends Vue {
     this.mediaRecorder = new MediaRecorder(stream);
   }
 
+  play() {
+    if (!this.playing) {
+      this.playing = true;
+      this.audio = new Audio();
+      const audioURL = window.URL.createObjectURL(this.blob);
+      this.audio!.src = audioURL;
+      this.audio!.play();
+    } else {
+      this.playing = false;
+      this.audio!.pause();
+    }
+
+    this.audio!.onended = () => {
+      this.playing = false;
+    };
+  }
+
   record() {
+    this.blob = null;
     let chunks: Blob[] = [];
     if (!this.recording) {
       this.mediaRecorder!.start();
