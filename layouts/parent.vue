@@ -1,6 +1,6 @@
 <template>
   <div id="parent-root">
-    <b-navbar type="dark" class="parent-bar">
+    <b-navbar type="dark" class="parent-bar" :sticky="true">
       <b-navbar-brand>
         <nuxt-link
           :to="

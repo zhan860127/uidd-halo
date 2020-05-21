@@ -221,7 +221,7 @@ export default class classname extends Vue {
 <style lang="scss" scoped>
 .buttons {
   position: sticky;
-  top: 0px;
+  top: 52px;
   z-index: 2;
   display: flex;
   flex-direction: column;
