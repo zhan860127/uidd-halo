@@ -79,13 +79,19 @@ router.post('/addKeyAudio', upload.single('audio'), async (req, res) => {
 
 router.get('/deleteKey', async (req, res) => {
   const id = req.query.id;
-  //  TODO: read the path and delete the file
+  const del_path = await getRepository(ParentAudio)
+    .createQueryBuilder()
+    .select('ParentAudio.path')
+    .where("id = :id", { id: id})
+    .getOne();
+  if (del_path === undefined) return false;
+  await promisify(unlink)(del_path!.path!);
   await getRepository(ParentAudio)
     .createQueryBuilder()
     .delete()
     .where('id = :id', { id })
     .execute();
-  res.send(true);
+  res.send(true); 
 })
 
 export default router;
