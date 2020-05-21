@@ -1,43 +1,38 @@
 <template>
   <div>
     <div class="wrapper">
-      <client-only>
-        <div
-          v-touch:swipe.left="(offset = (offset + 1) % 4)"
-          v-touch:swipe.right="(offset = (offset + 3) % 4)"
-          class="menu con"
-        >
-          <a :href="`/parent/keyword?c=${$route.query.c}`"
-            ><img
-              id="1"
-              :class="`link p${((2 + (4 - offset + 3)) % 4) + 1}`"
-              src="~/assets/img/m/1-11.png"
-          /></a>
+      <div
+        v-touch:swipe.left="left"
+        v-touch:swipe.right="right"
+        class="menu con"
+      >
+        <a :href="`/parent/keyword?c=${$route.query.c}`"
+          ><img
+            id="1"
+            :class="`link p${((2 + (4 - offset + 3)) % 4) + 1}`"
+            src="~/assets/img/m/1-11.png"
+        /></a>
 
-          <a :href="`/parent/logs?c=${$route.query.c}`"
-            ><img
-              id="2"
-              :class="`link p${((1 + (4 - offset + 3)) % 4) + 1}`"
-              src="~/assets/img/m/1-02.png"
-          /></a>
+        <a :href="`/parent/logs?c=${$route.query.c}`"
+          ><img
+            id="2"
+            :class="`link p${((1 + (4 - offset + 3)) % 4) + 1}`"
+            src="~/assets/img/m/1-02.png"
+        /></a>
 
-          <a :href="`/parent/call?c=${$route.query.c}`"
-            ><img
-              id="3"
-              :class="`link p${((4 - offset + 3) % 4) + 1}`"
-              src="~/assets/img/m/1-10.png"
+        <a :href="`/parent/call?c=${$route.query.c}`"
+          ><img
+            id="3"
+            :class="`link p${((4 - offset + 3) % 4) + 1}`"
+            src="~/assets/img/m/1-10.png"
+        /></a>
+        <div id="contain" :class="`link p${((3 + (4 - offset + 3)) % 4) + 1}`">
+          <div id="name">{{ child.name }}</div>
+          <a href="/parent/children"
+            ><img id="pic" src="~/assets/img/m/1-12.png"
           /></a>
-          <div
-            id="contain"
-            :class="`link p${((3 + (4 - offset + 3)) % 4) + 1}`"
-          >
-            <div id="name">{{ child.name }}</div>
-            <a href="/parent/children"
-              ><img id="pic" src="~/assets/img/m/1-12.png"
-            /></a>
-          </div>
         </div>
-      </client-only>
+      </div>
       <div class="slidecontainer">
         <input
           id="myRange"
@@ -48,11 +43,11 @@
           value="0"
           class="slider"
         />
-        <div>
-          <span id="d1" class="dot"></span>
-          <span id="d2" class="dot"></span>
-          <span id="d3" class="dot"></span>
-          <span id="d4" class="dot"></span>
+        <div class="d-flex justify-content-between align-items-center mt-2">
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
         </div>
       </div>
     </div>
@@ -91,10 +86,17 @@ Vue2.use(Vue2TouchEvents, {
 })
 export default class menu extends Vue {
   offset: number = 0;
+  left() {
+    this.offset = (this.offset + 1) % 4;
+  }
+
+  right() {
+    this.offset = (this.offset + 3) % 4;
+  }
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .link {
   transform: translate(-50%, -50%);
   max-height: 300px;
@@ -172,7 +174,7 @@ body {
 }
 .slidecontainer {
   position: absolute;
-  width: 18%;
+  width: 75px;
   height: 10px;
   bottom: 8%;
   left: 50%;
@@ -203,31 +205,18 @@ body {
   width: 13px;
   height: 13px;
   border-radius: 50%;
-  display: inline-block;
-  position: relative;
-}
-#d1 {
-  background: #b51e41 0% 0% no-repeat padding-box;
-  opacity: 1;
-  left: 0px;
-  bottom: 6%;
-}
-#d2 {
-  background: #fabf4d 0% 0% no-repeat padding-box;
-  opacity: 1;
-  left: 9.5px;
-  bottom: 6%;
-}
-#d3 {
-  background: #fde9d2 0% 0% no-repeat padding-box;
-  opacity: 1;
-  left: 19px;
-  bottom: 6%;
-}
-#d4 {
-  background: #082448 0% 0% no-repeat padding-box;
-  opacity: 1;
-  left: 28.5px;
-  bottom: 6%;
+
+  &:nth-child(1) {
+    background-color: #b51e41;
+  }
+  &:nth-child(2) {
+    background-color: #fabf4d;
+  }
+  &:nth-child(3) {
+    background-color: #fde9d2;
+  }
+  &:nth-child(4) {
+    background-color: #082448;
+  }
 }
 </style>
