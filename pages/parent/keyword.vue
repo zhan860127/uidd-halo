@@ -1,10 +1,14 @@
 <template>
   <div class="position-relative">
-    <Drawer v-model="drawerOpen" side="top">
+    <Drawer
+      v-model="drawerOpen"
+      style="transform: translateY(52px);"
+      side="top"
+    >
       <div>
         <input v-model="keyword" type="text" />
       </div>
-      <AudioInput @input="gotBlob" />
+      <AudioInput :clear="clear" @input="gotBlob" />
       <div class="plus-wrapper">
         <b-button class="plus-button" @click="onPlusClick">+</b-button>
       </div>
@@ -55,6 +59,7 @@ const testData: ResponseData[] = [
 })
 export default class classname extends Vue {
   // data
+  clear: boolean = false;
   drawerOpen: boolean = false;
   blob: Blob | null = null;
   responses: ResponseData[] = testData;
@@ -103,6 +108,7 @@ export default class classname extends Vue {
           else {
             this.keyword = '';
             this.blob = null;
+            this.clear = !this.clear;
             this.updateList();
           }
         });

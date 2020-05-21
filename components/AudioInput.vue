@@ -6,14 +6,19 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from 'vue-property-decorator';
+import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
 // on record complete, $emit('input', audioBlob);
 
 // TODO: play audio with Audio()   (HTMLAudioElement)
 
 @Component
 export default class classname extends Vue {
-  temp: boolean = false;
+  @Prop(Boolean) readonly clear: boolean = false;
+  @Watch('clear')
+  onClearChanged() {
+    this.blob = null;
+  }
+
   recording: boolean = false;
   mediaRecorder: MediaRecorder | null = null;
   blob: Blob | null = null;
