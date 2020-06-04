@@ -9,8 +9,6 @@
 import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
 // on record complete, $emit('input', audioBlob);
 
-// TODO: play audio with Audio()   (HTMLAudioElement)
-
 @Component
 export default class classname extends Vue {
   @Prop(Boolean) readonly clear: boolean = false;
