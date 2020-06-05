@@ -5,7 +5,7 @@
       style="transform: translateY(52px);"
       side="top"
     >
-      <div class="above-pad">
+      <div class="above-pad" style="top: -0.5px;">
         <input id="key-input" v-model="keyword" type="text" />
       </div>
       <AudioInput class="above-pad" :clear="clear" @input="gotBlob" />
@@ -53,10 +53,7 @@ interface ResponseData {
 }
 
 const testData: ResponseData[] = [
-  { id: 1, keyword: 'foo' },
-  { id: 2, keyword: 'bar' },
-  { id: 3, keyword: 'baz' },
-  { id: 4, keyword: 'egg' },
+  // { id: 1, keyword: "努力加載中(>д<)" },
 ];
 
 @Component({
@@ -97,9 +94,6 @@ export default class classname extends Vue {
       else if (this.blob === null) alert('Audio is not recorded yet!');
       else {
         const childId = this.$route.query.c;
-        console.log(`Start addKey, key: ${this.keyword}`);
-        console.log(`childId: ${childId}`);
-        console.log(this.blob);
         const fd = new FormData();
         fd.append('keyword', this.keyword);
         fd.append('audio', this.blob!);
@@ -130,6 +124,7 @@ export default class classname extends Vue {
   }
 
   deleteKey(id: number) {
+    this.responses.splice(id - 1, 1); // skip slow deleting
     axios({
       method: 'get',
       url: '/api/keyword/deleteKey',
@@ -138,8 +133,8 @@ export default class classname extends Vue {
       },
     }).then((result) => {
       if (!result) console.log('delete failed');
+      this.updateList();
     });
-    this.updateList();
   }
 
   editKey(id: number) {
@@ -199,11 +194,12 @@ export default class classname extends Vue {
 #key-input {
   position: relative;
   left: 50%;
-  width: 363px;
+  width: 90vw;
   height: 166px;
   border-radius: 27px;
   transform: translateX(-50%);
   background: #fde9d2 0% 0% no-repeat padding-box;
+  border: 0px;
 }
 .plus-wrapper {
   transform: translateY(-10px);
