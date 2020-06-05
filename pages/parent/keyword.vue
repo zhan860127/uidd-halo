@@ -11,7 +11,9 @@
       <AudioInput class="above-pad" :clear="clear" @input="gotBlob" />
       <div class="plus-wrapper">
         <div id="pad"></div>
-        <b-button class="plus-button" @click="onPlusClick">+</b-button>
+        <div id="plus-button-wapper">
+          <b-button class="plus-button" @click="onPlusClick">+</b-button>
+        </div>
       </div>
     </Drawer>
     <div style="margin-top: 10vh;">
@@ -208,11 +210,26 @@ export default class classname extends Vue {
   position: relative;
   height: 0;
 }
+#plus-button-wapper {
+  background-color: #fabf4d;
+  position: relative;
+  height: 70px;
+  width: 85px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-60px);
+  border-radius: 50%;
+}
 .plus-button {
+  color: #082448;
+  font-size: 20px;
+  background-color: #fabf4d;
+  border: 1px solid #082448;
   position: relative;
   left: 50%;
-  transform: translateX(-50%) translateY(-30px);
+  transform: translateX(-50%) translateY(30px);
   border-radius: 50%;
+  z-index: 3;
+  padding: 0px 8px;
 }
 #pad {
   transform: translateY(-15px);
