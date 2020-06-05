@@ -5,23 +5,27 @@
       style="transform: translateY(52px);"
       side="top"
     >
-      <div>
-        <input v-model="keyword" type="text" />
+      <div class="above-pad">
+        <input id="key-input" v-model="keyword" type="text" />
       </div>
-      <AudioInput :clear="clear" @input="gotBlob" />
+      <AudioInput class="above-pad" :clear="clear" @input="gotBlob" />
       <div class="plus-wrapper">
+        <div id="pad"></div>
         <b-button class="plus-button" @click="onPlusClick">+</b-button>
       </div>
     </Drawer>
-    <div>
-      <div v-for="r in responses" :key="r.id">
-        {{ r.keyword }}
+    <div style="margin-top: 10vh;">
+      <div v-for="r in responses" :key="r.id" class="listItem">
+        <div class="key-display">
+          {{ r.keyword }}
+        </div>
         <b-dropdown
           size="lg"
           variant="link"
           toggle-class="text-decoration-none"
           no-caret
           right
+          style="float: right;"
           class="menu-dropdown"
         >
           <template v-slot:button-content>
@@ -172,13 +176,48 @@ export default class classname extends Vue {
 </script>
 
 <style scoped>
+.listItem {
+  height: 44px;
+  margin: 11px 28px;
+  padding-left: 10px;
+  background: #fde9d2 0% 0% no-repeat padding-box;
+  border-radius: 10px;
+}
+.key-display {
+  display: inline-block;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.above-pad {
+  background-color: #fabf4d;
+  position: relative;
+  z-index: 3;
+}
+#key-input {
+  position: relative;
+  left: 50%;
+  width: 363px;
+  height: 166px;
+  border-radius: 27px;
+  transform: translateX(-50%);
+  background: #fde9d2 0% 0% no-repeat padding-box;
+}
 .plus-wrapper {
+  transform: translateY(-10px);
   position: relative;
   height: 0;
 }
 .plus-button {
   position: relative;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(-50%) translateY(-30px);
+  border-radius: 50%;
+}
+#pad {
+  transform: translateY(-15px);
+  background: #fabf4d;
+  border-radius: 10px;
+  height: 40px;
 }
 </style>
