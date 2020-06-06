@@ -197,6 +197,9 @@ export default class classname extends Vue {
   z-index: 3;
 }
 #key-input {
+  font-size: 40px;
+  color: #082448;
+  padding: 0px 20px;
   position: relative;
   left: 50%;
   width: 90vw;
