@@ -5,7 +5,7 @@
       style="transform: translateY(52px);"
       side="top"
     >
-      <div class="above-pad" style="top: -0.5px;">
+      <div class="above-pad" style="padding-top: 20px; top: -0.5px;">
         <input id="key-input" v-model="keyword" type="text" />
       </div>
       <AudioInput
@@ -17,7 +17,7 @@
       <div class="plus-wrapper">
         <div id="pad"></div>
         <div id="plus-button-wapper">
-          <b-button class="plus-button" @click="onPlusClick">+</b-button>
+          <b-icon id="plus-btn-icon" icon="plus-circle" @click="onPlusClick" />
         </div>
       </div>
     </Drawer>
@@ -220,22 +220,21 @@ export default class classname extends Vue {
   transform: translateX(-50%) translateY(-60px);
   border-radius: 50%;
 }
-.plus-button {
-  color: #082448;
-  font-size: 20px;
-  background-color: #fabf4d;
-  border: 1px solid #082448;
+#plus-btn-icon {
+  height: 29.25px;
+  width: 29.25px;
   position: relative;
   left: 50%;
   transform: translateX(-50%) translateY(30px);
-  border-radius: 50%;
   z-index: 3;
-  padding: 0px 8px;
+}
+#plus-btn-icon :hover {
+  cursor: pointer;
 }
 #pad {
   transform: translateY(-15px);
   background: #fabf4d;
-  border-radius: 10px;
+  border-radius: 15px;
   height: 40px;
 }
 </style>

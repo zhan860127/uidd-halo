@@ -8,7 +8,12 @@
       @click="record"
     />
     <div v-if="blob" class="play-record">
-      <b-icon id="play" class="btn-spacing" icon="play-fill" @click="play" />
+      <b-icon
+        id="play"
+        class="btn-spacing"
+        :icon="playing ? 'pause-fill' : 'play-fill'"
+        @click="play"
+      />
       <b-icon
         id="record2"
         class="btn-spacing"
@@ -109,7 +114,7 @@ export default class classname extends Vue {
   height: 75px;
   color: #fde9d2;
   border-radius: 50%;
-  padding: 22px;
+  padding: 18px;
   background-color: #b51e41;
 }
 #record2 :hover {
@@ -119,7 +124,7 @@ export default class classname extends Vue {
   width: 75px;
   height: 75px;
   color: #fabf4d;
-  padding: 16px 10px 16px 16px;
+  padding: 14px;
   border-radius: 50%;
   background-color: #082448;
 }
