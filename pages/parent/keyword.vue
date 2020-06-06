@@ -8,7 +8,12 @@
       <div class="above-pad" style="top: -0.5px;">
         <input id="key-input" v-model="keyword" type="text" />
       </div>
-      <AudioInput class="above-pad" :clear="clear" @input="gotBlob" />
+      <AudioInput
+        class="above-pad"
+        :clear="clear"
+        style="padding: 50px 0px; top: -0.5px;"
+        @input="gotBlob"
+      />
       <div class="plus-wrapper">
         <div id="pad"></div>
         <div id="plus-button-wapper">

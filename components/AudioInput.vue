@@ -1,7 +1,21 @@
 <template>
   <div>
-    <b-button v-if="blob" @click="play">Play/Pause</b-button>
-    <b-button @click="record">Record</b-button>
+    <b-icon
+      v-if="!blob"
+      id="record"
+      :class="{ recording: recording }"
+      icon="mic-fill"
+      @click="record"
+    />
+    <div v-if="blob" class="play-record">
+      <b-icon id="play" class="btn-spacing" icon="play-fill" @click="play" />
+      <b-icon
+        id="record2"
+        class="btn-spacing"
+        icon="mic-fill"
+        @click="record"
+      />
+    </div>
   </div>
 </template>
 
@@ -69,4 +83,54 @@ export default class classname extends Vue {
 }
 </script>
 
-<style></style>
+<style>
+#record {
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 122px;
+  height: 122px;
+  padding: 30px;
+  color: #082448;
+  border-radius: 50%;
+  background-color: #fde9d2;
+}
+#record :hover {
+  cursor: pointer;
+}
+.play-record {
+  display: inline-block;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+}
+#record2 {
+  width: 75px;
+  height: 75px;
+  color: #fde9d2;
+  border-radius: 50%;
+  padding: 22px;
+  background-color: #b51e41;
+}
+#record2 :hover {
+  cursor: pointer;
+}
+#play {
+  width: 75px;
+  height: 75px;
+  color: #fabf4d;
+  padding: 16px 10px 16px 16px;
+  border-radius: 50%;
+  background-color: #082448;
+}
+#play :hover {
+  cursor: pointer;
+}
+.btn-spacing {
+  margin: 0px 50px;
+}
+.recording {
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px #082448;
+}
+</style>
