@@ -78,14 +78,11 @@ router.post('/addKeyAudio', upload.single('audio'), async (req, res) => {
 })
 
 router.get('/getAudio/:id', async (req, res) => {
-  console.log("received audio file request");
   const id = req.params.id;
-  console.log(`req id: ${id}`);
   const audio = await createQueryBuilder(ParentAudio, 'keyword')
     .where('keyword.id = :id',  { id })
     .getOne();
   if (!audio) return res.sendStatus(404);
-  console.log(audio.path!);
   res.sendFile(audio.path!, { root: '.'});
 })
 
