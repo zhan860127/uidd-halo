@@ -5,8 +5,8 @@ import { promisify } from 'util';
 import { writeFile, unlink, mkdir } from 'fs';
 import { getRepository, createQueryBuilder } from 'typeorm';
 import { Parent, Child, ParentAudio } from '../models/entity/entities';
-import { getParent } from './Login';
 import { randomName } from './misc';
+import * as Login from './Login';
 
 const uploadPath = process.env.UPLOAD_PATH;
 const upload = multer();
@@ -18,7 +18,7 @@ if (!uploadPath)
 router.get('/getKey', async (req, res) => {
   const keyList = await getRepository(ParentAudio)
   .createQueryBuilder('keyword')
-  .select(['keyword.id', 'keyword.keyword'])
+  .select(['keyword.id', 'keyword.keyword', 'keyword.path'])
   .getMany();
   res.send(JSON.stringify(keyList));  
 })
@@ -47,7 +47,7 @@ router.get('/changeKey', async (req, res) => {
 router.post('/addKeyAudio', upload.single('audio'), async (req, res) => {
   const date = new Date();
   const child = await getRepository(Child).findOne(req.body.childId);
-  const parent = await getParent(req);
+  const parent = await Login.getParent(req);
   if (!child || !parent) return res.sendStatus(404);
   // save file
   const buffer = req.file.buffer;
@@ -75,6 +75,18 @@ router.post('/addKeyAudio', upload.single('audio'), async (req, res) => {
   })
   .execute();
   res.send(true);
+})
+
+router.get('/getAudio/:id', async (req, res) => {
+  console.log("received audio file request");
+  const id = req.params.id;
+  console.log(`req id: ${id}`);
+  const audio = await createQueryBuilder(ParentAudio, 'keyword')
+    .where('keyword.id = :id',  { id })
+    .getOne();
+  if (!audio) return res.sendStatus(404);
+  console.log(audio.path!);
+  res.sendFile(audio.path!, { root: '.'});
 })
 
 router.get('/deleteKey', async (req, res) => {

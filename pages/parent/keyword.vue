@@ -23,24 +23,30 @@
     </Drawer>
     <div style="margin-top: 10vh;">
       <div v-for="r in responses" :key="r.id" class="listItem">
-        <div class="key-display">
-          {{ r.keyword }}
-        </div>
-        <b-dropdown
-          size="lg"
-          variant="link"
-          toggle-class="text-decoration-none"
-          no-caret
-          right
-          style="float: right;"
-          class="menu-dropdown"
-        >
-          <template v-slot:button-content>
-            <b-icon-three-dots-vertical style="color: #082448;" />
+        <AudioPlayer :path="`/api/keyword/getAudio/${r.id}`">
+          <template v-slot:center>
+            <div class="key-display">
+              {{ r.keyword }}
+            </div>
           </template>
-          <b-dropdown-item @click="editKey(r.id)">編輯</b-dropdown-item>
-          <b-dropdown-item @click="deleteKey(r.id)">刪除</b-dropdown-item>
-        </b-dropdown>
+          <template v-slot:right>
+            <b-dropdown
+              size="lg"
+              variant="link"
+              toggle-class="text-decoration-none"
+              no-caret
+              right
+              style="float: right;"
+              class="menu-dropdown"
+            >
+              <template v-slot:button-content>
+                <b-icon-three-dots-vertical style="color: #082448;" />
+              </template>
+              <b-dropdown-item @click="editKey(r.id)">編輯</b-dropdown-item>
+              <b-dropdown-item @click="deleteKey(r.id)">刪除</b-dropdown-item>
+            </b-dropdown>
+          </template>
+        </AudioPlayer>
       </div>
     </div>
   </div>
@@ -51,10 +57,12 @@ import axios from 'axios';
 import { Vue, Component } from 'vue-property-decorator';
 import Drawer from '~/components/Drawer.vue';
 import AudioInput from '~/components/AudioInput.vue';
+import AudioPlayer from '~/components/AudioPlayer.vue';
 
 interface ResponseData {
   id: number;
   keyword: string;
+  path: string;
 }
 
 const testData: ResponseData[] = [
@@ -62,7 +70,7 @@ const testData: ResponseData[] = [
 ];
 
 @Component({
-  components: { Drawer, AudioInput },
+  components: { Drawer, AudioInput, AudioPlayer },
   layout: 'parent',
 })
 export default class classname extends Vue {
@@ -82,6 +90,10 @@ export default class classname extends Vue {
     }).then((res) => {
       this.responses = res.data;
     });
+  }
+
+  getAudioPath(id: number) {
+    return `/api/parent/audiofile/${id}`;
   }
 
   searchKey(key: string): boolean {
@@ -189,7 +201,7 @@ export default class classname extends Vue {
   display: inline-block;
   position: relative;
   top: 50%;
-  transform: translateY(-50%);
+  color: #082448;
 }
 .above-pad {
   background-color: #fabf4d;
