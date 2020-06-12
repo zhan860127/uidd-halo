@@ -11,8 +11,10 @@
       <AudioInput
         class="above-pad"
         :clear="clear"
+        :edit-blob="blob"
         style="padding: 50px 0px; top: -0.5px;"
         @input="gotBlob"
+        @blobChange="blobChanged"
       />
       <div class="plus-wrapper">
         <div id="pad"></div>
@@ -65,9 +67,7 @@ interface ResponseData {
   path: string;
 }
 
-const testData: ResponseData[] = [
-  // { id: 1, keyword: "努力加載中(>д<)" },
-];
+const testData: ResponseData[] = [];
 
 @Component({
   components: { Drawer, AudioInput, AudioPlayer },
@@ -80,7 +80,9 @@ export default class classname extends Vue {
   blob: Blob | null = null;
   responses: ResponseData[] = testData;
   keyword: string = '';
-  editing: number | null = null; // null: new keyword, otherwise: editing
+  editing: boolean = false; // null: new keyword, otherwise: editing
+  editId: number = -999;
+  editAudioChange: boolean = false;
 
   // methods
   updateList() {
@@ -105,7 +107,53 @@ export default class classname extends Vue {
 
   onPlusClick() {
     if (this.drawerOpen) {
-      if (this.searchKey(this.keyword)) alert('Duplicate already exists!');
+      if (this.editing) {
+        // specialized handling of editing keyword
+        if (this.keyword !== this.responses[this.editId - 1].keyword) {
+          // send change keyword req
+          if (this.searchKey(this.keyword)) alert('Duplicate already exists!');
+          else if (this.keyword === null || this.keyword === '')
+            alert('Keyword cannot be blank!');
+          else {
+            axios({
+              method: 'get',
+              url: '/api/keyword/changeKey',
+              params: {
+                id: this.editId,
+                key: this.keyword,
+              },
+            })
+              .then((result) => {
+                if (!result.data) {
+                  console.log('ChangeKey failed');
+                }
+              })
+              .catch((err) => {
+                console.error(err);
+              });
+          }
+        }
+        if (this.editAudioChange) {
+          // send change audio req
+          const fd = new FormData();
+          fd.append('id', `${this.editId}`);
+          fd.append('audio', this.blob!);
+          axios({
+            method: 'post',
+            url: '/api/keyword/changeAudio',
+            data: fd,
+            headers: { 'Content-Type': 'multipart/form-data' },
+          }).then((newPath) => {
+            this.responses[this.editId - 1].path = newPath.data;
+          });
+        }
+        this.updateList();
+        this.keyword = '';
+        this.blob = null;
+        this.editing = false;
+        this.drawerOpen = false;
+      } else if (this.searchKey(this.keyword))
+        alert('Duplicate already exists!');
       else if (this.keyword === null || this.keyword === '')
         alert('Keyword cannot be blank!');
       else if (this.blob === null) alert('Audio is not recorded yet!');
@@ -140,6 +188,10 @@ export default class classname extends Vue {
     this.blob = blob;
   }
 
+  blobChanged(state: boolean) {
+    this.editAudioChange = state;
+  }
+
   deleteKey(id: number) {
     this.responses.splice(id - 1, 1); // skip slow deleting
     axios({
@@ -156,8 +208,22 @@ export default class classname extends Vue {
 
   editKey(id: number) {
     // load data into inputs
+    this.editAudioChange = false;
+    this.editing = true;
+    this.keyword = this.responses[id - 1].keyword;
+    const path = `/api/keyword/getAudio/${id}`;
+    const tempAudio = new Audio(path);
+    fetch(tempAudio.src)
+      .then((response) => response.blob())
+      .then((audio) => {
+        this.blob = audio;
+      })
+      .then(() => {
+        this.editId = id;
+        this.drawerOpen = true;
+      });
     // TODO: change keyword in other page
-    const newKey = prompt('Change Keyword?', '');
+    /* const newKey = prompt('Change Keyword?', '');
     if (newKey === null || newKey === '') {
       console.log('Invalid Input');
     } else if (this.searchKey(newKey)) {
@@ -180,7 +246,7 @@ export default class classname extends Vue {
           console.error(err);
         });
       this.updateList();
-    }
+    } */
   }
 
   mounted() {

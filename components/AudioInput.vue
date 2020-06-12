@@ -36,6 +36,12 @@ export default class classname extends Vue {
     this.blob = null;
   }
 
+  @Prop() readonly editBlob: Blob | null = null;
+  @Watch('editBlob')
+  onBlobChanged() {
+    this.blob = this.$props.editBlob;
+  }
+
   playing: boolean = false;
   recording: boolean = false;
   mediaRecorder: MediaRecorder | null = null;
@@ -73,6 +79,7 @@ export default class classname extends Vue {
     } else {
       this.mediaRecorder!.stop();
       this.recording = false;
+      this.$emit('blobChange', true);
     }
 
     this.mediaRecorder!.ondataavailable = (audio) => {

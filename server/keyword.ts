@@ -44,6 +44,33 @@ router.get('/changeKey', async (req, res) => {
   }
 })
 
+router.post('/changeAudio', upload.single('audio'), async (req, res) => {
+  const id = parseInt(req.body.id);
+  // save file
+  const buffer = req.file.buffer;
+  await promisify(mkdir)(uploadPath, { recursive: true });
+  const oggFilename = `${randomName()}.ogg`;
+  const oggPath = path.join(uploadPath!, oggFilename);
+  await promisify(writeFile)(oggPath, buffer);  
+  // delete the old audio
+  const del_path = await getRepository(ParentAudio)
+  .createQueryBuilder()
+  .select('ParentAudio.path')
+  .where("id = :id", { id: id as number})
+  .getOne();
+  if (del_path === undefined) return false;
+  await promisify(unlink)(del_path!.path!);
+  // change the path
+  const audio = await createQueryBuilder(ParentAudio, 'key')
+    .update()
+    .set({ path: oggPath })
+    .where("id = :id", { id: id as number})
+    .execute()
+    .then(() => {
+      res.send(oggPath);
+    });
+})
+
 router.post('/addKeyAudio', upload.single('audio'), async (req, res) => {
   const date = new Date();
   const child = await getRepository(Child).findOne(req.body.childId);
