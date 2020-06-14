@@ -25,7 +25,7 @@
     </Drawer>
     <div style="margin-top: 10vh;">
       <div v-for="r in responses" :key="r.id" class="listItem">
-        <AudioPlayer :path="`/api/keyword/getAudio/${r.id}`">
+        <AudioPlayer :path="`/api/keyword/getAudio/${r.id}?${seed}`">
           <template v-slot:center>
             <div class="key-display">
               {{ r.keyword }}
@@ -89,6 +89,7 @@ export default class classname extends Vue {
   editing: boolean = false; // null: new keyword, otherwise: editing
   editId: number = -999;
   editAudioChange: boolean = false;
+  seed: string = (+new Date()).toString();
 
   // methods
   updateList() {
@@ -153,6 +154,7 @@ export default class classname extends Vue {
             headers: { 'Content-Type': 'multipart/form-data' },
           }).then((newPath) => {
             this.responses[idx].path = newPath.data;
+            this.seed = (+new Date()).toString();
           });
         }
         this.updateList();
