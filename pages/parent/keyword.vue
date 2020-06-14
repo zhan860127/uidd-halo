@@ -68,6 +68,12 @@ interface ResponseData {
 }
 
 const testData: ResponseData[] = [];
+function findId(array: ResponseData[], id: number) {
+  for (let i = 0; i < array.length; i += 1) {
+    if (array[i].id === id) return i;
+  }
+  return -1;
+}
 
 @Component({
   components: { Drawer, AudioInput, AudioPlayer },
@@ -91,6 +97,7 @@ export default class classname extends Vue {
       url: '/api/keyword/getKey',
     }).then((res) => {
       this.responses = res.data;
+      console.log(this.responses);
     });
   }
 
@@ -108,8 +115,9 @@ export default class classname extends Vue {
   onPlusClick() {
     if (this.drawerOpen) {
       if (this.editing) {
+        const idx = findId(this.responses, this.editId);
         // specialized handling of editing keyword
-        if (this.keyword !== this.responses[this.editId - 1].keyword) {
+        if (this.keyword !== this.responses[idx].keyword) {
           // send change keyword req
           if (this.searchKey(this.keyword)) alert('Duplicate already exists!');
           else if (this.keyword === null || this.keyword === '')
@@ -144,7 +152,7 @@ export default class classname extends Vue {
             data: fd,
             headers: { 'Content-Type': 'multipart/form-data' },
           }).then((newPath) => {
-            this.responses[this.editId - 1].path = newPath.data;
+            this.responses[idx].path = newPath.data;
           });
         }
         this.updateList();
@@ -193,7 +201,8 @@ export default class classname extends Vue {
   }
 
   deleteKey(id: number) {
-    this.responses.splice(id - 1, 1); // skip slow deleting
+    const idx = findId(this.responses, id);
+    this.responses.splice(idx, 1); // skip slow deleting
     axios({
       method: 'get',
       url: '/api/keyword/deleteKey',
@@ -207,10 +216,12 @@ export default class classname extends Vue {
   }
 
   editKey(id: number) {
+    console.log(`edit key id: ${id}`);
     // load data into inputs
+    const idx = findId(this.responses, id);
     this.editAudioChange = false;
     this.editing = true;
-    this.keyword = this.responses[id - 1].keyword;
+    this.keyword = this.responses[idx].keyword;
     const path = `/api/keyword/getAudio/${id}`;
     const tempAudio = new Audio(path);
     fetch(tempAudio.src)
