@@ -35,7 +35,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from 'vue-property-decorator';
+import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
 import Slider from '~/components/Slider.vue';
 
 import '~/assets/scss/_fonts.scss';
@@ -60,18 +60,32 @@ export default class classname extends Vue {
   idle: boolean = true;
   animating: boolean = false;
 
+  @Watch('path')
+  onPathChange() {
+    if (this.clip) {
+      this.clip.pause();
+    }
+    this.loadPath();
+  }
+
+  loadPath() {
+    this.clip = new Audio(this.path);
+    this.idle = true;
+    this.clip.ondurationchange = () => {
+      this.duration = this.clip!.duration;
+    };
+    this.clip.onended = () => {
+      this.clip!.currentTime = 0;
+      this.position = 0;
+      this.idle = true;
+    };
+  }
+
   play() {
     if (!this.clip) {
-      this.clip = new Audio(this.path);
-      this.clip.ondurationchange = () => {
-        this.duration = this.clip!.duration;
-      };
-      this.clip.onended = () => {
-        this.clip!.currentTime = 0;
-        this.position = 0;
-        this.idle = true;
-      };
+      this.loadPath();
     }
+    if (!this.clip) throw new Error('no clip!');
     if (!(this.clip.paused || this.clip.ended)) {
       this.clip.pause();
       return;
