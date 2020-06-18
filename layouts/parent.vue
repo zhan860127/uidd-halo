@@ -84,6 +84,14 @@ export default class classname extends Vue {
       .on('/logs', () => {
         this.$store.commit('parent/incLogsVer');
       });
+    this.func();
+  }
+
+  func() {
+    const vh = window.innerHeight * 0.01;
+    (document.getElementById(
+      'parent-root'
+    ) as HTMLInputElement).style.setProperty('--vh', `${vh}px`);
   }
 
   get title(): string {
@@ -118,6 +126,7 @@ body {
 #parent-root {
   background-color: #fcf6ef;
   min-height: 100vh;
+  min-height: calc(var(--vh, 1vh) * 100);
 }
 
 .parent-bar {
