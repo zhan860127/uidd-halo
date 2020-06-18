@@ -197,5 +197,5 @@ body
 
 @font-face
   font-family: 'Seravek'
-  src: url('~assets/font/SeravekBasic.ttf') format("truetype")
+  src: url('~assets/font/Seravek.ttf') format("truetype")
 </style>
