@@ -5,7 +5,6 @@
         <div>
           <p id="t1">SIGN UP</p>
           <p id="t2">Creat your Account</p>
-
           <form id="form" method="POST" action="/api/register">
             <input
               id="email"
