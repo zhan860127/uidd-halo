@@ -54,7 +54,7 @@ export default class classname extends Vue {
 <style lang="sass" scoped>
 @font-face
   font-family: 'Seravek'
-  src: url('~assets/font/SeravekBasic.ttf') format("truetype")
+  src: url('~assets/font/Seravek.ttf') format("truetype")
 
 body
   position: relative
