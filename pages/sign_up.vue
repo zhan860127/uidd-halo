@@ -1,5 +1,5 @@
 <template>
-  <div id="root">
+  <div class="root">
     <div class="wrapper">
       <div class="con">
         <div>
@@ -52,7 +52,18 @@
 import { Vue, Component } from 'vue-property-decorator';
 
 @Component
-export default class classname extends Vue {}
+export default class classname extends Vue {
+  mounted() {
+    this.func();
+  }
+
+  func() {
+    const vh = window.innerHeight * 0.01;
+    (document.getElementsByClassName(
+      'root'
+    )[0] as HTMLInputElement).style.setProperty('--vh', `${vh}px`);
+  }
+}
 </script>
 
 <style lang="sass" scoped>
@@ -67,8 +78,9 @@ body
   margin: 0px
   opacity: 1
 
-#root
+.root
   height: 100vh
+  height: calc(var(--vh, 1vh) * 100)
   min-height: 450px
   display: flex
   flex-direction: column
