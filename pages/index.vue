@@ -1,5 +1,5 @@
 <template>
-  <div id="root">
+  <div class="root">
     <div class="a" @click="skip()">
       <transition name="fade">
         <img v-if="!show3" class="pr2" src="~/assets/img/m/1-01.png" />
@@ -54,6 +54,7 @@ export default Vue.extend({
     };
   },
   mounted() {
+    this.func();
     this.start();
   },
   methods: {
@@ -127,6 +128,12 @@ export default Vue.extend({
       document.getElementsByClassName('bottom2')[0].classList.remove('bottom2');
       document.getElementsByClassName('a')[0].classList.add('hide');
     },
+    func() {
+      const vh = window.innerHeight * 0.01;
+      (document.getElementsByClassName(
+        'root'
+      )[0] as HTMLInputElement).style.setProperty('--vh', `${vh}px`);
+    },
   },
 });
 </script>
@@ -183,7 +190,7 @@ html {
   position: absolute;
   transform: translate(-50%, -50%);
   background: #fcf6ef;
-  width: 500px;
+  min-width: 380px;
   height: 100%;
   left: 50%;
   top: 50%;
@@ -289,8 +296,9 @@ html {
 #top-content {
   text-align: center;
 }
-#root {
+.root {
   height: 100vh;
+  height: calc(var(--vh, 1vh) * 100);
   min-height: 450px;
   display: flex;
   flex-direction: column;
