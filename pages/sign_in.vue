@@ -2,46 +2,32 @@
   <div class="root">
     <div class="wrapper">
       <div class="con">
-        <div>
-          <p id="t1">SIGN UP</p>
-          <p id="t2">Creat your Account</p>
-          <form id="form" method="POST" action="/api/register">
-            <input
-              id="email"
-              class="input"
-              type="text"
-              name="email"
-              placeholder="Email"
-            />
-            <br />
-            <input
-              id="user"
-              class="input"
-              type="text"
-              name="username"
-              placeholder="Username"
-            />
-            <br />
-            <input
-              id="psd"
-              class="input"
-              type="password"
-              name="password"
-              placeholder="Password"
-            />
-            <br />
-            <input
-              id="psd2"
-              class="input"
-              type="password"
-              placeholder="Confirm"
-            />
-            <br />
-            <input class="output" type="submit" value="DONE" />
-          </form>
-          <div id="r"></div>
-          <img id="i01" src="~/assets/img/1.png" onclick="history.back()" />
-        </div>
+        <p id="t1">SIGN IN</p>
+        <p id="t2">Use your Accout</p>
+        <form id="form" action="/api/login" method="POST">
+          <input
+            id="user"
+            class="input"
+            type="text"
+            name="username"
+            placeholder="Username"
+          />
+          <input
+            id="psd"
+            class="input"
+            type="password"
+            name="password"
+            placeholder="Password"
+          />
+          <input
+            class="output"
+            type="submit"
+            value="DONE"
+            onclick="log(); return false;"
+          />
+        </form>
+        <div id="r"></div>
+        <img id="i01" src="~/assets/img/1.png" onclick="history.back()" />
       </div>
     </div>
   </div>
@@ -66,16 +52,23 @@ export default class classname extends Vue {
 </script>
 
 <style lang="sass" scoped>
+@font-face
+  font-family: 'Seravek'
+  src: url('~assets/font/SeravekBasic.ttf') format("truetype")
+
 body
   position: relative
   top: 0px
-  left: 0px
+  left: 0
   width: 100%
   min-width: 100px
   height: 100%
   background: #FFFFFF 0% 0% no-repeat padding-box
   margin: 0px
   opacity: 1
+
+
+
 
 .root
   height: 100vh
@@ -85,7 +78,7 @@ body
   flex-direction: column
 
 .wrapper
-  max-width: 100%
+  max-width: 414px
   margin: 0 auto
   position: relative
   height: 100%
@@ -98,9 +91,9 @@ body
 
 #t1
   position: absolute
-  top: 135px;
-  left: 134px;
-  width: 150px;
+  top: 165px;
+  left: 138px;
+  width: 146px;
   height: 48px;
   text-align: left
   font-size: 40px
@@ -112,9 +105,9 @@ body
 
 #t2
   position: absolute
-  top: 183px;
-  left: 129px;
-  width: 176px;
+  top: 213px;
+  left: 135px;
+  width: 157px;
   height: 29px;
   text-align: left
   font-family: Seravek
@@ -124,9 +117,19 @@ body
   opacity: 1
   margin: 0px
 
+.mes
+  position: absolute
+  text-align: center
+  color: #4D6790
+  font-family: Seravek
+  font-size: 4.83%
+  top: 120.48%
+  left: 50%
+  -webkit-transform: translate(-50%, -50%)
+
 #i01
   position: absolute
-  bottom: 30px;
+  bottom: 41px;
   left: 377px;
   width: 23px;
   height: 23px;
@@ -134,25 +137,24 @@ body
 
 .input
   border-radius: 30px
-  font-size: 20px
   width: 316px;
   height: 44px;
-  padding: 20px
+  font-size: 20px
+  padding: 4.83%
+  box-sizing: border-box
   font: Seravek
   background: #F5F4F4 0% 0% no-repeat padding-box
   border: 0px
 .output
   border-radius: 30px
   position: absolute
-  top: 531px;
+  top: 416px;
   left: 49px;
   width: 316px;
   height: 44px;
-
   font-size: 20px
-
   text-align: middle
-  font: Seravek
+  font-family: Seravek
   color: #FFFFFF
   background: #4D6790 0% 0% no-repeat padding-box
   border: 0px
@@ -160,42 +162,19 @@ body
 ::placeholder
   color: rgb(107, 143, 201)
 
-#email
-  position: absolute
-  top: 241px;
-  left: 49px;
-
 #user
   position: absolute
-  top: 314px;
+  top: 271px;
   left: 49px;
+
 
 #psd
   position: absolute
-  top: 386px;
+  top: 344px;
   left: 49px;
-
-#psd2
-  position: absolute
-  top: 459px;
-  left: 49px;
-
-.mes
-  position: absolute
-  text-align: center
-  color: #4D6790
-  font-family: Seravek
-  font-size: 4.83vw
-  top: 150.48vw
-  left: 50%
-  -webkit-transform: translate(-50%, -50%)
 
 .con
   min-width: 300px
   width: 414px;
   height: 100%
-
-@font-face
-  font-family: 'Seravek'
-  src: url('~assets/font/SeravekBasic.ttf') format("truetype")
 </style>
