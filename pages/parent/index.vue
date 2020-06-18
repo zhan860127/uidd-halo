@@ -90,6 +90,17 @@ export default class menu extends Vue {
     this.offset = (this.offset + 1) % 4;
   }
 
+  mounted() {
+    this.func();
+  }
+
+  func() {
+    const vh = window.innerHeight * 0.01;
+    (document.getElementById(
+      'parent-root'
+    ) as HTMLInputElement).style.setProperty('--vh', `${vh}px`);
+  }
+
   right() {
     this.offset = (this.offset + 3) % 4;
   }
@@ -100,7 +111,7 @@ export default class menu extends Vue {
 .link {
   transform: translate(-50%, -50%);
   max-height: 300px;
-  max-width: 220px;
+  max-width: 200px;
 }
 body {
   margin: 0%;
@@ -114,8 +125,8 @@ body {
   position: relative;
   display: flex;
   margin: 0px;
-
   height: 90vh;
+  height: calc(var(--vh, 1vh) * 90);
 }
 .wrapper {
   margin: 0 auto;
