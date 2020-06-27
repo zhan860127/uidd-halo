@@ -1,44 +1,54 @@
 <template>
-  <div id="parent-root">
-    <b-navbar type="dark" class="parent-bar" :sticky="true">
-      <b-navbar-brand>
-        <nuxt-link
-          :to="
-            $route.query.c ? `/parent?c=${$route.query.c}` : `/parent/children`
-          "
-          class="plain"
-          ><b-icon-house-door-fill style="height: auto; width: 30px;"
-        /></nuxt-link>
-      </b-navbar-brand>
-      <b-navbar-nav class="flex-grow-1">
-        <b-nav-item-dropdown
-          v-if="title"
-          ref="dropdown"
-          :text="title"
-          class="mx-auto nav-dropdown"
-        >
+  <div>
+    <div id="parent-root">
+      <b-navbar type="dark" class="parent-bar" :sticky="true">
+        <b-navbar-brand>
           <nuxt-link
-            class="dropdown-item"
-            :to="`/parent/logs?c=${$route.query.c}`"
-            @click="closeDropdown"
-            >Record</nuxt-link
+            :to="
+              $route.query.c
+                ? `/parent?c=${$route.query.c}`
+                : `/parent/children`
+            "
+            class="plain"
+            ><b-icon-house-door-fill style="height: auto; width: 30px;"
+          /></nuxt-link>
+        </b-navbar-brand>
+        <b-navbar-nav class="flex-grow-1">
+          <b-nav-item-dropdown
+            v-if="title"
+            ref="dropdown"
+            :text="title"
+            class="mx-auto nav-dropdown"
           >
-          <nuxt-link
-            class="dropdown-item"
-            :to="`/parent/keyword?c=${$route.query.c}`"
-            >Response</nuxt-link
-          >
-          <nuxt-link
-            class="dropdown-item"
-            :to="`/parent/call?c=${$route.query.c}`"
-            >Call</nuxt-link
-          >
-        </b-nav-item-dropdown>
-      </b-navbar-nav>
-      <b-navbar-nav>
-        <b-icon-list v-b-toggle.side-menu style="height: 27px; width: 27px;" />
-      </b-navbar-nav>
-    </b-navbar>
+            <nuxt-link
+              class="dropdown-item"
+              :to="`/parent/logs?c=${$route.query.c}`"
+              @click="closeDropdown"
+              >Record</nuxt-link
+            >
+            <nuxt-link
+              class="dropdown-item"
+              :to="`/parent/keyword?c=${$route.query.c}`"
+              >Response</nuxt-link
+            >
+            <nuxt-link
+              class="dropdown-item"
+              :to="`/parent/call?c=${$route.query.c}`"
+              >Call</nuxt-link
+            >
+          </b-nav-item-dropdown>
+        </b-navbar-nav>
+        <b-navbar-nav>
+          <b-icon-list
+            v-b-toggle.side-menu
+            style="height: 27px; width: 27px;"
+          />
+        </b-navbar-nav>
+      </b-navbar>
+      <nuxt id="nuxt" />
+      <Navbar />
+    </div>
+
     <b-sidebar id="side-menu" backdrop right>
       <div class="sidebar-item">設定基本資料</div>
       <nuxt-link
@@ -61,7 +71,6 @@
         <div class="child-online">{{ child.online ? '上線中' : '離線中' }}</div>
       </nuxt-link>
     </b-sidebar>
-    <nuxt />
   </div>
 </template>
 
@@ -70,8 +79,11 @@ import { Vue, Component, Ref, Watch } from 'vue-property-decorator';
 import { BDropdown } from 'bootstrap-vue';
 import '~/assets/scss/_fonts.scss';
 import io from 'socket.io-client';
+import Navbar from '~/components/Navbar.vue';
 
-@Component
+@Component({
+  components: { Navbar },
+})
 export default class classname extends Vue {
   mounted() {
     io.connect('/parent')
@@ -125,8 +137,10 @@ body {
 
 #parent-root {
   background-color: #fcf6ef;
-  min-height: 100vh;
-  min-height: calc(var(--vh, 1vh) * 100);
+  height: 100vh;
+  overflow-y: auto;
+  display: grid;
+  grid-template-rows: min-content 1fr min-content;
 }
 
 .parent-bar {
@@ -211,5 +225,9 @@ body {
     border: 1px solid #082448;
     margin: 16.5px 0;
   }
+}
+
+#nuxt {
+  overflow-y: auto;
 }
 </style>

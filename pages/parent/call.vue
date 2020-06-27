@@ -173,12 +173,7 @@ export default class classname extends Vue {
 }
 </script>
 
-<style lang="scss">
-#parent-root {
-  display: flex;
-  flex-direction: column;
-}
-
+<style lang="scss" scoped>
 .abs-full {
   position: absolute;
   left: 0;
