@@ -52,17 +52,7 @@
       >
         <div style="width: 100%; max-width: 500px;">
           <DatePicker v-model="date" :highlighted="highlights" />
-          <div class="times">
-            <div
-              v-for="x in audiosThisDay"
-              :key="x.id"
-              class="time"
-              :class="{ selected: audio && audio.id === x.id }"
-              @click="onAudioSelected(x)"
-            >
-              {{ audioTime(x) }}
-            </div>
-          </div>
+          <HrMinWheel :times="timesThisDay" @input="onWheelInput" />
           <div class="halo-button" @click="onAudioSelectCommit">OK</div>
         </div>
       </div>
@@ -78,6 +68,7 @@ import AudioLog from '~/components/AudioLog.vue';
 import { AudioData } from '~/assets/ts/AudioData';
 import DatePicker from '~/components/DatePicker.vue';
 import Drawer from '~/components/Drawer.vue';
+import HrMinWheel from '~/components/HrMinWheel.vue';
 import '~/assets/scss/_fonts.scss';
 
 async function childAudios($axios: any, query: any): Promise<AudioData[]> {
@@ -95,6 +86,7 @@ async function childAudios($axios: any, query: any): Promise<AudioData[]> {
     AudioLog,
     DatePicker,
     Drawer,
+    HrMinWheel,
   },
   layout: 'parent',
   async asyncData({ $axios, query }) {
@@ -127,6 +119,12 @@ export default class classname extends Vue {
     this.deleteModal.show();
   }
 
+  onWheelInput({ h, m }: { h: number; m: number }) {
+    this.audio = this.audiosThisDay.filter(
+      (v) => v.date.getMinutes() === m && v.date.getHours() === h
+    )[0];
+  }
+
   get audiosThisDay(): AudioData[] {
     for (const pair of this.sortedAudios) {
       if (dayjs(pair[0]).isSame(dayjs(this.date), 'day')) {
@@ -134,6 +132,13 @@ export default class classname extends Vue {
       }
     }
     return [];
+  }
+
+  get timesThisDay(): { h: number; m: number }[] {
+    return this.audiosThisDay.map((v) => ({
+      h: v.date.getHours(),
+      m: v.date.getMinutes(),
+    }));
   }
 
   get logsVer(): number {

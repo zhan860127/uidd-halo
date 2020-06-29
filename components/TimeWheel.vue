@@ -9,8 +9,8 @@
     @mouseleave="onDragEnd"
   >
     <div
-      v-for="p in labelParams"
-      :key="p.val"
+      v-for="(p, i) in labelParams"
+      :key="i"
       :style="labelStyle(p.deg)"
       class="wheel-label"
     >
@@ -20,7 +20,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Ref } from 'vue-property-decorator';
+import { Vue, Component, Ref, Prop, Watch } from 'vue-property-decorator';
 
 const theta = 20;
 const r = 90;
@@ -35,17 +35,26 @@ function clip(v: number, min: number, max: number) {
 
 @Component
 export default class TimeWheel extends Vue {
+  @Prop() labels!: number[];
+
   @Ref('wheelCtn') wheelCtn!: HTMLDivElement;
 
   val: number = 0;
   r: number = r;
   vy: number = 0;
 
-  labels: number[] = new Array(60).fill(0).map((_v, i) => i + 1);
+  @Watch('labels') onLabelsChange() {
+    this.centerIndex = 0;
+    this.prevIndex = 0;
+    this.spinning = false;
+    this.prevTheta = null;
+  }
+
   prevTheta: number | null = null;
   prevTime: number | null = 0;
 
   centerIndex: number = 0;
+  prevIndex: number = 0;
   spinning: boolean = false;
 
   get labelParams(): { val: number; deg: number }[] {
@@ -77,16 +86,28 @@ export default class TimeWheel extends Vue {
     };
   }
 
+  getTheta(e: MouseEvent) {
+    return (
+      (Math.asin(
+        clip(
+          (e.clientY -
+            this.wheelCtn.getBoundingClientRect().top -
+            this.wheelCtn.clientHeight / 2) /
+            r,
+          -1,
+          1
+        )
+      ) *
+        180) /
+      Math.PI
+    );
+  }
+
   onMouseDown(e: MouseEvent) {
     this.prevTime = +new Date();
     this.spinning = false;
     this.vy = 0;
-    this.prevTheta =
-      (Math.asin(
-        clip((e.clientY - this.wheelCtn.clientHeight / 2) / r, -1, 1)
-      ) *
-        180) /
-      Math.PI;
+    this.prevTheta = this.getTheta(e);
   }
 
   onMouseMove(e: MouseEvent) {
@@ -95,12 +116,7 @@ export default class TimeWheel extends Vue {
     const t0 = +new Date();
     const dt = t0 - this.prevTime;
     this.prevTime = t0;
-    const t =
-      (Math.asin(
-        clip((e.clientY - this.wheelCtn.clientHeight / 2) / r, -1, 1)
-      ) *
-        180) /
-      Math.PI;
+    const t = this.getTheta(e);
     const dTheta = t - this.prevTheta;
     this.centerIndex = rem(
       this.centerIndex - dTheta / theta,
@@ -131,31 +147,34 @@ export default class TimeWheel extends Vue {
   snap() {
     // FIXME
     const offset = this.centerIndex - Math.round(this.centerIndex);
-    if (!offset) return;
+    if (!offset) {
+      if (this.prevIndex !== this.centerIndex) {
+        this.$emit('input', this.labels[this.centerIndex]);
+        this.prevIndex = this.centerIndex;
+      }
+      return;
+    }
     const thres = 0.01;
-    console.log(offset);
     requestAnimationFrame(() => {
-      this.centerIndex =
+      this.centerIndex = rem(
         Math.abs(offset) < thres
           ? Math.round(this.centerIndex)
-          : Math.round(this.centerIndex) + offset * 0.95;
+          : Math.round(this.centerIndex) + offset * 0.8,
+        this.labels.length
+      );
       this.snap();
     });
   }
 
   onDragEnd() {
     this.prevTheta = null;
-    if (this.vy) {
-      this.spinning = true;
-      this.spin();
-    }
+    this.spinning = true;
+    this.spin();
   }
 }
 </script>
 <style lang="scss" scoped>
 .ctn {
-  background-color: #141517;
-  color: #c7c7ca;
   position: relative;
   width: 50px;
 }
