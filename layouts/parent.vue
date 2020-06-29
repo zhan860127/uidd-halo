@@ -100,9 +100,11 @@ export default class classname extends Vue {
   }
 
   get currentChildStatus() {
-    return this.childStatus.filter(
-      (child: { id: number }) => child.id === +this.$route.query.c
-    )[0];
+    return (
+      this.childStatus.filter(
+        (child: { id: number }) => child.id === +this.$route.query.c
+      )[0] || {}
+    );
   }
 
   @Ref('dropdown') dropdown!: BDropdown;
