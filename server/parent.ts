@@ -85,6 +85,15 @@ router.get('/child', async (req, res) => {
     token: child.token!,
   });
 });
+router.get('/childpic', async (req, res) => {
+  // GET /child?id=123
+  if (!(typeof req.query.id === 'string')) return res.sendStatus(400);
+  const childId = parseInt(req.query.id);
+  if (isNaN(childId)) return res.sendStatus(400);
+  const child = await getChild(req, childId);
+  if (!child) return res.sendStatus(404);
+  res.sendFile('assets/img/child_placeholder.png', { root: '.' });
+});
 
 router.post('/child_audio/edit', json(), async (req, res) => {
   const { id, transcript } = req.body;

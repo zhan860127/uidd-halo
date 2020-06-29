@@ -1,54 +1,28 @@
 <template>
   <div>
     <div id="parent-root">
-      <b-navbar type="dark" class="parent-bar" :sticky="true">
-        <b-navbar-brand>
-          <nuxt-link
-            :to="
-              $route.query.c
-                ? `/parent?c=${$route.query.c}`
-                : `/parent/children`
-            "
-            class="plain"
-            ><b-icon-house-door-fill style="height: auto; width: 30px;"
-          /></nuxt-link>
-        </b-navbar-brand>
-        <b-navbar-nav class="flex-grow-1">
-          <b-nav-item-dropdown
-            v-if="title"
-            ref="dropdown"
-            :text="title"
-            class="mx-auto nav-dropdown"
-          >
-            <nuxt-link
-              class="dropdown-item"
-              :to="`/parent/logs?c=${$route.query.c}`"
-              @click="closeDropdown"
-              >Record</nuxt-link
-            >
-            <nuxt-link
-              class="dropdown-item"
-              :to="`/parent/keyword?c=${$route.query.c}`"
-              >Response</nuxt-link
-            >
-            <nuxt-link
-              class="dropdown-item"
-              :to="`/parent/call?c=${$route.query.c}`"
-              >Call</nuxt-link
-            >
-          </b-nav-item-dropdown>
-        </b-navbar-nav>
-        <b-navbar-nav>
+      <b-navbar type="light" class="parent-bar" :sticky="true">
+        <div>
           <b-icon-list
-            v-b-toggle.side-menu
-            style="height: 27px; width: 27px;"
+            style="height: auto; width: 30px;"
+            @click="menuOpen = true"
           />
-        </b-navbar-nav>
+        </div>
+        <div class="flex-grow-1 navbar-title">
+          {{ title }}
+        </div>
+        <ChildStatus
+          :child-id="currentChildStatus.id"
+          :online="currentChildStatus.online"
+        />
       </b-navbar>
       <nuxt id="nuxt" />
       <Navbar />
     </div>
 
+    <Drawer v-model="menuOpen" side="bottom">
+      <div id="drawer-menu"></div>
+    </Drawer>
     <b-sidebar id="side-menu" backdrop right>
       <div class="sidebar-item">設定基本資料</div>
       <nuxt-link
@@ -80,11 +54,15 @@ import { BDropdown } from 'bootstrap-vue';
 import '~/assets/scss/_fonts.scss';
 import io from 'socket.io-client';
 import Navbar from '~/components/Navbar.vue';
+import Drawer from '~/components/Drawer.vue';
+import ChildStatus from '~/components/ChildStatus.vue';
 
 @Component({
-  components: { Navbar },
+  components: { Navbar, Drawer, ChildStatus },
 })
 export default class classname extends Vue {
+  menuOpen = false;
+
   mounted() {
     io.connect('/parent')
       .on('status', (v: any) => {
@@ -121,6 +99,12 @@ export default class classname extends Vue {
     return this.$store.state.parent.childStatus;
   }
 
+  get currentChildStatus() {
+    return this.childStatus.filter(
+      (child: { id: number }) => child.id === +this.$route.query.c
+    )[0];
+  }
+
   @Ref('dropdown') dropdown!: BDropdown;
   @Watch('$route')
   closeDropdown() {
@@ -144,9 +128,10 @@ body {
 }
 
 .parent-bar {
-  background-color: #fabf4d;
-  color: #fcf6ef;
-  height: 52px;
+  background-color: #ffffff;
+  box-shadow: 0px 0px 5px #23181559;
+  color: #082448;
+  height: 73px;
 }
 
 .plain,
@@ -229,5 +214,22 @@ body {
 
 #nuxt {
   overflow-y: auto;
+}
+
+#drawer-menu {
+  background-color: white;
+  box-shadow: 0px 3px 6px #00000029;
+  border-radius: 20px 20px 0 0;
+  height: 200px;
+}
+
+.navbar-title {
+  font: 20px/27px 'Avenir Book';
+  text-align: center;
+  font-weight: bold;
+}
+
+#nav-profile {
+  height: 40px;
 }
 </style>
