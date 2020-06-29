@@ -68,9 +68,10 @@ export default class classname extends Vue {
 
   func() {
     const vh = window.innerHeight * 0.01;
-    (document.getElementById(
-      'child-root'
-    ) as HTMLInputElement).style.setProperty('--vh', `${vh}px`);
+    (document.querySelector('.child-root') as HTMLDivElement).style.setProperty(
+      '--vh',
+      `${vh}px`
+    );
   }
 
   @Watch('volume')
