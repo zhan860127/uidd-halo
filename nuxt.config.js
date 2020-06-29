@@ -50,6 +50,19 @@ export default {
     '@nuxtjs/pwa',
     // Doc: https://github.com/nuxt-community/dotenv-module
     ['@nuxtjs/axios', { browserBaseURL: '/' }],
+    [
+      'nuxt-fontawesome',
+      {
+        component: 'fa',
+        imports: [
+          // import whole set
+          {
+            set: '@fortawesome/free-solid-svg-icons',
+            icons: ['fas'],
+          },
+        ],
+      },
+    ],
   ],
 
   bootstrapVue: {

@@ -21,7 +21,40 @@
     </div>
 
     <Drawer v-model="menuOpen" side="bottom">
-      <div id="drawer-menu"></div>
+      <div id="drawer-menu">
+        <div class="drawer-menu-item">
+          <div class="drawer-menu-item-icon">
+            <fa icon="cog" />
+          </div>
+          <div class="drawer-menu-item-label">設定基本資料</div>
+        </div>
+        <div class="drawer-menu-item">
+          <div class="drawer-menu-item-icon">
+            <fa icon="qrcode" />
+          </div>
+          <nuxt-link
+            class="drawer-menu-item-label"
+            :to="`/parent/connect?c=${$route.query.c}`"
+            >QR CODE</nuxt-link
+          >
+        </div>
+        <div class="drawer-menu-item">
+          <div class="drawer-menu-item-icon">
+            <fa icon="sign-out-alt" />
+          </div>
+          <div class="drawer-menu-item-label">登出</div>
+        </div>
+        <div class="child-list">
+          <nuxt-link
+            v-for="child in childStatus"
+            :key="child.id"
+            class="sidebar-item plain pointer"
+            :to="`/parent?c=${child.id}`"
+          >
+            <ChildStatus :child-id="child.id" :online="child.online" />
+          </nuxt-link>
+        </div>
+      </div>
     </Drawer>
     <b-sidebar id="side-menu" backdrop right>
       <div class="sidebar-item">設定基本資料</div>
@@ -110,6 +143,7 @@ export default class classname extends Vue {
   @Ref('dropdown') dropdown!: BDropdown;
   @Watch('$route')
   closeDropdown() {
+    this.menuOpen = false;
     if (this.dropdown) this.dropdown.hide();
   }
 }
@@ -222,7 +256,7 @@ body {
   background-color: white;
   box-shadow: 0px 3px 6px #00000029;
   border-radius: 20px 20px 0 0;
-  height: 200px;
+  padding-top: 10px;
 }
 
 .navbar-title {
@@ -233,5 +267,41 @@ body {
 
 #nav-profile {
   height: 40px;
+}
+
+.drawer-menu-item {
+  height: 70px;
+  display: flex;
+}
+
+.drawer-menu-item-icon {
+  font-size: 24px;
+  padding-left: 43px;
+  padding-right: 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding-bottom: 14px;
+  color: #666666;
+}
+
+.drawer-menu-item-label {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  color: #082448;
+  font: 15px/20px 'Avenir Book';
+  padding-bottom: 16.5px;
+  border-bottom: 1px solid #707070;
+  flex-grow: 1;
+}
+
+.child-list {
+  padding: 25px 40px 17px;
+  overflow-x: auto;
+  display: flex;
+  & > * + * {
+    margin-left: 25px;
+  }
 }
 </style>
