@@ -221,4 +221,25 @@ router.post('/add_child', upload.single('img'), async (req, res) => {
   });
 });
 
+router.post('/edit_child', upload.single('img'), async (req, res) => {
+  const child = await getChild(req, req.body.id);
+  if (!child) return res.sendStatus(403);
+  const connection = await getConnection();
+  if (req.file) {
+    const ext = req.file.mimetype.endsWith('png') ? 'png' : 'jpg';
+    const filename = `${randomFilename()}.${ext}`;
+    const imgPath = path.join(uploadPath, filename);
+    await promisify(writeFile)(imgPath, req.file.buffer);
+    const image = new Image();
+    image.path = imgPath;
+    await connection.manager.save(image);
+    child.image = image;
+  }
+  if (req.body.name) {
+    child.name = req.body.name;
+  }
+  await connection.manager.save(child);
+  res.sendStatus(200);
+});
+
 export default router;

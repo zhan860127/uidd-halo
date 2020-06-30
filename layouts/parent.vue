@@ -122,7 +122,7 @@ import ChildStatus from '~/components/ChildStatus.vue';
 export default class classname extends Vue {
   menuOpen = false;
 
-  mounted() {
+  created() {
     io.connect('/parent')
       .on('status', (v: any) => {
         this.$store.commit('parent/setChildStatus', v);
@@ -130,14 +130,6 @@ export default class classname extends Vue {
       .on('/logs', () => {
         this.$store.commit('parent/incLogsVer');
       });
-    this.func();
-  }
-
-  func() {
-    const vh = window.innerHeight * 0.01;
-    (document.getElementById(
-      'parent-root'
-    ) as HTMLInputElement).style.setProperty('--vh', `${vh}px`);
   }
 
   get settings() {
