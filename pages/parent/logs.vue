@@ -292,15 +292,15 @@ export default class classname extends Vue {
 }
 
 .halo-button {
+  margin: 20px auto;
   background-color: #082448;
   display: flex;
   justify-content: center;
   align-items: center;
   color: #fcf6ef;
   font: 17px/23px 'Avenir Book';
+  width: fit-content;
   padding: 5px 20px;
   border-radius: 14px;
-  float: right;
-  margin-right: 25px;
 }
 </style>
