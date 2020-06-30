@@ -47,7 +47,10 @@ export default class HrMinWheel extends Vue {
     const x = [
       ...new Set(this.times.filter((x) => x.h === this.h).map((x) => x.m)),
     ].sort((a, b) => a - b);
-    if (!x.every((v, i) => v === this.prevMins[i])) {
+    if (
+      x.length !== this.prevMins.length ||
+      !x.every((v, i) => v === this.prevMins[i])
+    ) {
       console.log(x);
       this.prevMins = x;
       this.m = this.mins[0];
