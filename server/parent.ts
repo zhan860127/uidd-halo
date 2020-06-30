@@ -1,5 +1,6 @@
 import { promisify } from 'util';
-import { unlink } from 'fs';
+import { unlink, writeFile } from 'fs';
+import path from 'path';
 import { Router, RequestHandler, json, Request } from 'express';
 import {
   getConnection,
@@ -8,10 +9,18 @@ import {
   getManager,
 } from 'typeorm';
 import QRCode from 'qrcode';
-import { Parent, Child, ChildAudio } from '../models/entity/entities';
+import multer from 'multer';
+import { config } from 'dotenv';
+import { Parent, Child, ChildAudio, Image } from '../models/entity/entities';
 
 import * as Login from './Login';
-import { newChildToken } from './misc';
+import { newChildToken, randomFilename } from './misc';
+config();
+
+const upload = multer();
+const uploadPath = process.env.UPLOAD_PATH;
+if (!uploadPath)
+  throw new Error('Upload path not set. Please edit the .env file');
 
 const router = Router();
 
@@ -166,12 +175,20 @@ router.get('/audiofile/:id', async (req, res) => {
   res.sendFile(audio.path!, { root: '.' });
 });
 
-router.post('/add_child', async (req, res) => {
-  const connection = await getConnection();
-  if (!req.body.name) {
-    res.status(400);
-    return res.send('no name sent');
+function imgValid(file: Express.Multer.File) {
+  return (
+    file &&
+    ['image/jpeg', 'image/png'].some((m) => m === file.mimetype) &&
+    file.size < 5000000
+  );
+}
+
+router.post('/add_child', upload.single('img'), async (req, res) => {
+  if (!req.body.name || !req.file || !imgValid(req.file)) {
+    res.sendStatus(400);
+    return;
   }
+  const connection = await getConnection();
   const parent = await connection.getRepository(Parent).findOne({
     where: {
       id: Login.getParentId(req),
@@ -181,13 +198,22 @@ router.post('/add_child', async (req, res) => {
   if (!parent) {
     return res.sendStatus(500);
   }
+  const ext = req.file.mimetype.endsWith('png') ? 'png' : 'jpg';
+  const filename = `${randomFilename()}.${ext}`;
+  const imgPath = path.join(uploadPath, filename);
+  await promisify(writeFile)(imgPath, req.file.buffer);
   const child = new Child();
+  const image = new Image();
+  image.path = imgPath;
+  connection.manager.save(image);
   child.name = req.body.name;
   child.token = newChildToken();
   await connection.manager.save(child);
   parent.children!.push(child);
   await connection.manager.save(parent);
-  res.redirect(302, '/parent/children');
+  res.json({
+    url: `/parent/logs?c=${child.id!}`,
+  });
 });
 
 export default router;

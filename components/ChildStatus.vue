@@ -1,5 +1,5 @@
 <template>
-  <div class="wrp">
+  <div class="wrp" :style="{ '--size': size }">
     <div class="dot" :class="{ online: online }"></div>
     <div class="pic-ctn">
       <img :src="`/api/parent/childpic?id=${childId}`" />
@@ -14,20 +14,21 @@ import { Vue, Component, Prop } from 'vue-property-decorator';
 export default class ChildStatus extends Vue {
   @Prop() online!: boolean;
   @Prop() childId!: number;
+  @Prop({ default: '40px' }) size!: string;
 }
 </script>
 
 <style lang="scss" scoped>
 .wrp {
-  height: 40px;
-  width: 40px;
+  height: var(--size);
+  width: var(--size);
   position: relative;
 }
 
 .dot {
   position: absolute;
-  height: 6px;
-  width: 6px;
+  height: 100% * 6 / 40;
+  width: 100% * 6 / 40;
   top: 0;
   right: 0;
   border-radius: 50%;
@@ -41,8 +42,8 @@ export default class ChildStatus extends Vue {
   border-radius: 50%;
   overflow: hidden;
   position: absolute;
-  height: 36px;
-  width: 36px;
+  height: 100% * 36 / 40;
+  width: 100% * 36 / 40;
   bottom: 0;
   top: 0;
 
