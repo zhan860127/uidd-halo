@@ -122,6 +122,8 @@ export default class classname extends Vue {
       ? 'Response'
       : p.startsWith('/parent/call')
       ? 'Call'
+      : p.startsWith('/parent/alarm')
+      ? 'Alarm'
       : '';
   }
 
