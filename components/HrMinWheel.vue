@@ -7,7 +7,6 @@
         @input="
           (e) => {
             h = e;
-            m = mins[0];
           }
         "
       />
@@ -20,29 +19,48 @@
 import { Vue, Component, Watch, Prop } from 'vue-property-decorator';
 import TimeWheel from '~/components/TimeWheel.vue';
 
+const allTimes = Array(24)
+  .fill(0)
+  .map((_v, i) => i)
+  .flatMap((h) =>
+    Array(60)
+      .fill(0)
+      .map((_v, i) => i)
+      .map((m) => ({
+        h,
+        m,
+      }))
+  );
+
 @Component({ components: { TimeWheel } })
 export default class HrMinWheel extends Vue {
-  @Prop() times!: { h: number; m: number }[];
+  @Prop({ default: () => allTimes }) times!: { h: number; m: number }[];
+  prevMins: number[] = [];
 
   get hrs(): number[] {
-    return [...new Set(this.times.map((x) => x.h))].sort();
+    return [...new Set(this.times.map((x) => x.h))].sort((a, b) => a - b);
   }
 
   get mins(): number[] {
-    return [
+    const x = [
       ...new Set(this.times.filter((x) => x.h === this.h).map((x) => x.m)),
-    ].sort();
+    ].sort((a, b) => a - b);
+    if (!x.every((v, i) => v === this.prevMins[i])) {
+      console.log(x);
+      this.prevMins = x;
+      this.m = this.mins[0];
+    }
+    return this.prevMins;
+  }
+
+  @Watch('hrs') onHrsChanged() {
+    this.h = this.hrs[0];
   }
 
   h: number = 0;
   m: number = 0;
 
   created() {
-    this.h = this.hrs[0];
-    this.m = this.mins[0];
-  }
-
-  @Watch('times') onTimesChanged() {
     this.h = this.hrs[0];
     this.m = this.mins[0];
   }

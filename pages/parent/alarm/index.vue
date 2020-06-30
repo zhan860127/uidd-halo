@@ -1,5 +1,7 @@
 <template>
-  <div>alarm page</div>
+  <div>
+    <nuxt-link :to="`/parent/alarm/add?c=${$route.query.c}`">Add</nuxt-link>
+  </div>
 </template>
 
 <script lang="ts">
