@@ -37,6 +37,7 @@ async function getChild(
   return getRepository(Child)
     .createQueryBuilder('child')
     .innerJoinAndSelect('child.parents', 'parent')
+    .leftJoinAndSelect('child.image', 'image')
     .where('parent.id = :parentId', { parentId })
     .andWhere('child.id = :childId', { childId })
     .getOne();
@@ -101,7 +102,10 @@ router.get('/childpic', async (req, res) => {
   if (isNaN(childId)) return res.sendStatus(400);
   const child = await getChild(req, childId);
   if (!child) return res.sendStatus(404);
-  res.sendFile('assets/img/child_placeholder.png', { root: '.' });
+  const img = child.image
+    ? child.image.path!
+    : 'assets/img/child_placeholder.png';
+  res.sendFile(img, { root: '.' });
 });
 
 router.post('/child_audio/edit', json(), async (req, res) => {
@@ -205,8 +209,9 @@ router.post('/add_child', upload.single('img'), async (req, res) => {
   const child = new Child();
   const image = new Image();
   image.path = imgPath;
-  connection.manager.save(image);
+  await connection.manager.save(image);
   child.name = req.body.name;
+  child.image = image;
   child.token = newChildToken();
   await connection.manager.save(child);
   parent.children!.push(child);
