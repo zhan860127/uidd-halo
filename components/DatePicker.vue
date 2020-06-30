@@ -40,15 +40,12 @@
           v-for="d in daysOfMonth"
           :key="d"
           class="day"
+          :class="{ highlight: shouldHighlight(d), active: isActive(d) }"
           :style="{
             'grid-column-start': d == 1 ? dayOfFirstDayOfMonth + 1 : undefined,
           }"
         >
-          <div
-            class="day-before"
-            :class="{ highlight: shouldHighlight(d), active: isActive(d) }"
-            @click="onDayClicked(d)"
-          ></div>
+          <div class="day-before" @click="onDayClicked(d)"></div>
           <div class="day-content">{{ d }}</div>
         </div>
       </div>
@@ -209,6 +206,10 @@ export default class classname extends Vue {
 
 .day {
   position: relative;
+
+  &.highlight:not(.active) {
+    color: #b51e41;
+  }
 }
 
 .day-before {
@@ -221,11 +222,7 @@ export default class classname extends Vue {
   border-radius: 50%;
   z-index: -1;
 
-  &.highlight {
-    border: 1px solid #fabf4d;
-  }
-
-  &.active {
+  .active > & {
     background-color: #b51e41;
     opacity: 0.65;
   }
