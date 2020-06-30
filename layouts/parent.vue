@@ -4,7 +4,7 @@
       <b-navbar
         type="light"
         class="parent-bar"
-        :class="{ settings }"
+        :class="{ settings, keyword }"
         :sticky="true"
       >
         <div v-if="!settings">
@@ -141,6 +141,10 @@ export default class classname extends Vue {
     return !this.$route.path.startsWith('/parent/settings');
   }
 
+  get keyword() {
+    return this.$route.path.startsWith('/parent/keyword');
+  }
+
   get title(): string {
     const p = this.$route.path;
     return p.startsWith('/parent/logs')
@@ -199,6 +203,9 @@ body {
   &.settings {
     background-color: #082448;
     box-shadow: none;
+  }
+  &.keyword {
+    z-index: 5;
   }
 }
 

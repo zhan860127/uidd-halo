@@ -2,7 +2,7 @@
   <div class="position-relative">
     <Drawer
       v-model="drawerOpen"
-      style="transform: translateY(52px);"
+      style="transform: translateY(75px);"
       side="top"
     >
       <div class="above-pad" style="padding-top: 20px; top: -0.5px;">
