@@ -100,9 +100,6 @@ export default class classname extends Vue {
     io.connect('/parent')
       .on('status', (v: any) => {
         this.$store.commit('parent/setChildStatus', v);
-        // @ts-ignore
-        window.v = v;
-        console.log(v);
       })
       .on('/logs', () => {
         this.$store.commit('parent/incLogsVer');
