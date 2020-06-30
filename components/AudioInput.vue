@@ -48,11 +48,6 @@ export default class classname extends Vue {
   audio: HTMLAudioElement | null = null;
   blob: Blob | null = null;
 
-  async mounted() {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    this.mediaRecorder = new MediaRecorder(stream);
-  }
-
   play() {
     if (!this.playing) {
       this.playing = true;
@@ -70,9 +65,13 @@ export default class classname extends Vue {
     };
   }
 
-  record() {
+  async record() {
     this.blob = null;
     let chunks: Blob[] = [];
+    if (!this.mediaRecorder) {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      this.mediaRecorder = new MediaRecorder(stream);
+    }
     if (!this.recording) {
       this.mediaRecorder!.start();
       this.recording = true;
