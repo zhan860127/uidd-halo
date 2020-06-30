@@ -11,6 +11,8 @@
         "
       />
       <TimeWheel :labels="mins" class="wheel" @input="(e) => (m = e)" />
+      <div class="wheel-frame"></div>
+      <div class="filter"></div>
     </template>
   </div>
 </template>
@@ -81,9 +83,30 @@ export default class HrMinWheel extends Vue {
   display: flex;
   justify-content: center;
   padding: 20px 0;
+  position: relative;
 }
 
 .wheel + .wheel {
   margin-left: 50px;
+}
+
+.wheel-frame {
+  border-top: 1px solid #fff3;
+  border-bottom: 1px solid #fff3;
+  height: 2em;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  left: 0;
+  right: 0;
+}
+.filter {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  pointer-events: none;
+  background: linear-gradient(#000c, #0000, #000c);
 }
 </style>
