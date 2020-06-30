@@ -4,9 +4,6 @@
       <div class="half-pill" @click="dateDrawerOpen = !dateDrawerOpen">
         <b-icon-calendar style="width: 14px; height: auto;" />
       </div>
-      <div class="half-pill">
-        <b-icon-heart-fill style="width: 14px; height: auto;" />
-      </div>
     </div>
     <b-container>
       <div v-for="group in sortedAudios" :key="+group[0]" class="logs-group">
@@ -226,7 +223,7 @@ export default class classname extends Vue {
 <style lang="scss" scoped>
 .buttons {
   position: sticky;
-  top: 52px;
+  top: 0px;
   z-index: 2;
   display: flex;
   flex-direction: column;
@@ -235,7 +232,7 @@ export default class classname extends Vue {
   height: 81px;
 }
 .half-pill {
-  background-color: #4d6790;
+  background-color: #b51e41;
   width: 38px;
   height: 31px;
   border-radius: 50% 0 0 50%;
