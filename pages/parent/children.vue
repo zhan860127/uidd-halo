@@ -112,10 +112,15 @@ export default class classname extends Vue {
 
   @Watch('isGirl') onGender() {
     this.setCursor();
+    setTimeout(() => this.setCursor(), 50);
   }
 
-  @Watch('step') onStep() {
+  @Watch('step') onStep(step: number) {
+    if (step !== 1) return;
     this.setCursor();
+    setTimeout(() => this.setCursor(), 50);
+    setTimeout(() => this.setCursor(), 200);
+    setTimeout(() => this.setCursor(), 300);
   }
 
   get childStatus(): any {
