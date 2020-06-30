@@ -9,11 +9,11 @@
         />
       </div>
       <div v-if="date" class="months">
-        <div class="month">
+        <div class="month" @click="addMonth(-1)">
           {{ monthNames[(date.getMonth() + 11) % 12] }}
         </div>
         <div class="month active">{{ monthNames[date.getMonth()] }}</div>
-        <div class="month">
+        <div class="month" @click="addMonth(1)">
           {{ monthNames[(date.getMonth() + 1) % 12] }}
         </div>
       </div>
