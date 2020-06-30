@@ -6,11 +6,8 @@
     <nuxt-link :to="`/parent/keyword?c=${$route.query.c}`" class="nav-item"
       ><b-icon-mic
     /></nuxt-link>
-    <nuxt-link :to="`/parent/alarm?c=${$route.query.c}`" class="nav-item"
-      ><b-icon-alarm
-    /></nuxt-link>
     <nuxt-link :to="`/parent/call?c=${$route.query.c}`" class="nav-item"
-      ><b-icon-phone
+      ><fa icon="phone"
     /></nuxt-link>
   </div>
 </template>
