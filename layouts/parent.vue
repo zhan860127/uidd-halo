@@ -11,10 +11,11 @@
         <div class="flex-grow-1 navbar-title">
           {{ title }}
         </div>
-        <ChildStatus
-          :child-id="currentChildStatus.id"
-          :online="currentChildStatus.online"
-        />
+        <nuxt-link to="/parent/children">
+          <ChildStatus
+            :child-id="currentChildStatus.id"
+            :online="currentChildStatus.online"
+        /></nuxt-link>
       </b-navbar>
       <nuxt id="nuxt" />
       <Navbar />
