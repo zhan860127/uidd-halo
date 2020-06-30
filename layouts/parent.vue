@@ -1,15 +1,20 @@
 <template>
   <div>
     <div id="parent-root">
-      <b-navbar type="light" class="parent-bar" :sticky="true">
-        <div>
+      <b-navbar
+        type="light"
+        class="parent-bar"
+        :class="{ settings }"
+        :sticky="true"
+      >
+        <div v-if="!settings">
           <b-icon-list
             style="height: auto; width: 30px;"
             @click="menuOpen = true"
           />
         </div>
         <div class="flex-grow-1 navbar-title">
-          {{ title }}
+          <span v-if="!settings"> {{ title }}</span>
         </div>
         <nuxt-link to="/parent/children">
           <ChildStatus
@@ -17,6 +22,22 @@
             :online="currentChildStatus.online"
         /></nuxt-link>
       </b-navbar>
+      <div class="tabs">
+        <template v-if="settings">
+          <nuxt-link
+            :to="`/parent/settings?c=${$route.query.c}`"
+            class="tab"
+            :class="{ active: !qr }"
+            >基本資料</nuxt-link
+          >
+          <nuxt-link
+            :to="`/parent/connect?c=${$route.query.c}`"
+            class="tab"
+            :class="{ active: qr }"
+            >QRCODE</nuxt-link
+          ></template
+        >
+      </div>
       <nuxt id="nuxt" />
       <Navbar />
     </div>
@@ -27,7 +48,11 @@
           <div class="drawer-menu-item-icon">
             <fa icon="cog" />
           </div>
-          <div class="drawer-menu-item-label">設定基本資料</div>
+          <nuxt-link
+            :to="`/parent/settings?c=${$route.query.c}`"
+            class="drawer-menu-item-label"
+            >設定基本資料</nuxt-link
+          >
         </div>
         <div class="drawer-menu-item">
           <div class="drawer-menu-item-icon">
@@ -115,6 +140,15 @@ export default class classname extends Vue {
     ) as HTMLInputElement).style.setProperty('--vh', `${vh}px`);
   }
 
+  get settings() {
+    const p = this.$route.path;
+    return p.startsWith('/parent/settings') || p.startsWith('/parent/connect');
+  }
+
+  get qr() {
+    return !this.$route.path.startsWith('/parent/settings');
+  }
+
   get title(): string {
     const p = this.$route.path;
     return p.startsWith('/parent/logs')
@@ -160,7 +194,7 @@ body {
   height: 100vh;
   overflow-y: auto;
   display: grid;
-  grid-template-rows: min-content 1fr min-content;
+  grid-template-rows: min-content 0 1fr min-content;
 }
 
 .parent-bar {
@@ -168,6 +202,12 @@ body {
   box-shadow: 0px 0px 5px #23181559;
   color: #082448;
   height: 73px;
+  position: relative;
+  z-index: 0;
+  &.settings {
+    background-color: #082448;
+    box-shadow: none;
+  }
 }
 
 .plain,
@@ -302,6 +342,32 @@ body {
   display: flex;
   & > * + * {
     margin-left: 25px;
+  }
+}
+
+.tabs {
+  position: relative;
+  height: 0;
+  overflow: visible;
+  z-index: 1;
+  display: flex;
+  & .tab {
+    color: #082448;
+    display: flex;
+    background-color: orange;
+    width: 91px;
+    height: 28px;
+    border-radius: 14px 14px 0 0 / 14px 14px 0 0;
+    justify-content: center;
+    align-items: flex-end;
+    transform: translateY(-100%);
+    margin-left: 17px;
+    & + & {
+      margin-left: 8px;
+    }
+    &.active {
+      background-color: #fcf6ef;
+    }
   }
 }
 </style>
