@@ -56,6 +56,9 @@ export class Child {
 
   @OneToMany((type) => ChildAudio, (ca) => ca.child)
   childAudios?: ChildAudio[];
+
+  @OneToMany((type) => Alarm, (alarm) => alarm.child)
+  alarms?: Alarm[];
 }
 
 @Entity()
@@ -112,6 +115,9 @@ export class Parent {
 
   @OneToMany((t) => ParentAudio, (a) => a.parent)
   audios?: ParentAudio[];
+
+  @OneToMany((t) => AlarmAudio, (a: AlarmAudio) => a.parent)
+  alarmAudios?: AlarmAudio[];
 }
 
 @Entity()
@@ -136,4 +142,52 @@ export class ParentAudio {
 
   @ManyToOne((type) => Child, (child) => child.parentAudios)
   child?: Child;
+}
+
+@Entity()
+export class AlarmAudio {
+  @PrimaryGeneratedColumn()
+  id?: number;
+
+  @CreateDateColumn()
+  createdAt?: Date;
+
+  @UpdateDateColumn()
+  updatedAt?: Date;
+
+  @Column()
+  path?: string;
+
+  @ManyToOne((_type) => Parent, (p: Parent) => p.alarmAudios)
+  parent?: Parent;
+
+  @OneToMany((_t) => Alarm, (a: Alarm) => a.audio)
+  alarms?: Alarm[];
+}
+
+@Entity()
+export class Alarm {
+  @PrimaryGeneratedColumn()
+  id?: number;
+
+  @CreateDateColumn()
+  createdAt?: Date;
+
+  @UpdateDateColumn()
+  updatedAt?: Date;
+
+  @Column()
+  hour?: number;
+
+  @Column()
+  minute?: number;
+
+  @Column('simple-array')
+  repeats?: number[];
+
+  @ManyToOne((_type) => Child, (child) => child.alarms)
+  child?: Child;
+
+  @ManyToOne((_t) => AlarmAudio, (aa: AlarmAudio) => aa.alarms)
+  audio?: AlarmAudio;
 }
