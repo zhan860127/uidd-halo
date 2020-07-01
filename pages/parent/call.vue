@@ -28,7 +28,12 @@
           <img src="/1-03 -1.png" alt="base" class="base" />
         </div>
         <div v-if="state === 'IN_CALL'" class="grid-root">
-          <img src="/copy.png" class="portrait" />
+          <div>
+            <div
+              class="pbg"
+              :style="{ 'background-image': `url('/copy.png')` }"
+            ></div>
+          </div>
           <div class="d-flex justify-content-center align-items-center">
             <img
               src="~/assets/img/hang_up.png"
@@ -218,6 +223,7 @@ export default class classname extends Vue {
   display: grid;
   grid-template-rows: 8fr 5fr;
   flex-grow: 1;
+  max-height: 100%;
 }
 .portrait {
   object-fit: contain;
@@ -279,5 +285,12 @@ export default class classname extends Vue {
     left: 50%;
     transform: translate(-50%, -50%);
   }
+}
+
+.pbg {
+  background-size: cover;
+  background-position: center;
+  height: 100%;
+  width: 100%;
 }
 </style>
