@@ -5,21 +5,32 @@
       style="transform: translateY(75px);"
       side="top"
     >
-      <div class="above-pad" style="padding-top: 20px; top: -0.5px;">
-        <input id="key-input" v-model="keyword" type="text" />
-      </div>
-      <AudioInput
-        class="above-pad"
-        :clear="clear"
-        :edit-blob="blob"
-        style="padding: 50px 0px; top: -0.5px;"
-        @input="gotBlob"
-        @blobChange="blobChanged"
-      />
-      <div class="plus-wrapper">
-        <div id="pad"></div>
-        <div id="plus-button-wapper">
-          <b-icon id="plus-btn-icon" icon="plus-circle" @click="onPlusClick" />
+      <div id="drawer">
+        <div class="above-pad" style="padding-top: 20px; top: -0.5px;">
+          <input id="key-input" v-model="keyword" type="text" />
+        </div>
+        <div id="leftPad"></div>
+        <div id="rightPad"></div>
+        <div id="ok" @click="onPlusClick">
+          OK
+        </div>
+        <AudioInput
+          :class="{ opening: drawerOpen }"
+          class="above-pad"
+          :clear="clear"
+          :edit-blob="blob"
+          style="padding: 50px 0px 25px 0px; top: -0.5px;"
+          @input="gotBlob"
+          @blobChange="blobChanged"
+        />
+        <div class="plus-wrapper" :class="{ hide: drawerOpen }">
+          <div id="plus-button-wapper">
+            <b-icon
+              id="plus-btn-icon"
+              icon="plus-circle"
+              @click="onPlusClick"
+            />
+          </div>
         </div>
       </div>
     </Drawer>
@@ -160,6 +171,7 @@ export default class classname extends Vue {
         this.updateList();
         this.keyword = '';
         this.blob = null;
+        this.clear = !this.clear;
         this.editing = false;
         this.drawerOpen = false;
       } else if (this.searchKey(this.keyword))
@@ -235,31 +247,6 @@ export default class classname extends Vue {
         this.editId = id;
         this.drawerOpen = true;
       });
-    // TODO: change keyword in other page
-    /* const newKey = prompt('Change Keyword?', '');
-    if (newKey === null || newKey === '') {
-      console.log('Invalid Input');
-    } else if (this.searchKey(newKey)) {
-      console.log('Duplicate exists!');
-    } else {
-      axios({
-        method: 'get',
-        url: '/api/keyword/changeKey',
-        params: {
-          id,
-          key: newKey,
-        },
-      })
-        .then((result) => {
-          if (!result.data) {
-            console.log('ChangeKey failed');
-          }
-        })
-        .catch((err) => {
-          console.error(err);
-        });
-      this.updateList();
-    } */
   }
 
   mounted() {
@@ -283,7 +270,6 @@ export default class classname extends Vue {
   color: #082448;
 }
 .above-pad {
-  background-color: #fabf4d;
   position: relative;
   z-index: 3;
 }
@@ -311,7 +297,7 @@ export default class classname extends Vue {
   height: 70px;
   width: 85px;
   left: 50%;
-  transform: translateX(-50%) translateY(-60px);
+  transform: translateX(-50%) translateY(-25px);
   border-radius: 50%;
 }
 #plus-btn-icon {
@@ -319,7 +305,7 @@ export default class classname extends Vue {
   width: 29.25px;
   position: relative;
   left: 50%;
-  transform: translateX(-50%) translateY(30px);
+  transform: translateX(-50%) translateY(37px);
   z-index: 3;
 }
 #plus-btn-icon :hover {
@@ -330,5 +316,67 @@ export default class classname extends Vue {
   background: #fabf4d;
   border-radius: 15px;
   height: 40px;
+}
+.hide {
+  display: none;
+}
+#ok {
+  position: absolute;
+  border-radius: 30px;
+  background-color: #082448;
+  color: white;
+  font-size: 15px;
+  width: 40px;
+  height: 20px;
+  z-index: 5;
+  text-align: center;
+  top: 89%;
+  left: 25%;
+}
+#ok :hover {
+  cursor: pointer;
+}
+#drawer {
+  background-image: url('../../static/background1.png');
+  background-repeat: no-repeat;
+  background-position: 50%;
+  background-size: contain;
+}
+.opening {
+  transform: translateY(65px) translateX(2px);
+}
+#leftPad {
+  position: absolute;
+  background: #f0b94e;
+  height: 100%;
+  width: 40vw;
+  top: 0;
+  left: 0;
+}
+#rightPad {
+  position: absolute;
+  background: #f0b94e;
+  height: 100%;
+  width: 40vw;
+  top: 0;
+  right: 0;
+}
+@media (max-width: 600px) {
+  #leftPad {
+    position: absolute;
+    background: #f0b94e;
+    height: 100%;
+    width: 30vw;
+    top: 0;
+    left: 0;
+  }
+  #rightPad {
+    position: absolute;
+    background: #f0b94e;
+    height: 100%;
+    width: 30vw;
+    top: 0;
+    right: 0;
+  }
 }
 </style>

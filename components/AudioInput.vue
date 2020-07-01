@@ -1,25 +1,29 @@
 <template>
   <div>
-    <b-icon
+    <img
       v-if="!blob"
-      id="record"
-      :class="{ recording: recording }"
-      icon="mic-fill"
+      id="pngRecord"
+      src="../static/record1.png"
       @click="record"
     />
-    <div v-if="blob" class="play-record">
-      <b-icon
-        id="play"
-        class="btn-spacing"
-        :icon="playing ? 'pause-fill' : 'play-fill'"
-        @click="play"
-      />
-      <b-icon
-        id="record2"
-        class="btn-spacing"
-        icon="mic-fill"
-        @click="record"
-      />
+    <img
+      v-if="blob"
+      id="pngRecord"
+      src="../static/record2.png"
+      @click="record"
+    />
+    <div v-if="!isPaused && isTimerExisted" id="timer">
+      {{ time() }}
+    </div>
+    <b-icon
+      v-if="blob"
+      id="play"
+      class="btn-spacing"
+      :icon="playing ? 'pause-fill' : 'play-fill'"
+      @click="play"
+    />
+    <div v-if="isPaused && isTimerExisted && !summited" id="timer2">
+      {{ time() }}
     </div>
   </div>
 </template>
@@ -28,12 +32,19 @@
 import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
 // on record complete, $emit('input', audioBlob);
 
+function pad(input: number, width: number) {
+  const z = '0';
+  const n = input.toString();
+  return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
+}
+
 @Component
 export default class classname extends Vue {
   @Prop(Boolean) readonly clear: boolean = false;
   @Watch('clear')
   onClearChanged() {
     this.blob = null;
+    this.summited = true;
   }
 
   @Prop() readonly editBlob: Blob | null = null;
@@ -47,6 +58,11 @@ export default class classname extends Vue {
   mediaRecorder: MediaRecorder | null = null;
   audio: HTMLAudioElement | null = null;
   blob: Blob | null = null;
+  minute: number = 0;
+  second: number = 0;
+  isPaused: boolean = false;
+  isTimerExisted: boolean = false;
+  summited: boolean = false;
 
   play() {
     if (!this.playing) {
@@ -65,6 +81,10 @@ export default class classname extends Vue {
     };
   }
 
+  time() {
+    return `${pad(this.minute, 2)}:${pad(this.second, 2)}`;
+  }
+
   async record() {
     this.blob = null;
     let chunks: Blob[] = [];
@@ -75,12 +95,33 @@ export default class classname extends Vue {
     if (!this.recording) {
       this.mediaRecorder!.start();
       this.recording = true;
+      this.summited = false;
+      if (!this.isTimerExisted) {
+        const cancel = setInterval(() => {
+          if (!this.isPaused) {
+            this.second += 1;
+            if (this.second === 60) {
+              this.minute += 1;
+              this.second = 0;
+            }
+          }
+        }, 1000);
+        if (this.second < 0) {
+          // useless function for lint
+          clearInterval(cancel);
+        }
+        this.isTimerExisted = true;
+      } else if (this.isPaused) {
+        this.second = 0;
+        this.minute = 0;
+        this.isPaused = false;
+      }
     } else {
       this.mediaRecorder!.stop();
       this.recording = false;
       this.$emit('blobChange', true);
+      this.isPaused = true;
     }
-
     this.mediaRecorder!.ondataavailable = (audio) => {
       chunks.push(audio.data);
     };
@@ -127,12 +168,15 @@ export default class classname extends Vue {
   cursor: pointer;
 }
 #play {
-  width: 75px;
-  height: 75px;
+  width: 26px;
+  height: 26px;
   color: #fabf4d;
-  padding: 14px;
+  padding: 3px;
   border-radius: 50%;
   background-color: #082448;
+  position: absolute;
+  right: 15%;
+  top: 32%;
 }
 #play :hover {
   cursor: pointer;
@@ -143,5 +187,26 @@ export default class classname extends Vue {
 .recording {
   border-radius: 50%;
   box-shadow: 0 0 0 3px #082448;
+}
+#timer {
+  color: #082448;
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%) translateY(-70px);
+  font-size: 10px;
+}
+#timer2 {
+  color: #082448;
+  position: fixed;
+  top: 110%;
+  right: 15%;
+  transform: translateX(-170%) translateY(-140px);
+  font-size: 12px;
+}
+#pngRecord {
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
 }
 </style>
