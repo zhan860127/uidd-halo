@@ -31,7 +31,9 @@
           <div>
             <div
               class="pbg"
-              :style="{ 'background-image': `url('/copy.png')` }"
+              :style="{
+                'background-image': `url(/api/parent/childpic?id=${$route.query.c})`,
+              }"
             ></div>
           </div>
           <div class="d-flex justify-content-center align-items-center">
