@@ -1,6 +1,11 @@
 <template>
   <div class="picker-root">
-    <div class="top-bar">{{ !step ? '選擇裝置' : '新增裝置' }}</div>
+    <div class="top-bar">
+      <div v-if="step" class="back-btn" @click="--step">
+        <b-icon-arrow-left />
+      </div>
+      {{ !step ? '選擇裝置' : '新增裝置' }}
+    </div>
     <b-overlay :show="loading">
       <template v-if="step === 0">
         <div class="statuses container">
@@ -176,6 +181,7 @@ export default class classname extends Vue {
   justify-content: center;
   align-items: center;
   height: 73px;
+  position: relative;
 }
 
 .portrait {
@@ -227,5 +233,12 @@ export default class classname extends Vue {
     border-bottom: 1px solid #707070;
   }
   padding-left: 0.3em;
+}
+.back-btn {
+  position: absolute;
+  top: 50%;
+  left: 0.7em;
+  font-size: 24px;
+  transform: translateY(-50%);
 }
 </style>
