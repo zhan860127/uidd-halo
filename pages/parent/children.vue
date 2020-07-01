@@ -9,6 +9,7 @@
               v-for="child in childStatus"
               :key="child.id"
               class="col-4 sidebar-item plain pointer"
+              style="margin-bottom: 50px;"
               :to="`/parent/logs?c=${child.id}`"
               ><ChildStatus
                 size="60px"
@@ -149,7 +150,7 @@ export default class classname extends Vue {
 <style lang="scss" scoped>
 .statuses {
   margin: 160px auto 50px;
-  width: 215px;
+  width: 270px;
 }
 
 .picker-root {
