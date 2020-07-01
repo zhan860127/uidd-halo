@@ -1,10 +1,10 @@
 <template>
   <div class="nav-ctn">
     <nuxt-link class="nav-item" :to="`/parent/logs?c=${$route.query.c}`">
-      <b-icon-chat-dots />
+      <fa icon="comment-dots" />
     </nuxt-link>
     <nuxt-link :to="`/parent/keyword?c=${$route.query.c}`" class="nav-item"
-      ><b-icon-mic
+      ><fa icon="microphone"
     /></nuxt-link>
     <nuxt-link :to="`/parent/call?c=${$route.query.c}`" class="nav-item"
       ><fa icon="phone"
