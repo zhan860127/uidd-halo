@@ -1,7 +1,7 @@
 <template>
   <div class="picker-root">
     <div class="top-bar">{{ !step ? '選擇裝置' : '新增裝置' }}</div>
-    <div>
+    <b-overlay :show="loading">
       <template v-if="step === 0">
         <div class="statuses container">
           <div class="row">
@@ -64,7 +64,7 @@
           style="margin: 25px auto 5px;"
           @click="send"
       /></template>
-    </div>
+    </b-overlay>
   </div>
 </template>
 
@@ -87,6 +87,7 @@ export default class classname extends Vue {
   isGirl: boolean = true;
   imgSrc: string = '';
   name: string = '';
+  loading: boolean = false;
 
   @Ref('girl') girl!: HTMLImageElement;
   @Ref('boy') boy!: HTMLImageElement;
@@ -132,6 +133,7 @@ export default class classname extends Vue {
     const blob = await fetch(this.imgSrc).then((res) => res.blob());
     fd.append('img', blob);
     fd.append('name', this.name);
+    this.loading = true;
     const res = await this.$axios({
       url: '/api/parent/add_child',
       method: 'post',
