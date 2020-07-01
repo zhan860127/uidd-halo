@@ -71,7 +71,9 @@ export default class classname extends Vue {
   loadPath() {
     this.clip = new Audio(this.path);
     this.idle = true;
+    this.clip!.currentTime = 999999999; // Fix duration
     this.clip.ondurationchange = () => {
+      this.clip!.currentTime = 0;
       this.duration = this.clip!.duration;
     };
     this.clip.onended = () => {
