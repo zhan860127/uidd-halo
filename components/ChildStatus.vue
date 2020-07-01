@@ -2,7 +2,11 @@
   <div class="wrp" :style="{ '--size': size }">
     <div class="dot" :class="{ online: online }"></div>
     <div class="pic-ctn">
-      <img :src="`/api/parent/childpic?id=${childId}`" />
+      <div
+        :style="{
+          'background-image': `url(/api/parent/childpic?id=${childId})`,
+        }"
+      />
     </div>
   </div>
 </template>
@@ -47,9 +51,9 @@ export default class ChildStatus extends Vue {
   bottom: 0;
   top: 0;
 
-  & > img {
-    object-fit: cover;
-    object-position: center;
+  & > div {
+    background-size: cover;
+    background-position: center;
     height: 100%;
     width: 100%;
   }
