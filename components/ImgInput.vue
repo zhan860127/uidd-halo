@@ -1,6 +1,12 @@
 <template>
   <div style="width: fit-content;">
-    <input ref="input" type="file" class="d-none" @change="onChange" />
+    <input
+      ref="input"
+      type="file"
+      class="d-none"
+      accept="image/png, image/jpeg"
+      @change="onChange"
+    />
     <div class="input-wrp">
       <div class="frame" @click="onPlusClick">
         <img v-if="src" :src="src" alt="" />
