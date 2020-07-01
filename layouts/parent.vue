@@ -75,35 +75,13 @@
             v-for="child in childStatus"
             :key="child.id"
             class="sidebar-item plain pointer"
-            :to="`/parent?c=${child.id}`"
+            :to="`/parent/logs?c=${child.id}`"
           >
             <ChildStatus :child-id="child.id" :online="child.online" />
           </nuxt-link>
         </div>
       </div>
     </Drawer>
-    <b-sidebar id="side-menu" backdrop right>
-      <div class="sidebar-item">設定基本資料</div>
-      <nuxt-link
-        v-if="$route.query.c"
-        class="sidebar-item"
-        style="color: inherit;"
-        :to="`/parent/connect?c=${$route.query.c}`"
-        >QR CODE</nuxt-link
-      >
-      <div class="sidebar-item">登出</div>
-      <div class="sidebar-divider"></div>
-      <nuxt-link
-        v-for="child in childStatus"
-        :key="child.id"
-        class="sidebar-item plain pointer"
-        :to="`/parent?c=${child.id}`"
-      >
-        <div class="child-dot" :class="{ online: child.online }"></div>
-        <div class="flex-grow-1">{{ child.name }}</div>
-        <div class="child-online">{{ child.online ? '上線中' : '離線中' }}</div>
-      </nuxt-link>
-    </b-sidebar>
   </div>
 </template>
 
