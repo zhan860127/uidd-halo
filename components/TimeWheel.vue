@@ -5,8 +5,11 @@
     :style="{ height: `${r * 2}px` }"
     @mousemove="onMouseMove"
     @mousedown="onMouseDown"
+    @touchstart="onMouseDown"
+    @touchend="onDragEnd"
     @mouseup="onDragEnd"
     @mouseleave="onDragEnd"
+    @touchmove="onMouseMove"
   >
     <div
       v-for="(p, i) in labelParams"
@@ -86,11 +89,12 @@ export default class TimeWheel extends Vue {
     };
   }
 
-  getTheta(e: MouseEvent) {
+  getTheta(e: MouseEvent | TouchEvent) {
+    const y = e instanceof MouseEvent ? e.clientY : e.touches[0].clientY;
     return (
       (Math.asin(
         clip(
-          (e.clientY -
+          (y -
             this.wheelCtn.getBoundingClientRect().top -
             this.wheelCtn.clientHeight / 2) /
             r,
@@ -103,15 +107,18 @@ export default class TimeWheel extends Vue {
     );
   }
 
-  onMouseDown(e: MouseEvent) {
+  onMouseDown(e: MouseEvent | TouchEvent) {
+    console.log('down');
     this.prevTime = +new Date();
     this.spinning = false;
     this.vy = 0;
     this.prevTheta = this.getTheta(e);
   }
 
-  onMouseMove(e: MouseEvent) {
+  onMouseMove(e: MouseEvent | TouchEvent) {
+    e.preventDefault();
     if (this.prevTheta === null || this.prevTime === null) return;
+    console.log('nv');
     this.spinning = false;
     const t0 = +new Date();
     const dt = t0 - this.prevTime;
