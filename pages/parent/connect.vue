@@ -1,15 +1,17 @@
 <template>
   <b-container>
-    <div class="wrapper">
-      <div style="width: 50%;" v-html="qrSVG"></div>
-      <input
-        ref="input"
-        class="linkbox"
-        type="text"
-        :value="url"
-        @change.prevent
-      />
-      <div class="share" @click="share">Share</div>
+    <div class="qr-wr-wr">
+      <div class="qr-wrapper">
+        <div style="width: 50%;" v-html="qrSVG"></div>
+        <input
+          ref="input"
+          class="linkbox"
+          type="text"
+          :value="url"
+          @change.prevent
+        />
+        <div class="share" @click="share">Share</div>
+      </div>
     </div>
     <b-toast id="toast">Link copied to clipboard!</b-toast>
   </b-container>
@@ -63,12 +65,11 @@ export default class classname extends Vue {
 </script>
 
 <style scoped>
-.wrapper {
+.qr-wrapper {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: calc(100vh - 60px);
 }
 
 .linkbox {
@@ -88,5 +89,12 @@ export default class classname extends Vue {
   color: #fcf6ef;
   font: 17px/23px 'Avenir Book';
   padding: 5px 10px;
+}
+
+.qr-wr-wr {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
 }
 </style>
