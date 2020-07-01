@@ -68,7 +68,7 @@
           <div class="drawer-menu-item-icon">
             <fa icon="sign-out-alt" />
           </div>
-          <div class="drawer-menu-item-label">登出</div>
+          <nuxt-link to="/" class="drawer-menu-item-label">登出</nuxt-link>
         </div>
         <div class="child-list">
           <nuxt-link
