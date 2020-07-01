@@ -7,6 +7,12 @@
         :class="{ settings, keyword }"
         :sticky="true"
       >
+        <nuxt-link
+          v-if="settings"
+          :to="`/parent/logs?c=${$route.query.c}`"
+          class="nav-cross"
+          ><b-icon-x
+        /></nuxt-link>
         <div v-if="!settings">
           <b-icon-list
             style="height: auto; width: 30px;"
@@ -346,5 +352,13 @@ body {
       background-color: #fcf6ef;
     }
   }
+}
+
+.nav-cross {
+  color: white;
+  position: absolute;
+  top: 0.2em;
+  left: 0.2em;
+  font-size: 24px;
 }
 </style>
