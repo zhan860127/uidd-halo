@@ -1,6 +1,6 @@
 <template>
   <div class="picker-root">
-    <div class="top-bar">{{ step ? '新增裝置' : '新增裝置' }}</div>
+    <div class="top-bar">{{ !step ? '選擇裝置' : '新增裝置' }}</div>
     <div>
       <template v-if="step === 0">
         <div class="statuses container">
