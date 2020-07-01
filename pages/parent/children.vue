@@ -25,6 +25,7 @@
         </div>
         <div class="picker-plus">
           <b-icon-plus-circle @click="step = 1" />
+          <div class="add-help">找不到小孩嗎？<br />那新增一個吧</div>
         </div>
       </template>
       <template v-if="step === 1">
@@ -172,6 +173,7 @@ export default class classname extends Vue {
   font-size: 45px;
   text-align: center;
   margin-bottom: 20px;
+  position: relative;
 }
 
 .top-bar {
@@ -240,5 +242,22 @@ export default class classname extends Vue {
   left: 0.7em;
   font-size: 24px;
   transform: translateY(-50%);
+}
+
+.add-help {
+  position: absolute;
+  font-size: 10px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) translateX(100px);
+  text-align: left;
+
+  &::after {
+    content: '◀';
+    position: absolute;
+    right: 100%;
+    top: 50%;
+    transform: translate(-8px, -50%);
+  }
 }
 </style>
