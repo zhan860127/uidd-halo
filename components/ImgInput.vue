@@ -9,7 +9,7 @@
     />
     <div class="input-wrp">
       <div class="frame" @click="onPlusClick">
-        <img v-if="src" :src="src" alt="" />
+        <div v-if="src" :style="{ 'background-image': `url(${src})` }" />
       </div>
       <b-icon-plus-circle-fill class="input-plus" @click="onPlusClick" />
     </div>
@@ -47,11 +47,11 @@ export default class ImgInput extends Vue {
   border: 1px solid #707070;
   overflow: hidden;
   background-color: #707070;
-  & > img {
-    object-fit: cover;
-    object-position: center;
+  & > div {
     height: 100%;
     width: 100%;
+    background-size: cover;
+    background-position: center;
   }
   position: relative;
 }
