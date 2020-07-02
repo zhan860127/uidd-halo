@@ -209,4 +209,25 @@ export default class classname extends Vue {
   transform: translateX(-50%);
   width: 80px;
 }
+@media (max-width: 400px) {
+  #play {
+    width: 26px;
+    height: 26px;
+    color: #fabf4d;
+    padding: 3px;
+    border-radius: 50%;
+    background-color: #082448;
+    position: absolute;
+    right: -7%;
+    top: 32%;
+  }
+  #timer2 {
+    color: #082448;
+    position: fixed;
+    top: 110%;
+    right: -7%;
+    transform: translateX(-170%) translateY(-140px);
+    font-size: 12px;
+  }
+}
 </style>

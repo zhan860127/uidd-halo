@@ -15,10 +15,13 @@ const router = Router();
 if (!uploadPath)
   throw new Error('Upload path not set. Please edit the .env file');
 
-router.get('/getKey', async (req, res) => {
+router.get('/getKey/:id', async (req, res) => {
+  const { id } = req.params;
+  if (!id) return res.status(400).json();
   const keyList = await getRepository(ParentAudio)
   .createQueryBuilder('keyword')
   .select(['keyword.id', 'keyword.keyword', 'keyword.path'])
+  .where('keyword.childId = :id', { id })
   .getMany();
   res.send(JSON.stringify(keyList));  
 })

@@ -106,7 +106,7 @@ export default class classname extends Vue {
   updateList() {
     axios({
       method: 'get',
-      url: '/api/keyword/getKey',
+      url: `/api/keyword/getKey/${this.$route.query.c}`,
     }).then((res) => {
       this.responses = res.data;
       console.log(this.responses);
@@ -377,6 +377,21 @@ export default class classname extends Vue {
     width: 30vw;
     top: 0;
     right: 0;
+  }
+}
+@media (max-width: 400px) {
+  #ok {
+    position: absolute;
+    border-radius: 30px;
+    background-color: #082448;
+    color: white;
+    font-size: 15px;
+    width: 40px;
+    height: 20px;
+    z-index: 5;
+    text-align: center;
+    top: 89%;
+    left: 8%;
   }
 }
 </style>
