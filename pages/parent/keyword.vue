@@ -349,35 +349,19 @@ export default class classname extends Vue {
   position: absolute;
   background: #f0b94e;
   height: 100%;
-  width: 40vw;
+  width: 50vw;
   top: 0;
-  left: 0;
+  right: 50%;
+  transform: translateX(-80px);
 }
 #rightPad {
   position: absolute;
   background: #f0b94e;
   height: 100%;
-  width: 40vw;
+  width: 45vw;
   top: 0;
-  right: 0;
-}
-@media (max-width: 600px) {
-  #leftPad {
-    position: absolute;
-    background: #f0b94e;
-    height: 100%;
-    width: 30vw;
-    top: 0;
-    left: 0;
-  }
-  #rightPad {
-    position: absolute;
-    background: #f0b94e;
-    height: 100%;
-    width: 30vw;
-    top: 0;
-    right: 0;
-  }
+  left: 50%;
+  transform: translateX(80px);
 }
 @media (max-width: 400px) {
   #ok {
