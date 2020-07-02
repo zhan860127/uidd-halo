@@ -6,7 +6,10 @@ export function randomString(alphabet: string, length: number): string {
 }
 
 export function randomFilename() {
-  return `${new Date().toISOString()}-${randomString('1234567890', 6)}`;
+  return `${new Date().toISOString().replace(/:/g, '')}-${randomString(
+    '1234567890',
+    6
+  )}`;
 }
 
 export function newChildToken(): string {
