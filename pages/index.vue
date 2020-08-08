@@ -34,7 +34,6 @@
     </div>
     <div class="bottom bottom2">
       <div class="wrapper">
-        <a href="/sign_up" class="button text-decoration-none">SIGN UP</a>
         <a href="/sign_in" class="button text-decoration-none">SIGN IN</a>
       </div>
     </div>
